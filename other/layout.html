@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style>
+    html,body,div,.wrap{
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+    /* float定位 */
+    /* .wrap{
+      overflow: hidden;
+    }
+    .left{
+      float: left;
+      width: 200px;
+      background-color: red;
+    }
+    .right{
+      float:right;
+      width: 200px;
+      background-color: blue;
+    }
+    .center{
+      margin: 0 200px;
+      background-color: aquamarine;
+    } */
+    /* 绝对定位 */
+    /* .wrap{
+      position: relative;
+    }
+    .left{
+      position:absolute;
+      width: 200px;
+      background-color: red;
+    }
+    .right{
+      position:absolute;
+      right: 0;
+      width: 200px;
+      background-color: blue;
+    }
+    .center{
+      margin: 0 200px;
+      background-color: aquamarine;
+    } */
+    /* flex */
+    /* .wrap{
+      display: flex;
+    }
+    .left{
+      width: 200px;
+      background-color: red;
+    }
+    .right{
+      width: 200px;
+      background-color: blue;
+    }
+    .center{
+      flex: 1;
+      background-color: aquamarine;
+    }     */
+    /* table-cell */
+    /* .wrap{
+      display: table;
+    }
+    .left{
+      width: 200px;
+      background-color: red;
+      display: table-cell;
+    }
+    .right{
+      width: 200px;
+      background-color: blue;
+      display: table-cell;
+    }
+    .center{
+      background-color: aquamarine;
+    }  */
+    /* grid */
+    .wrap{
+      display: grid;
+      grid-template-columns: 200px auto 200px;
+    }
+    .left{
+      background-color: red;
+    }
+    .right{
+      background-color: blue;
+    }
+    .center{
+      background-color: aquamarine;
+    }
+  </style>
+</head>
+<body>
+  <section class="wrap">
+    <div class="left"></div>
+    <div class="center">
+      这一个测试的项目阿斯顿发生股份任何这一个测试的项目阿斯顿发生股份任何这一个测试的项目阿斯顿发生股份任何
+    </div>
+    <div class="right"></div>
+  </section>
+</body>
+</html>
