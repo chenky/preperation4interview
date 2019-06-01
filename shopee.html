@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        // function longestpalindrome(str){
+        //     let t = "$#" + str.split("").join("#")+"#";
+        //     let p = Array.from({length: t.length},()=>{return 0;});
+
+        //     let mi=0,right=0 //mi为最大回文串对应的中心点，right为该回文串能达到的最右端的值
+        //     let maxLen=0, maxPoint=0;    //maxLen为最大回文串的长度，maxPoint为最大回文字符中心点
+        //     for (let i = 1; i < t.length; ++i) {
+        //         p[i] = right > i ? Math.min(p[2 * mi - i], right - i) : 1;
+        //         while (t[i + p[i]] == t[i - p[i]]) ++p[i];
+        //         if (right < i + p[i]) {
+        //             right = i + p[i];
+        //             mi = i;
+        //         }
+        //         if (maxLen < p[i]) {
+        //             maxLen = p[i];
+        //             maxPoint = i;
+        //         }
+        //     }
+        //     return str.substr(((maxPoint - maxLen) / 2), maxLen-1);
+        // }
+
+        // console.log(longestpalindrome("a"));
+        // console.log(longestpalindrome("aab"));
+        // console.log(longestpalindrome("abcde"));
+        // console.log(longestpalindrome("zzbaabcd"));
+        // console.log(longestpalindrome(""));
+        // console.log(longestpalindrome("abbaz"));
+        // console.log(longestpalindrome("i like racecars that go fast"));
+        // console.log(longestpalindrome("i am baab mbcd"));
+
+        // let fn = (a,b)=>{
+        //     return a+b;
+        // }
+        // let res = fn.call(1,2);
+        // res;
+
+        let p1 = ()=>{
+            return new Promise((resolve,reject)=>{
+                setTimeout(function(){
+                    console.log("p1");     
+                    resolve();           
+                },2000);
+            });
+        };
+
+        let p2 = ()=>{
+            return new Promise((resolve,reject)=>{
+                setTimeout(function(){
+                    console.log("p2");     
+                    resolve();           
+                },2000);
+            });
+        };
+        
+        // let p3= new Promise((resolve,reject)=>{
+        //         setTimeout(function(){
+        //             console.log("p3");     
+        //             resolve();           
+        //         },2000);
+        //     });
+        //     let p4= new Promise((resolve,reject)=>{
+        //         setTimeout(function(){
+        //             console.log("p4");     
+        //             resolve();           
+        //         },2000);
+        //     });
+
+
+        // function runPromiseByQueue(myPromises) {
+        //     myPromises.reduce(
+        //         (previousPromise, nextPromise) => previousPromise.then(() => nextPromise()),
+        //         Promise.resolve()
+        //     );
+        // }
+
+        // const createPromise = (time, id) => () =>
+        //     new Promise(solve =>
+        //         setTimeout(() => {
+        //         console.log("promise", id);
+        //         solve();
+        //         }, time)
+        //     );
+
+        // runPromiseByQueue([
+        //     createPromise(3000, 1),
+        //     createPromise(2000, 2),
+        //     createPromise(1000, 3)
+        // ]);
+        // runPromiseByQueue([p1, p2]);
+        
+        // [p1, p2].reduce((total, currentVal)=>{
+        //     total.then(currentVal);
+        // });
+
+        class test{
+            constructor(name){
+                this.name = name;
+            }
+            static sMethod(){
+                console.log("smethod");
+                
+            }
+            sayName(){
+                console.log(this.name);                
+            }
+        }
+
+        // for (const key in test) {
+        //     if (test.hasOwnProperty(key)) {
+        //         const element = test[key];
+                
+        //     }
+        // }
+        Reflect.ownKeys(test).map((val, index)=>{
+            console.log(val);
+            
+        });
+
+    </script>
+</body>
+</html>

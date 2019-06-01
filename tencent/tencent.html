@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        div::after, img::after{
+            content: "abcd"
+        }
+    </style>
+</head>
+<body>
+    <input type="text" name="" id="" value="disable" disabled>
+    <input type="text" name="" id="" value="readonly" readonly>
+    <div id="a" class="imweb">imweb</div>
+    <span>display inline</span>
+    <img src="https://ss0.bdstatic.com/5aV1bjqh_Q23odCf/static/superman/img/logo_top_86d58ae1.png" alt="">
+    <script>
+        // let fn = ()=> () => 0;
+        // console.log(fn()());
+
+        // var a=1;
+        // var obj={
+        //     a: 2,
+        //     f: function(){
+        //         (()=>{
+        //             var a=3;
+        //             console.log(this.a);                    
+        //         })();
+        //     }
+        // }
+        // obj.f();
+
+        // async function async1(){
+        //     await async2();
+        //     console.log("1");    
+        // }
+        // async function async2(){
+        //     console.log("2");            
+        // }
+        // console.log("3");
+        // setTimeout(function(){
+        //     console.log("4");            
+        // });
+        // async1();
+        // console.log("5");
+        
+        // function testArgs(){
+        //     console.log(Array.prototype.slice.call(arguments));
+        //     console.log(Array.from(arguments));
+        //     console.log([...arguments]);            
+        // }
+        // testArgs(1,2,3);
+
+        // var reg = /^(\w+\.)*qq\.com$/;
+        // var str = "";
+        // str.match()
+
+        // function add(a,b){
+        //     if(typeof a!== "string"|| typeof a !== "string"){
+        //         throw new TypeError("arguments a,b must be string");
+        //     }
+        //     let lenA = a.length,
+        //         lenB = b.length,
+        //         lenMax = Math.max(lenA, lenB);
+        //     let carry = 0, ret="";
+
+        //     if(lenA>lenB){
+        //         b = b.padStart(lenMax, "0");
+        //     }
+        //     else if(lenA<lenB){
+        //         a = a.padStart(lenMax, "0");
+        //     }
+
+        //     for (let index = lenMax-1; index >= 0; index--) {
+        //         let temp = parseInt(a[index]) + parseInt(b[index]) + carry;
+        //         ret = (temp > 9 ? (temp - 10) : temp) + ret;
+        //         carry = Math.floor(temp/10);
+        //     }
+
+        //     return carry>0 ? (carry + ret) : ret;
+        // }
+
+        // 如果只是求文章中出现最多的单词及次数很简单
+        // 1. 正则匹配文章中的单词，返回一个单词数组
+        // 2. 遍历数组，以单词为key，value是单词出现的次数
+        // 3. 声明maxNum,maxWord；循环中找到出现次数最多的单词及次数
+        // 4. 如果需要找出现第k多次数的单词及次数，就需要把上面的hash对象
+        // 转换成对象数组（key是单词，value是单词出现的次数），排序即可
+//         function statisticalWords(){
+//             let wordReg = /\b\w+('\w)?\b/g;
+//             let article = `There don't are moments in life when you miss someonessosomeonesso    much that you just want to pick them from your dreams and hug them for real! Dream what you want to dream;go where you want to go;be what you want to be,because you have only one life and one chance to do all the things you want to do.
+ 
+//  　　May you have enough happiness to make you sweet,enough trials to make you strong,enough sorrow to keep you human,enough hope to make you happy? Always put yourself in others’shoes.If you feel that it hurts you,it probably hurts the other person, too.`;
+            
+//             let wordArr = article.match(wordReg);
+//             let result = {};
+//             let wordArrDuplicate = [];
+//             // let maxNum = 0;
+//             // let maxWord = "";
+
+//             wordArr.forEach(function(item, index){
+//                 if(result[item]){
+//                     result[item]++;
+//                 }
+//                 else{
+//                     result[item] = 1;
+//                 }                      
+                
+//                 // if(maxNum<result[item]){
+//                 //     maxNum = result[item];
+//                 //     maxWord = item;
+//                 // }
+
+//                 // if(!result[item]){
+//                 //     result[item] = [];
+//                 // }
+//                 // result[item].push(item);
+
+//             });
+
+//             for (const key in result) {
+//                 if (result.hasOwnProperty(key)) {
+//                     const element = result[key];
+//                     wordArrDuplicate.push({name: key, value: result[key]});
+//                 }
+//             }
+//             console.log("before sort: "+ wordArrDuplicate);
+            
+//             wordArrDuplicate.sort(function(a,b){
+//                 return a.value-b.value;
+//             });
+//             console.log("after sort: "+ wordArrDuplicate);
+            
+
+//             // console.log(result);            
+//             // console.log("max word is "+ maxWord, " ,max number is "+maxNum);
+                      
+
+//         }
+        // statisticalWords();
+
+
+        // 判断文章中的回文字符
+        // function isSymmetric(word){
+        //     let len = word.length;
+        //     for (let index = 0,j=len-1; index<j; index++, j--) {
+        //         if(word[index] !== word[j]){
+        //             return false;
+        //         }                
+        //     }
+        //     return true;
+        // }
+
+        // function countSymmetric(arr){
+        //     let symmetric = [];
+        //     for (let index = 0; index < arr.length; index++) {
+        //         const element = arr[index];
+        //         if(isSymmetric(arr[index])){
+        //             symmetric.push(arr[index]);
+        //         }
+        //     }
+        //     return symmetric.length;
+        // }
+        // console.log(countSymmetric(["12321","abba","ab","abcd","1221","123"]));
+        
+        // var a = [1,2,3,4],
+        //     b = [2,3,4,5,6,7,8];
+        // // 并集
+        // let unionSet = [...new Set(a.concat(b))];
+        // console.log(...unionSet);
+        
+        // // 交集
+        // let intersect=[];
+        // for (let index = 0; index < a.length; index++) {
+        //     const element = a[index];
+        //     if(b.indexOf(element)!==-1){
+        //         intersect.push(element);
+        //     }
+        // }
+        // console.log(...intersect);
+
+        // // 差集
+        // let diff = a.concat(b).filter(v => { return !(a.includes(v)&&b.includes(v)) });
+        // console.log(...diff);
+        
+
+    </script>
+</body>
+</html>

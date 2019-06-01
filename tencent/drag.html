@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        #bg{
+            width: 300px;
+            height: 300px;
+            position: relative;
+            /* position: absolute;
+            top: 300px;
+            left: 50px; */
+            background: blue;
+        }
+        #drag{
+            width: 100px;
+            height: 100px;
+            position:absolute;
+            /* position: absolute;
+            top: 40px;
+            left: 500px; */
+            background: yellow;
+            z-index: 1;
+        }
+    </style>
+</head>
+<body>
+    <div id="bg">
+    </div>
+    <div id="drag" draggable="true">
+    </div>
+    <script>
+        // html5实现此功能
+        var bg = document.getElementById("bg"),
+            drag = document.getElementById("drag"),
+            offsetX =0, offsetY = 0,
+            bgBgColor = bg.style.backgroundColor;
+        drag.addEventListener("dragstart",function(e){
+            // e.preventDefault();
+            e.dataTransfer.effectAllowed = "move";
+            offsetX = e.pageX - drag.offsetLeft;
+            offsetY = e.pageY - drag.offsetTop;
+        });
+        drag.addEventListener("drag",function(e){
+            
+            var x = e.pageX - offsetX,
+                y = e.pageY - offsetY;
+            drag.style.left = x + "px";
+            drag.style.top = y + "px";
+        });
+        drag.addEventListener("dragend",function(e){
+            // e.preventDefault();
+        });
+        bg.addEventListener("dragover",function(e){
+            e.preventDefault();
+            bg.style.backgroundColor = "pink";
+        });
+        bg.addEventListener("dragleave", function(e){
+            e.preventDefault();
+            bg.style.backgroundColor = bgBgColor;
+        });
+        bg.addEventListener("drop", function(e){
+            // e.preventDefault();
+            console.log("in boxes");
+            
+            bg.style.backgroundColor = "green";
+            bg.innerHTML = "";
+            bg.appendChild(drag);
+            // drag.parentNode.removeChild(drag);
+            
+        });
+    </script>
+</body>
+</html>

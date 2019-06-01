@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        // function fib(n){
+        //     if(n<=0){
+        //         return 0;
+        //     }
+        //     if(n===1){
+        //         return 1;
+        //     }
+        //     if(n>1){
+        //         return fib(n-2) + fib(n-1);
+        //     }
+        // }
+        // console.log(fib(5), fib(7), fib(10));
+
+        // function fib_toc(n, acc1=0, acc2 = 1) {
+        //     if(n<=0){
+        //         return acc1;
+        //     }
+        //     if(n===1){
+        //         return acc2;
+        //     }
+        //     if(n>1){
+                
+        //         return fib_toc(n-1, acc2, acc1+acc2);
+
+        //     }
+        // }
+        // console.log(fib_toc(5), fib_toc(7), fib_toc(10));
+
+
+        // function fib_for(n){
+        //     var acc1 = 0, acc2 = 1;
+        //     // if(n<=0) return acc1;
+        //     // if(n===1) return acc2;
+
+        //     while (n>1) {
+        //         [acc1, acc2] = [acc2, acc1+acc2];
+        //         n--;
+        //     }
+        //     return acc2;
+        // }
+        // console.log(fib_for(5), fib_for(7), fib_for(10));
+
+        // function flatten(arr){
+        //     while(arr.some(item=>Array.isArray(item))){
+        //         arr = [].concat(...arr);
+        //     }
+        //     return arr;
+        // }
+        // console.log(flatten([1,[2,[3,[4,5]]],6]));
+
+        // function flatten(arr){
+        //     let ret = [];
+        //     for (let i = 0, len = arr.length; i < len; i++) {
+        //         const item = arr[i];
+        //         if(Array.isArray(item)){
+        //             ret = ret.concat(flatten(item));
+        //         }
+        //         else{
+        //             // ret = ret.concat(item);
+        //             ret.push(item);
+        //         }
+        //     }
+        //     return ret;
+        // }
+        // console.log(flatten([1,[2,[3,[4,5]]],6]));
+        
+        // [].forEach(function(val,index, arr){});
+        // [].map(function(val,index,arr){});
+        // [].reduce(function(acc,val,index,arr){});
+        
+        // var myvar = "gvar";
+        // (function(){
+        //     console.log(myvar);
+        //     var myvar = "myvar";
+        // })();
+
+        function Person(name){
+            this.name = name;
+        }
+        Person.prototype.age = 20;
+        Person.prototype.award = [];
+        var jack = new Person("jack");
+        var tom = new Person("tom");
+        jack.age++;
+        tom.award.push("oscar");
+        console.log(tom.age);
+        console.log(jack.award);
+
+        // function fib(n){
+        //     if(n<2) return n;
+        //     else return fib(n-2) + fib(n-1);
+        // }
+        // console.log(fib(10), fib(13), fib(15));
+
+        // function fib_toc(n, acc1=0, acc2=1){
+        //     if(n<1) return acc1;
+        //     else if(n===1) return acc2;
+        //     else{
+        //         return fib_toc(n-1, acc2, acc1+acc2);
+        //     }
+        // }
+        
+        
+        
+
+
+        
+    </script>
+</body>
+</html>

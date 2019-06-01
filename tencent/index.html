@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        // function add(a,b,c){
+        //     return a+b+c;
+        // }
+
+        // Function.prototype.curry = function(){
+        //     var that = this, slice = Array.prototype.slice;
+        //     return function(){
+        //         var args = slice.apply(arguments);
+                
+        //         return function(){
+        //             return that.apply(null, args.concat(slice.apply(arguments)));
+        //         }
+
+        //     }
+        // }
+        // var curryFn = add.curry();
+        // console.log(curryFn(1)(2,3));
+        
+
+    // function currying2(fn){
+    //     var _args = [];
+    //     return function cb() {
+    //         if (arguments.length === 0) {
+    //             return fn.apply(this, _args);
+    //         }
+    //         Array.prototype.push.apply(_args, arguments);
+    //         return cb;
+    //     }
+    // }
+
+    // function curry2(fn){
+    //     var _args = [];
+    //     return function cb(){
+    //         if(arguments.length === 0){
+    //             return fn.apply(null, _args);
+    //         }
+    //         Array.prototype.push.apply(_args, arguments);
+    //         return cb;
+    //     }
+    // }
+
+
+
+    //逐步求值 (延迟执行)
+// function add() {
+//     var sum = 0, i, len;
+//     for (i = 0, len = arguments.length; i < len; i++) {
+//         sum += arguments[i];
+//     }
+//     return sum;
+// }
+// const addCurry = currying2(add);
+// console.log(addCurry(3)(3)(2)(1,1,1)());
+
+// function addMemoizer(){
+//     var _cache = addMemoizer._cache = addMemoizer._cache || {}
+//     , _args = Array.prototype.slice.apply(arguments);
+//     if(_cache[_args.toString()]){
+//         return _cache[_args.toString()];
+//     }
+//     else{
+//         console.log("called for");
+        
+//         var sum = 0, i, len;
+//         for (i = 0, len = arguments.length; i < len; i++) {
+//             sum += arguments[i];
+//         }
+//         _cache[_args.toString()] = sum;
+//         return sum;
+//     }
+// }
+
+// console.log( addMemoizer(1,2,3) );
+// console.log( addMemoizer(1,2,3) );
+// console.log( addMemoizer(1,2,3) );
+// console.log( addMemoizer(1,2,3) );
+// console.log( addMemoizer(1,2,3) );
+
+// var memoizer = function(memo, formula){
+
+//     return function(){
+//         var _args = Array.prototype.slice.apply(arguments);
+//         if(memo[_args.toString()]){
+//             return memo[_args.toString()];
+//         }
+//         else{
+//             var result = formula.apply(null, _args);
+//             memo[_args.toString()] = result;
+//             return result;
+//         }
+//     }
+
+// }
+// function add() {
+//     console.log("called");
+    
+//     var sum = 0, i, len;
+//     for (i = 0, len = arguments.length; i < len; i++) {
+//         sum += arguments[i];
+//     }
+//     return sum;
+// }
+
+// var addMemoizer = memoizer({}, add);
+
+// console.log(addMemoizer(1,2,3));
+// console.log(addMemoizer(1,2,3));
+// console.log(addMemoizer(1,2,3));
+// console.log(addMemoizer(1,2,3));
+// console.log(addMemoizer(1,2));
+
+// Function.prototype.method = function(name, fn){
+//     return "this is method";
+// }
+// Function.method;
+
+// var arr = [1,2,3];
+// delete arr[1];
+// arr;
+
+// alert("test");
+
+// function testRef(fn){
+
+//     var original_fn = fn;
+//     // console.log(typeof original_fn);
+//     // console.log(typeof fn);
+//     original_fn();
+//     fn();
+//     // fn = null;
+//     fn = function(){
+//         console.log("bbb");
+        
+//     }
+//     // console.log("after:" + typeof original_fn);
+//     // console.log("after:" + (fn===null));
+//     original_fn();
+    
+//     fn ? fn():"";
+// }
+// testRef(function(){
+//     console.log("aaa");
+// });
+
+// function testObj(obj){
+//     var original_obj = obj;
+//     console.log(JSON.stringify(original_obj));
+//     console.log(JSON.stringify(obj));
+//     obj.name.first = "c";
+//     console.log(JSON.stringify(original_obj));
+//     console.log(JSON.stringify(obj));
+// }
+// testObj({name:{first:"a"}});
+
+// function testTimeoutId(){
+//     var timeoutId = setTimeout(function(){
+//         console.log("inner:"+ timeoutId);
+        
+//     }, 1000);
+//     console.log("out:"+ timeoutId);
+// }
+// testTimeoutId();
+
+
+function asyncify(fn){
+    var id = setTimeout(function(){
+        id = null;
+        typeof fn === "function" ? fn() : "";
+        fn = null;
+    }, 0);
+    return function(){
+        if(id){ // 同步代码
+            
+        }
+        else{
+            // 已经是异步了不用再等待timeout了
+            clearTimeout(id);
+            typeof fn === "function" ? fn() : "";
+        }
+    }
+}
+
+var a = 0;
+asyncify(function(){
+    console.log(a);
+});
+// setTimeout(asyncify(function(){
+//     console.log(a);    
+// }),500);
+a++;
+
+
+    </script>
+</body>
+</html>

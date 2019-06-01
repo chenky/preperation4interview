@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        function Person(){
+            this.b = function(){
+                console.log("this is person private method");                
+            }
+        }   
+        Person.c = function(){
+            console.log("this is static class method");
+            
+        }
+        Person.prototype.a = function(){
+            console.log("Person");            
+        }
+        function Bridge(){}
+        Bridge.prototype = Person.prototype;
+        
+        function Teacher(){
+            Person.apply(this,arguments);
+            extend(Person, this);
+        }
+        Teacher.prototype = new Bridge();
+        // Teacher.prototype = Person.prototype;
+        Teacher.prototype.constructor = Teacher;
+        Teacher.prototype.a = function(){
+            console.log("teacher");
+            
+        }
+
+        function extend(src, dest){
+            for (const key in src) {
+                // if (src.hasOwnProperty(key)) {
+                    dest[key] = src[key];                    
+                // }
+            }
+            return dest;
+        }
+
+        var t1 = new Teacher();
+        console.log(t1 instanceof Teacher);
+        console.log(t1 instanceof Person);
+        console.log(t1.a());
+        console.log(Person.prototype.a());  
+         
+        console.log(t1.b());
+        t1.c();        
+
+    </script>
+</body>
+</html>

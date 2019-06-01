@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        function binarySearchTree(){
+            let root = null;
+            function Node(key){
+                this.key = key;
+                this.left = null;
+                this.right = null;
+            }
+
+            this.insert = function(key){
+                let newNode = new Node(key);
+
+                if(root === null){
+                    root = newNode;
+                }
+                else{
+                    let current = root;
+                    while(current){
+                        if(newNode.key < current.key){
+                            if(current.left === null){
+                                current.left = newNode;
+                                break;
+                            }
+                            else{
+                                current = current.left;
+                            }                            
+                        }   
+                        else{
+                            if(current.right === null){
+                                current.right = newNode;
+                                break;
+                            }
+                            else{
+                                current = current.right;
+                            }                            
+                        }
+                    }             
+                }
+            }
+            let inOrderTraverseNode = (node, cb) => {
+                if(node !== null){
+                    inOrderTraverseNode(node.left, cb);
+                    cb(node);
+                    inOrderTraverseNode(node.right, cb);
+                }
+            }
+            this.inOrderTraverse = function(cb){
+                inOrderTraverseNode(root,cb);
+            }
+
+            this.min = function(){
+                let current = root;
+                while(current.left && (current = current.left))
+                return current.key;
+            }
+            this.max = function(){
+                let current =  root;
+                while(current.right){
+                    current = current.right;
+                }
+                return current.key;
+            }
+        }  
+        
+        let bst1= new binarySearchTree();
+        bst1.insert(10);
+        bst1.insert(1);
+        bst1.insert(11);
+        bst1.insert(12);
+        bst1.insert(5);
+        bst1.insert(60);
+        bst1.insert(3);
+        bst1.insert(19);
+
+        let print = node => {
+            console.log(node.key);            
+        }
+        // bst1.inOrderTraverse(print);
+        console.log(bst1.min());
+        bst1.inOrderTraverse(print);
+        console.log(bst1.max());
+        
+        
+    </script>
+</body>
+</html>
