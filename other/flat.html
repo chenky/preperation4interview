@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        // 最简单的方式是递归
+        // let flat = (arr) =>{
+        //     let result = [];
+        //     let deepFlat = arr=>{
+        //         for (let index = 0; index < arr.length; index++) {
+        //             const element = arr[index];                                     
+        //             if(Array.isArray(element)){
+        //                 deepFlat(element);
+        //             }
+        //             else{
+        //                 result.push(element);
+        //             }
+        //         }
+        //     }
+        //     deepFlat(arr);
+        //     return result;
+        // }
+        // 使用字符串拼接，但是类型会全部变成字符串
+        // let flat = (arr) =>{
+        //     return arr.join(",").split(",");
+        // }
+        // 使用reduce，本质还是递归
+        // let flat = arr =>{
+        //     return arr.reduce((acc, current)=>{
+        //         if(Array.isArray(current)){
+        //             acc = acc.concat(flat(current));
+        //         }
+        //         else{
+        //             acc = acc.concat(current);
+        //         }
+        //         return acc;
+        //     }, []);
+        // }
+        // 使用栈，不使用递归
+        let flat = arr =>{
+            let queue = arr;
+            let result = [];
+            while (queue.length) {
+                let next = queue.shift();
+                if(Array.isArray(next)){
+                    queue.unshift(...next);
+                }
+                else{
+                    result.push(next);
+                }
+            }
+            return result;
+        }
+        console.log(flat([1,[2,3,[4,5,[6,7]]],8,[9,10],11]));
+        
+
+    </script>
+</body>
+</html>
