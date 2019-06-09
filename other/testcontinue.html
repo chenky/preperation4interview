@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    function testContinue(){
+      let arr = [7,2,8,1,9,6,8];
+      for (let index = 0; index < arr.length-1; index++) {
+        const current = arr[index];
+        const next = arr[index+1];
+        if(next>current){
+          console.log("next more than current");          
+        }
+        else{
+          continue;
+        }
+        console.log("current"+current);        
+      }
+    }  
+    testContinue();
+  </script>
+</body>
+</html>
