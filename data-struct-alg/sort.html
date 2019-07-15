@@ -9,23 +9,23 @@
 <body>
     <script>
         // 快速排序
-        let quickSort = arr=>{
-            if(arr.length<=1) return arr;
-            let pivotIndex = 0;
-            let pivot = arr.splice(pivotIndex,1)[0];
-            let left = [];
-            let right = [];
-            for (let index = 0; index < arr.length; index++) {
-                const element = arr[index];
-                if(element>pivot){
-                    right.push(element);
-                }
-                else{
-                    left.push(element);
-                }
-            }
-            return quickSort(left).concat(pivot, quickSort(right));
-        }
+        // let quickSort = arr=>{
+        //     if(arr.length<=1) return arr;
+        //     let pivotIndex = 0;
+        //     let pivot = arr.splice(pivotIndex,1)[0];
+        //     let left = [];
+        //     let right = [];
+        //     for (let index = 0; index < arr.length; index++) {
+        //         const element = arr[index];
+        //         if(element>pivot){
+        //             right.push(element);
+        //         }
+        //         else{
+        //             left.push(element);
+        //         }
+        //     }
+        //     return quickSort(left).concat(pivot, quickSort(right));
+        // }
         // console.log(quickSort([9,8,5,6,4,3,1,2,7]));
 
         // 归并排序
@@ -47,7 +47,93 @@
             let [left, right] = [arr.slice(0,middle), arr.slice(middle, arr.length)];
             return meger(megerSort(left), megerSort(right));
         }
-        console.log(megerSort([9,8,5,6,4,3,1,2,7]));
+        // console.log(megerSort([9,8,5,6,4,3,1,2,7]));
+
+        // 堆排序
+        class Heap{
+          constructor(data){
+            this.data = data;
+          }
+          sort(){
+            let arr = this.data;
+            let len = arr.length;
+            if(len<=1){
+              return arr;
+            }
+            else{
+              // 整个堆有Math.floor(len/2)个父节点，所以需要遍历这么多次，才能变成一个最大/最小堆
+              for (let i = Math.floor(len/2); i >= 0; i--) {
+                Heap.maxHeapify(arr, i, len);                
+              }
+              // 顶级节点和最后一个叶子节点交换，然后移出顶级节点，不再参与排序了
+              for (let j = 0; j < len; j++) {
+                // 跟节点和最后一个节点交换
+                [arr[0], arr[len-j-1]] = [arr[len-j-1], arr[0]];
+                // len是数组长度，索引-1，然后每次排序完移出顶级节点不用排序，所以再-1
+                Heap.maxHeapify(arr, 0, len-j-1-1);
+              }
+              return arr;
+            }
+          }
+          // size为有效长度
+          // 对当前堆及子堆进行排序
+          static maxHeapify(arr, i, size){
+            let l = i*2 +1;
+            let r = i*2 +2;
+            let largest = i;
+            // 找到最大值的索引
+            if(l<=size && arr[l]>arr[largest]){
+            // if(l<=size && arr[l]<arr[largest]){
+              largest = l;
+            }
+            if(r<=size && arr[r]>arr[largest]){
+            // if(r<=size && arr[r]<arr[largest]){
+              largest = r;
+            }
+            if(largest!==i){
+              // 边界
+              [arr[i], arr[largest]] = [arr[largest],arr[i]];
+              Heap.maxHeapify(arr, largest, size);
+            }       
+          }
+        }
+        // let heap = new Heap([1,5,3,71,2,56,2,9,7,4]);
+        // console.log(heap.sort());
+        
+        let frenquencySort = str => {
+          let len = str.length;
+          let map = new Map();
+          for (let index = 0; index < len; index++) {
+            const char = str.charAt(index);
+            // map[char] ? map[char]++ : (map[char]=1);
+            if(map.has(char)){
+              map.set(char, (map.get(char)+1))
+            }
+            else{
+              map.set(char, 1);
+            }
+          }
+          let arr = [];
+          for (const [key,val] of map) {
+            let tmp = {};
+            tmp["key"] = key;
+            tmp["val"] = val
+            arr.push(tmp);
+          }
+
+          // 然后排序
+          arr.sort((a,b)=>{
+            return b.val - a.val;
+          });
+          let reStr="";
+          arr.forEach(item=>{
+            reStr+=item.key.repeat(item.val);
+          });
+          return reStr;
+        }
+        console.log(frenquencySort("chcaa"));
+        console.log(frenquencySort("tree"));
+
     </script>
 </body>
 </html>
