@@ -40,15 +40,43 @@ custom element, shodaw dom, template模板（x-tag，polymer），小程序貌�
 
 ### react redux react-router
 
-### nodejs
+### nodejs架构及大概介绍
 
 ### minxin, 高阶组件，react hooks
 * https://segmentfault.com/a/1190000016950339
 * https://zh-hans.reactjs.org/docs/hooks-intro.html
 
 ### react生命周期，对比vue，及vue的核心概念
+* https://juejin.im/post/5a062fb551882535cd4a4ce3
+* https://cn.vuejs.org/v2/guide/instance.html#%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E5%9B%BE%E7%A4%BA
+* 基本指令，模板语法，渲染，事件处理，组件，组件通讯，逻辑复用，路由，状态管理，ajax类库等等。
+* 横切逻辑共用： vue mixin 类比 react mixin hoc hooks
+* 容器组件：     vue slot（name指定） 类比 react props.children （数组索引）
+* 双向通信：     vue props+event 类比 react props+callback
+* 渲染：		   vue render(h=>h(component)) 类比 react ReactDOM.render(component, container)
+* 全家桶：       vue vuex  Vue-router elmentUI等 类比 react + redux + React router（Browser Router） antdUI等
 
 ### react如何借用其他类库的组件，比如jquery
 
 ### 牛人博客
 * https://segmentfault.com/u/zach5078
+
+### 正则表达式
+
+### http https，udp，tcp，三次握手，四次挥别
+
+### nodejs和javascript事件循环
+* https://nodejs.org/zh-cn/docs/guides/event-loop-timers-and-nexttick/
+* http://lynnelv.github.io/js-event-loop-nodejs
+
+### 同步，异步，阻塞，非阻塞概念
+* https://zhuanlan.zhihu.com/p/22707398
+* https://nodejs.org/zh-cn/docs/guides/blocking-vs-non-blocking/
+
+### new发生了什么
+* 创建一个空的简单JavaScript对象（即{}）；
+* 链接该对象（即设置该对象的构造函数）到另一个对象 ；
+* 将步骤1新创建的对象作为this的上下文 ；
+* 如果该函数没有返回对象，则返回this。
+* https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/new
+* https://segmentfault.com/q/1010000005141424
