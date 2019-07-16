@@ -41,6 +41,7 @@ custom element, shodaw dom, template模板（x-tag，polymer），小程序貌�
 ### react redux react-router
 
 ### nodejs架构及大概介绍
+* https://www.zhihu.com/question/33578075
 
 ### minxin, 高阶组件，react hooks
 * https://segmentfault.com/a/1190000016950339
@@ -57,13 +58,20 @@ custom element, shodaw dom, template模板（x-tag，polymer），小程序貌�
 * 全家桶：       vue vuex  Vue-router elmentUI等 类比 react + redux + React router（Browser Router） antdUI等
 
 ### react如何借用其他类库的组件，比如jquery
+* https://zh-hans.reactjs.org/docs/integrating-with-other-libraries.html
 
 ### 牛人博客
 * https://segmentfault.com/u/zach5078
 
 ### 正则表达式
+* https://juejin.im/post/5965943ff265da6c30653879
+* https://juejin.im/post/5acb4d3f6fb9a028c813295e
+* https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Guide/Regular_Expressions
 
 ### http https，udp，tcp，三次握手，四次挥别
+* https://www.cnblogs.com/zhuqil/archive/2012/07/23/2604572.html
+* https://blog.csdn.net/zhongzh86/article/details/69389967
+* https://segmentfault.com/a/1190000017524542
 
 ### nodejs和javascript事件循环
 * https://nodejs.org/zh-cn/docs/guides/event-loop-timers-and-nexttick/
