@@ -1,5 +1,8 @@
 # preperation4interview
 
+### 笔试
+* https://www.jianshu.com/p/35a027c7e4d9
+
 ### 前端面试：
 * https://github.com/azl397985856/fe-interview（或者https://lucifer.ren/fe-interview/#/）
 
@@ -86,7 +89,7 @@ custom element, shodaw dom, template模板（x-tag，polymer），小程序貌�
 * https://blog.csdn.net/zhongzh86/article/details/69389967
 * https://segmentfault.com/a/1190000017524542
 
-### nodejs和javascript事件循环
+### nodejs和javascript事件循环(包括macrotask，microtask说明)
 * https://nodejs.org/zh-cn/docs/guides/event-loop-timers-and-nexttick/
 * http://lynnelv.github.io/js-event-loop-nodejs
 
@@ -101,6 +104,30 @@ custom element, shodaw dom, template模板（x-tag，polymer），小程序貌�
 * 如果该函数没有返回对象，则返回this。
 * https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/new
 * https://segmentfault.com/q/1010000005141424
+
+### Promise
+* https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise
+* http://es6.ruanyifeng.com/#docs/promise
+
+### 页面生命周期
+* https://github.com/fi3ework/blog/issues/3
+
+### 跨域
+* https://segmentfault.com/a/1190000011145364
+* https://www.jianshu.com/p/a0dd1e712c3a
+
+### typeof instanceof区别
+* https://segmentfault.com/a/1190000000730982
+* http://jartto.wang/2019/01/17/js-typeof/
+
+### for in for of forEach 区别
+* https://blog.csdn.net/crystal6918/article/details/75099816
+
+### generator
+* http://es6.ruanyifeng.com/#docs/generator
+
+### flex
+* http://www.ruanyifeng.com/blog/2015/07/flex-grammar.html
 
 ### 数据结构与算法
 * https://coding.imooc.com/learn/list/315.html
