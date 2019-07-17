@@ -3,7 +3,6 @@
 ### 前端面试：
 * https://github.com/azl397985856/fe-interview（或者https://lucifer.ren/fe-interview/#/）
 
-
 ### ReactNative原理:
 * https://www.jianshu.com/p/038975d7f22d
 * https://blog.cnbang.net/tech/2698/
@@ -37,8 +36,16 @@ custom element, shodaw dom, template模板（x-tag，polymer），小程序貌�
 * http://taobaofed.org/blog/2018/08/08/workbox3/
 
 ### webpack
+* https://github.com/gwuhaolin/dive-into-webpack
+* https://github.com/ruanyf/webpack-demos#demo01-entry-file-source
+* https://juejin.im/post/5acabd696fb9a028c97a5733
 
 ### react redux react-router
+* 深入REACT技术栈+陈屹著.pdf （必看书目）
+* https://github.com/renderedtext/react-redux-demo
+* https://segmentfault.com/a/1190000004355491#articleHeader13
+* https://github.com/huangtengfei/redux-demo
+* https://coding.imooc.com/learn/list/313.html (综合实例)
 
 ### nodejs架构及大概介绍
 * https://www.zhihu.com/question/33578075
@@ -57,6 +64,11 @@ custom element, shodaw dom, template模板（x-tag，polymer），小程序貌�
 * 渲染：		   vue render(h=>h(component)) 类比 react ReactDOM.render(component, container)
 * 全家桶：       vue vuex  Vue-router elmentUI等 类比 react + redux + React router（Browser Router） antdUI等
 
+### mvvm原理
+* http://www.ruanyifeng.com/blog/2015/02/mvcmvp_mvvm.html
+* https://coding.imooc.com/lesson/129.html#mid=9409
+* https://github.com/DMQ/mvvm
+
 ### react如何借用其他类库的组件，比如jquery
 * https://zh-hans.reactjs.org/docs/integrating-with-other-libraries.html
 
@@ -66,6 +78,7 @@ custom element, shodaw dom, template模板（x-tag，polymer），小程序貌�
 ### 正则表达式
 * https://juejin.im/post/5965943ff265da6c30653879
 * https://juejin.im/post/5acb4d3f6fb9a028c813295e
+* https://www.cnblogs.com/zxin/archive/2013/01/26/2877765.html
 * https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Guide/Regular_Expressions
 
 ### http https，udp，tcp，三次握手，四次挥别
@@ -88,3 +101,13 @@ custom element, shodaw dom, template模板（x-tag，polymer），小程序貌�
 * 如果该函数没有返回对象，则返回this。
 * https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/new
 * https://segmentfault.com/q/1010000005141424
+
+### 数据结构与算法
+* https://coding.imooc.com/learn/list/315.html
+* https://github.com/kdn251/interviews
+
+### 缓存机制,原理
+* https://imweb.io/topic/55c6f9bac222e3af6ce235b9
+* https://www.jianshu.com/p/1a1536ab01f1
+* https://www.jianshu.com/p/54cc04190252
+* https://github.com/ljianshu/Blog/blob/master/%E6%96%87%E7%AB%A0%E4%B8%AD%E7%9A%84%E6%80%9D%E7%BB%B4%E5%AF%BC%E5%9B%BE/%E6%B5%8F%E8%A7%88%E5%99%A8%E7%BC%93%E5%AD%98%E6%9C%BA%E5%88%B6.xmind
