@@ -67,6 +67,27 @@ custom element, shodaw dom, template模板（x-tag，polymer），小程序貌�
 * 渲染：		   vue render(h=>h(component)) 类比 react ReactDOM.render(component, container)
 * 全家桶：       vue vuex  Vue-router elmentUI等 类比 react + redux + React router（Browser Router） antdUI等
 
+### react受控组件和非受控组件
+* 受控组件数据由react管理，而非受控组件数据存储在dom中
+* 非受控组件往往代码少，且写的比较快，方便和第三方组件结合，虽然不美观，而受控组件状态更新需要写处理函数（change处理函数每一个组件都要写，很烦）
+* 但是同一份数据，多个控件，
+* 受控组件默认值由defaultValue，defaultChecked
+* 文件上传控件始终是非受控组件，因为其值用户设置而非代码设置，
+* https://react.docschina.org/docs/uncontrolled-components.html
+* http://meloguo.com/2018/10/08/%E5%8F%97%E6%8E%A7%E4%B8%8E%E9%9D%9E%E5%8F%97%E6%8E%A7%E7%BB%84%E4%BB%B6/ （重点看看）
+
+### react事件
+* 在 React 底层，主要对合成事件做了两件事:事件委派和自动绑定
+* 事件委托在结构的最外层，react自动绑定this，但是es6和纯函数需要手动绑定
+* 可以使用原生事件，在componentdidmount中，但是记得在componentwillunmount中移除，防止内存泄漏，合成事件不需要，react已经处理
+* 阻止 React 事件冒泡的行为只能用于 React 合成事件系统 中，且没办法阻止原生事件的冒泡。反之，在原生事件中的阻止冒泡行为，却可以阻止 React 合成 事件的传播。
+* React 的合成事件系统只是原生 DOM 事件系统的一个子集。它仅仅实现了 DOM Level 3 的事件接口，并且统一了浏览器间的兼容问题。有些事件 React 并没有实现，或者受某些 限制没办法去实现，比如 window 的 resize 事件。
+* React 的合成事件则并没有实现事件捕获，仅仅支持了事件冒泡机制。这种 API 设计方式统一而简洁， 符合“二八原则”。
+
+### react router及内部原理，源码分析 
+* 在路由跳转过程中，onLeave hook 会在所有将离开的路由中触发，从最下层的子路由开始直到最外层父路由结束。然后onEnter hook会从最外层的父路由开始直到最下层子路由结束。
+* https://react-guide.github.io/react-router-cn/index.html
+
 ### mvvm原理
 * http://www.ruanyifeng.com/blog/2015/02/mvcmvp_mvvm.html
 * https://coding.imooc.com/lesson/129.html#mid=9409
