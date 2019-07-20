@@ -60,6 +60,7 @@ custom element, shodaw dom, template模板（x-tag，polymer），小程序貌�
 ### react生命周期，对比vue，及vue的核心概念
 * https://juejin.im/post/5a062fb551882535cd4a4ce3
 * https://cn.vuejs.org/v2/guide/instance.html#%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E5%9B%BE%E7%A4%BA
+* 相比较vue的mvvm框架，react是组件是开发更多关注view，虚拟dom，单向数据流，函数式编程
 * 基本指令，模板语法，渲染，事件处理，组件，组件通讯，逻辑复用，路由，状态管理，ajax类库等等。
 * 横切逻辑共用： vue mixin 类比 react mixin hoc hooks
 * 容器组件：     vue slot（name指定） 类比 react props.children （数组索引）
@@ -87,6 +88,12 @@ custom element, shodaw dom, template模板（x-tag，polymer），小程序貌�
 ### react router及内部原理，源码分析 
 * 在路由跳转过程中，onLeave hook 会在所有将离开的路由中触发，从最下层的子路由开始直到最外层父路由结束。然后onEnter hook会从最外层的父路由开始直到最下层子路由结束。
 * https://react-guide.github.io/react-router-cn/index.html
+* https://www.jianshu.com/p/6f8babea6243
+* http://zhenhua-lee.github.io/react/history.html
+* https://github.com/youngwind/blog/issues/109
+
+### react setState过程及源码分析
+* https://imweb.io/topic/5b189d04d4c96b9b1b4c4ed6
 
 ### mvvm原理
 * http://www.ruanyifeng.com/blog/2015/02/mvcmvp_mvvm.html
@@ -109,6 +116,9 @@ custom element, shodaw dom, template模板（x-tag，polymer），小程序貌�
 * https://www.cnblogs.com/zhuqil/archive/2012/07/23/2604572.html
 * https://blog.csdn.net/zhongzh86/article/details/69389967
 * https://segmentfault.com/a/1190000017524542
+
+### 域名收敛
+* https://www.jianshu.com/p/7c7ea420cee8
 
 ### nodejs和javascript事件循环(包括macrotask，microtask说明)
 * https://nodejs.org/zh-cn/docs/guides/event-loop-timers-and-nexttick/
@@ -159,3 +169,49 @@ custom element, shodaw dom, template模板（x-tag，polymer），小程序貌�
 * https://www.jianshu.com/p/1a1536ab01f1
 * https://www.jianshu.com/p/54cc04190252
 * https://github.com/ljianshu/Blog/blob/master/%E6%96%87%E7%AB%A0%E4%B8%AD%E7%9A%84%E6%80%9D%E7%BB%B4%E5%AF%BC%E5%9B%BE/%E6%B5%8F%E8%A7%88%E5%99%A8%E7%BC%93%E5%AD%98%E6%9C%BA%E5%88%B6.xmind
+
+### meta viewport layout viewport visual viewport ideal viewport
+* https://www.cnblogs.com/2050/p/3877280.html
+* https://www.quirksmode.org/mobile/viewports2.html
+* https://www.runoob.com/w3cnote/viewport-deep-understanding.html
+
+### 前端性能优化
+* https://juejin.im/post/59ff2dbe5188254dd935c8ab
+### 测量白屏和首屏加载时间
+* https://lz5z.com/Web%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96-%E9%A6%96%E5%B1%8F%E5%92%8C%E7%99%BD%E5%B1%8F%E6%97%B6%E9%97%B4/
+
+### 兼容IE事件工具函数
+* https://blog.csdn.net/wangcuiling_123/article/details/73085958
+
+### h5原生优缺点
+* https://www.jianshu.com/p/daeacf35e72f
+
+### amd和cmd区别
+* amd有requirejs，cmd有seajs，这些规范的目的都是为了 JavaScript 的模块化开发，特别是在浏览器端的
+* 对于依赖的模块，AMD 是提前执行，CMD 是延迟执行。不过 RequireJS 从 2.0 开始，也改成可以延迟执行（根据写法不同，处理方式不同）。CMD 推崇 as lazy as possible.
+* CMD 推崇依赖就近，AMD 推崇依赖前置。
+* https://www.zhihu.com/question/20351507
+
+### requirejs常用方法
+* http://www.hangge.com/blog/cache/detail_1702.html
+
+### buffer模块
+* buffer用来处理大量二进制数据，操作字节；类Array对象，javascript和C++模块结合体，性能c，非性能js
+* 内存不是v8分配，属于堆外内存，buffer太常见，默认无需require即可使用
+* 拼接不能+号，而是通过ondata方式，onend再转换成字符串
+* 网络传输二进制最高效
+
+### Stream是什么
+* node有内存限制，大文件操作用stream，node原生模块直接引用即可
+* 当不能通过fs.readFile,fs,writeFile时，使用fs.createReadStream,fs,createWriteStream
+
+### http模块实现异步变同步请求
+* https://blog.csdn.net/WANGLEI20116527/article/details/62892070
+
+### utf8和gbk区别
+* UTF-8：Unicode TransformationFormat-8bit，允许含BOM，但通常不含BOM。是用以解决国际上字符的一种多字节编码，它对英文使用8位（即一个字节），中文使用24为（三个字节）来编码。UTF-8包含全世界所有国家需要用到的字符，是国际编码，通用性强。UTF-8编码的文字可以在各国支持UTF8字符集的浏览器上显示。如，如果是UTF8编码，则在外国人的英文IE上也能显示中文，他们无需下载IE的中文语言支持包。
+GBK是国家标准GB2312基础上扩容后兼容GB2312的标准。GBK的文字编码是用双字节来表示的，即不论中、英文字符均使用双字节来表示，为了区分中文，将其最高位都设定成1。GBK包含全部中文字符，是国家编码，通用性比UTF8差，不过UTF8占用的数据库比GBD大。
+
+### 前端数据采集
+* https://cdc.tencent.com/2018/09/13/frontend-exception-monitor-research/
+* http://taobaofed.org/blog/2015/10/28/jstracker-how-to-collect-data/
