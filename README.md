@@ -218,3 +218,33 @@ GBK是国家标准GB2312基础上扩容后兼容GB2312的标准。GBK的文字�
 ### 前端数据采集
 * https://cdc.tencent.com/2018/09/13/frontend-exception-monitor-research/
 * http://taobaofed.org/blog/2015/10/28/jstracker-how-to-collect-data/
+
+### 腾讯面试题
+* jsonp有哪些安全问题，如何防御
+* 怎么防止重复提交
+* 怎么防止提交当价格被篡改
+* react两个组件中的请求有依赖如何处理
+* react中虚拟dom diff算法
+* xss安全问题，比如url中传递一张图片应该做哪些处理，需要做哪些过滤？
+* 跨域cors的http头要设置哪些，以及浏览器如何发送预检请求，整个原理说一说
+* 浏览器输入网址回车后的一系列事情
+* 前端优化描述，除了雅虎军规之外的优化
+* 前端埋点监控怎么做（白屏，首屏，onload时间，html5的performance）
+* react生命周期，及再didmount和willunmout一般做什么
+* 前端clone，深拷贝
+* 前端继承的方式有哪些
+* 如何生成token？如何进行验证的？
+* 缓存机制及如何定制缓存时间？为什么使用这种策略？
+* setTimeout和setImmediate区别
+* setTimeout无法保证指定时间后执行，那该如何保证指定时间后一定执行
+* mvvm的原理及实现细节
+* redux详细说说
+* react数据流说说看
+* 如何提高用户的转化率（更快下单）
+
+
+
+
+
+
+
