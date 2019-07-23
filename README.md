@@ -1,5 +1,8 @@
 # preperation4interview
 
+### 2019前端趋势
+* https://www.infoq.cn/article/K_RFbwfff5MugJXixYDQ
+
 ### 笔试
 * https://www.jianshu.com/p/35a027c7e4d9
 
