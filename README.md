@@ -241,10 +241,28 @@ GBK是国家标准GB2312基础上扩容后兼容GB2312的标准。GBK的文字�
 * 对参数做数字签名，生产signature，提交服务器回传，服务器密钥参数再hash与signatrue对比即可知道是否被串改
 * https://blog.csdn.net/u014756827/article/details/86631118
 
-* react两个组件中的请求有依赖如何处理
-* react中虚拟dom diff算法
-* xss安全问题，比如url中传递一张图片应该做哪些处理，哪些特殊字符需要过滤
-* 跨域cors的http头要设置哪些，以及浏览器如何发送预检请求，整个原理说一说
+#### react两个组件中的请求有依赖如何处理
+* 使用高阶组件，假如a依赖b，两种方式，一是通过props.callback，b中componentWillReceiveProps拿到a中异步请求依赖数据，二是通过hoc，b作为传人组件，高阶组件中实现a对逻辑，请求返回数据后，通过props传入b组件，形成增强组件
+
+#### react中虚拟dom diff算法
+陈屹《深入react技术栈》
+
+#### xss安全问题，比如url中传递一张图片应该做哪些处理，哪些特殊字符需要过滤
+* xss攻击分为存储型和反射性
+* httponly,设置csp浏览器只执行指定域名对script
+* <,>"'&/等字符进行转译
+* url中参数要进行编码转义，decodeURIComponent
+* https://tech.meituan.com/2018/09/27/fe-security.html
+* https://zhuanlan.zhihu.com/p/32237154
+
+#### 跨域cors的http头要设置哪些，以及浏览器如何发送预检请求，整个原理说一说
+* Access-Control-Allow-Origin: http://foo.example
+* Access-Control-Allow-Methods: POST, GET, OPTIONS
+* Access-Control-Allow-Headers: X-PINGOTHER, Content-Type
+* Access-Control-Max-Age: 86400
+* https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Access_control_CORS
+* http://www.ruanyifeng.com/blog/2016/04/cors.html
+
 * 浏览器输入网址回车后的一系列事情
 
 #### 前端优化描述，除了雅虎军规之外的优化
@@ -260,7 +278,10 @@ GBK是国家标准GB2312基础上扩容后兼容GB2312的标准。GBK的文字�
 * 前端继承的方式有哪些
 * 如何生成token？如何进行验证的？
 * 缓存机制及如何定制缓存时间？为什么使用这种策略？
-* setTimeout和setImmediate区别
+#### setTimeout和setImmediate区别
+* node中执行顺序不确定，因为setTimeout不能做到0毫秒执行，分别在timer阶段和check阶段，process.tick优先级最高，每个阶段执行完就执行tick
+* http://www.ruanyifeng.com/blog/2018/02/node-event-loop.html
+
 * setTimeout无法保证指定时间后执行，那该如何保证指定时间后一定执行
 * mvvm的原理及实现细节
 * redux详细说说
