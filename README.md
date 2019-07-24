@@ -246,8 +246,9 @@ GBK是国家标准GB2312基础上扩容后兼容GB2312的标准。GBK的文字�
 * xss安全问题，比如url中传递一张图片应该做哪些处理，哪些特殊字符需要过滤
 * 跨域cors的http头要设置哪些，以及浏览器如何发送预检请求，整个原理说一说
 * 浏览器输入网址回车后的一系列事情
+
 #### 前端优化描述，除了雅虎军规之外的优化
-*（http2(多路复用，首部压缩，服务器推送，流量控制)，http3基于udp，ttr）
+* http2(多路复用，首部压缩，服务器推送，流量控制)，http3基于udp，ttr
 * dns预解析（<meta http-equiv="x-dns-prefetch-control" content="on" ><link rel="dns-prefetch" href="//cdn.domain.com" >）
 * 通常情况下，我们认为 TCP 网络传输的最大传输单元（Maximum Transmission Unit，MTU）为 1500B，即一个RTT（Round-Trip Time，网络请求往返时间）内可以传输的数据量最大为 1500 字节。因此，在前后端分离的开发模式中，尽量保证页面的 HTML 内容在 1KB 以内，这样整个 HTML 的内容请求就可以在一个 RTT 内请求完成，最大限度地提高 HTML 载入速度。
 * pwa，serviceworker
