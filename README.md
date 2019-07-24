@@ -220,15 +220,40 @@ GBK是国家标准GB2312基础上扩容后兼容GB2312的标准。GBK的文字�
 * http://taobaofed.org/blog/2015/10/28/jstracker-how-to-collect-data/
 
 ### 腾讯面试题
-* jsonp有哪些安全问题，如何防御
-* 怎么防止重复提交
-* 怎么防止提交当价格被篡改
+#### jsonp有哪些安全问题，服务端可能存在csrf攻击
+* 从消费者的角度来看：
+* 必须相信提供商不会返回恶意JavaScript，而不是返回指定的JSONP回调中包含的预期JSON。
+* 任何第三方JavaScript嵌入式附件（例如Google Analytics）也是如此。
+* 这与XSS攻击类似，它允许第三方在应用程序中执行任意JavaScript，但是，必须首先通过首先提出请求来选择信任该第三方。
+* 从提供者的角度来看：
+* 即使客户的Cookie存在于您的控制网页的请求中，也不能认为该消息是存在的。检查Referer标头与授权URL的白名单，并且/或不要依赖基于cookie的认证。
+* 类似于CSRF /混淆的副攻击。
+* https://cloud.tencent.com/developer/ask/77723
+* https://www.jianshu.com/p/14f569b13dcc
+* https://erlend.oftedal.no/blog/static-130.html?blogid=130
+
+#### 怎么防止重复提交
+* 多次submit按钮，刷新，回退会造成重复提交，前端和后端分别如何防御
+* https://hw1287789687.iteye.com/blog/2427055
+* https://www.jianshu.com/p/01b6ab61f24a
+
+#### 怎么防止提交当价格被篡改
+* 对参数做数字签名，生产signature，提交服务器回传，服务器密钥参数再hash与signatrue对比即可知道是否被串改
+* https://blog.csdn.net/u014756827/article/details/86631118
+
 * react两个组件中的请求有依赖如何处理
 * react中虚拟dom diff算法
 * xss安全问题，比如url中传递一张图片应该做哪些处理，哪些特殊字符需要过滤
 * 跨域cors的http头要设置哪些，以及浏览器如何发送预检请求，整个原理说一说
 * 浏览器输入网址回车后的一系列事情
-* 前端优化描述，除了雅虎军规之外的优化
+#### 前端优化描述，除了雅虎军规之外的优化
+*（http2(多路复用，首部压缩，服务器推送，流量控制)，http3基于udp，ttr）
+* dns预解析（<meta http-equiv="x-dns-prefetch-control" content="on" >
+<link rel="dns-prefetch" href="//cdn.domain.com" >）
+* 通常情况下，我们认为 TCP 网络传输的最大传输单元（Maximum Transmission Unit，MTU）为 1500B，即一个RTT（Round-Trip Time，网络请求往返时间）内可以传输的数据量最大为 1500 字节。因此，在前后端分离的开发模式中，尽量保证页面的 HTML 内容在 1KB 以内，这样整个 HTML 的内容请求就可以在一个 RTT 内请求完成，最大限度地提高 HTML 载入速度。
+* pwa，serviceworker
+* https://juejin.im/post/59ff2dbe5188254dd935c8ab
+
 * 前端埋点监控怎么做（白屏，首屏，onload时间，html5的performance）
 * react生命周期，及再didmount和willunmout一般做什么
 * 前端clone，深拷贝
