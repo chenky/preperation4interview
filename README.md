@@ -189,7 +189,7 @@ custom element, shodaw dom, template模板（x-tag，polymer），小程序貌�
 ### h5原生优缺点
 * https://www.jianshu.com/p/daeacf35e72f
 
-### amd和cmd区别
+### amd和cmd区别，import区别，及import异步实现
 * amd有requirejs，cmd有seajs，这些规范的目的都是为了 JavaScript 的模块化开发，特别是在浏览器端的
 * 对于依赖的模块，AMD 是提前执行，CMD 是延迟执行。不过 RequireJS 从 2.0 开始，也改成可以延迟执行（根据写法不同，处理方式不同）。CMD 推崇 as lazy as possible.
 * CMD 推崇依赖就近，AMD 推崇依赖前置。
