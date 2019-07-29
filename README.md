@@ -228,6 +228,7 @@ GBK是国家标准GB2312基础上扩容后兼容GB2312的标准。GBK的文字�
 * 从提供者的角度来看：
 * 即使客户的Cookie存在于您的控制网页的请求中，也不能认为该消息是存在的。检查Referer标头与授权URL的白名单，并且/或不要依赖基于cookie的认证。
 * 类似于CSRF /混淆的副攻击。
+* https://erlend.oftedal.no/blog/static-130.html?blogid=130
 * https://cloud.tencent.com/developer/ask/77723
 * https://www.jianshu.com/p/14f569b13dcc
 * https://erlend.oftedal.no/blog/static-130.html?blogid=130
