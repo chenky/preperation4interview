@@ -232,6 +232,7 @@ GBK是国家标准GB2312基础上扩容后兼容GB2312的标准。GBK的文字�
 * https://cloud.tencent.com/developer/ask/77723
 * https://www.jianshu.com/p/14f569b13dcc
 * https://erlend.oftedal.no/blog/static-130.html?blogid=130
+* 未来浏览器允许设置合法域携带cookie，这样就无法实现csrf攻击了 （ https://www.acunetix.com/blog/articles/chrome-tightens-csrf-protection/ ）
 
 #### 怎么防止重复提交
 * 多次submit按钮，刷新，回退会造成重复提交，前端和后端分别如何防御
