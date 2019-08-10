@@ -52,11 +52,37 @@
     test attr
   </div>
   <script>
-    function testRest(...rest){
-      console.log(rest);
+    // function testRest(...rest){
+    //   console.log(rest);      
+    // }
+    // testRest(1,2,3,4);
+    let start = new Date();
+    // setTimeout(function(){
+    //   console.log("a");
+    //   console.log(new Date()-start);      
+    // },10)
+    function test2(){
+      return new Promise((resolve, reject)=>{
+        setTimeout(()=>{
+          console.log(new Date()-start);
+          resolve();
+        }, 10)
+      })
+    }
+    test2();
+    for (let index = 0; index < 100000000; index++) {
+      const element = 1000000;
       
     }
-    testRest(1,2,3,4);
+    // function test2(){
+    //   return new Promise((resolve, reject)=>{
+    //     setTimeout(()=>{
+    //       console.log("b");
+    //       resolve();
+    //     }, 1000)
+    //   })
+    // }
+    // test2();
   </script>
 </body>
 </html>

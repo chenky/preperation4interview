@@ -21,31 +21,31 @@
         // let fn = ()=> () => 0;
         // console.log(fn()());
 
-        // var a=1;
-        // var obj={
-        //     a: 2,
-        //     f: function(){
-        //         (()=>{
-        //             var a=3;
-        //             console.log(this.a);                    
-        //         })();
-        //     }
-        // }
-        // obj.f();
+        var a=1;
+        var obj={
+            a: 2,
+            f: function(){
+                (()=>{
+                    var a=3;
+                    console.log(this.a);                    
+                })();
+            }
+        }
+        obj.f();
 
-        // async function async1(){
-        //     await async2();
-        //     console.log("1");    
-        // }
-        // async function async2(){
-        //     console.log("2");            
-        // }
-        // console.log("3");
-        // setTimeout(function(){
-        //     console.log("4");            
-        // });
-        // async1();
-        // console.log("5");
+        async function async1(){
+            await async2();
+            console.log("1");    
+        }
+        async function async2(){
+            console.log("2");            
+        }
+        console.log("3");
+        setTimeout(function(){
+            console.log("4");            
+        });
+        async1();
+        console.log("5");
         
         // function testArgs(){
         //     console.log(Array.prototype.slice.call(arguments));
