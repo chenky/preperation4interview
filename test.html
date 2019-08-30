@@ -52,11 +52,46 @@
     test attr
   </div>
   <script>
-    function testRest(...rest){
-      console.log(rest);
+    // function testRest(...rest){
+    //   console.log(rest);
       
+    // }
+    // testRest(1,2,3,4);
+
+
+    // let listeners = [];
+    
+    // let generaterFunc = (name) => () => {
+    //   console.log(name);      
+    // }
+    // let listener1 = generaterFunc('listener1')
+    // let listener2 = generaterFunc('listener2')
+    // listeners.push(listener1)
+    // listeners.push(listener2)
+    // console.log(listeners.indexOf(listener2));
+    // listener1()
+    // listener2()
+
+    // 快速排序 最简明的递归算法，深入react技术（陈屹著）
+    function quickSort(arr){
+      if(!arr.length){
+        return []
+      }
+
+      let [pivot,...rest] = arr
+      return [...quickSort(rest.filter(item => {
+        return item<pivot
+      })), pivot, ...quickSort(rest.filter(item=>{ return item>=pivot }))]
     }
-    testRest(1,2,3,4);
+
+    console.log(quickSort([1,6,2,9,3,7,8,90,4,6]));
+
+    // function quickSort1(arr){
+
+    // }
+    
+    
+
   </script>
 </body>
 </html>
