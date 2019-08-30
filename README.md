@@ -189,7 +189,7 @@ custom element, shodaw dom, template模板（x-tag，polymer），小程序貌�
 ### h5原生优缺点
 * https://www.jianshu.com/p/daeacf35e72f
 
-### amd和cmd区别
+### amd和cmd区别，import区别，及import异步实现
 * amd有requirejs，cmd有seajs，这些规范的目的都是为了 JavaScript 的模块化开发，特别是在浏览器端的
 * 对于依赖的模块，AMD 是提前执行，CMD 是延迟执行。不过 RequireJS 从 2.0 开始，也改成可以延迟执行（根据写法不同，处理方式不同）。CMD 推崇 as lazy as possible.
 * CMD 推崇依赖就近，AMD 推崇依赖前置。
@@ -228,9 +228,13 @@ GBK是国家标准GB2312基础上扩容后兼容GB2312的标准。GBK的文字�
 * 从提供者的角度来看：
 * 即使客户的Cookie存在于您的控制网页的请求中，也不能认为该消息是存在的。检查Referer标头与授权URL的白名单，并且/或不要依赖基于cookie的认证。
 * 类似于CSRF /混淆的副攻击。
+* https://erlend.oftedal.no/blog/static-130.html?blogid=130
 * https://cloud.tencent.com/developer/ask/77723
 * https://www.jianshu.com/p/14f569b13dcc
 * https://erlend.oftedal.no/blog/static-130.html?blogid=130
+* 未来浏览器允许设置合法域携带cookie，这样就无法实现csrf攻击了  
+* https://www.acunetix.com/blog/articles/chrome-tightens-csrf-protection/ 
+* https://www.jianshu.com/p/66f77b8f1759
 
 #### 怎么防止重复提交
 * 多次submit按钮，刷新，回退会造成重复提交，前端和后端分别如何防御
@@ -263,31 +267,69 @@ GBK是国家标准GB2312基础上扩容后兼容GB2312的标准。GBK的文字�
 * https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Access_control_CORS
 * http://www.ruanyifeng.com/blog/2016/04/cors.html
 
-* 浏览器输入网址回车后的一系列事情
+#### 浏览器输入网址回车后的一系列事情
+* dns域名解析获取到ip地址（浏览器缓存->系统缓存->路由器缓存->dns服务器缓存->递归搜索）
+* 基于ip地址建立tcp连接，tcp三次握手，http连接建立
+* 如果是https则还需要进行秘钥交换，随后建立连接
+* 服务器接收请求查看http header，看是否有301,302跳转，没有就下载html页面，拿到html静态页面
+* 解析页面中的外链，css，js，img等，判断是否有缓存，根据相应策略得到资源
+* 同时dom树附加样式产生渲染树
+* https://segmentfault.com/a/1190000012092552
+* https://blog.csdn.net/LEoe_/article/details/79476279
 
 #### 前端优化描述，除了雅虎军规之外的优化
 * http2(多路复用，首部压缩，服务器推送，流量控制)，http3基于udp，ttr
-* dns预解析（<meta http-equiv="x-dns-prefetch-control" content="on" ><link rel="dns-prefetch" href="//cdn.domain.com" >）
+* 域名收敛，dns预解析（<meta http-equiv="x-dns-prefetch-control" content="on" ><link rel="dns-prefetch" href="//cdn.domain.com" >）
 * 通常情况下，我们认为 TCP 网络传输的最大传输单元（Maximum Transmission Unit，MTU）为 1500B，即一个RTT（Round-Trip Time，网络请求往返时间）内可以传输的数据量最大为 1500 字节。因此，在前后端分离的开发模式中，尽量保证页面的 HTML 内容在 1KB 以内，这样整个 HTML 的内容请求就可以在一个 RTT 内请求完成，最大限度地提高 HTML 载入速度。
 * pwa，serviceworker
 * https://juejin.im/post/59ff2dbe5188254dd935c8ab
 
-* 前端埋点监控怎么做（白屏，首屏，onload时间，html5的performance）
-* react生命周期，及再didmount和willunmout一般做什么
-* 前端clone，深拷贝
-* 前端继承的方式有哪些
-* 如何生成token？如何进行验证的？
-* 缓存机制及如何定制缓存时间？为什么使用这种策略？
+#### 前端埋点监控怎么做（白屏，首屏，onload时间，html5的performance）
+* head开发的地方定义起始时间，body开始处定义白屏结束时间，首屏html片段处定义首屏结束时间
+* 使用html5 performance.timing的api，有各个阶段详细的时间点
+
+#### react生命周期，及再didmount和willunmout一般做什么
+componentDidMount： dom已经加装到页面，可以操作页面dom，比如集成第三方框架
+componentWillUnmount：清理垃圾，比如删除绑定的事件等等内存回收的地方
+
+#### 前端clone，深拷贝
+* JSON.parse(JSON.stringify(XXXX)) （不能复制function、正则、Symbol，循环引用）
+* 手写递归自己实现，简单类型，直接复制。对于引用类型，递归复制它的每一个属性，注意循环引用，使用缓存对象做判断（参考alibaba/alibaba.html）
+* 使用lodash的deepclone
+* 使用html5的方式拷贝，但是最大的问题是异步
+
+#### 前端继承的方式有哪些
+* 借用父级构造函数，二是通过原型，三是通过两种的组合方式（other/oop.html）
+
+#### 缓存机制及如何定制缓存时间？为什么使用这种策略？
+* https://imweb.io/topic/5795dcb6fb312541492eda8c
+
 #### setTimeout和setImmediate区别
 * node中执行顺序不确定，因为setTimeout不能做到0毫秒执行，分别在timer阶段和check阶段，process.tick优先级最高，每个阶段执行完就执行tick
 * http://www.ruanyifeng.com/blog/2018/02/node-event-loop.html
 
 * setTimeout无法保证指定时间后执行，那该如何保证指定时间后一定执行
-* mvvm的原理及实现细节
-* redux详细说说
-* react数据流说说看
-* 如何提高用户的转化率（更快下单）
 
+#### mvvm的原理及实现细节
+* 参考前文
+
+#### redux详细说说
+* 参考前文
+
+#### react数据流说说看
+* 推崇简单的自顶向下的单向数据流，双向绑定可以用回调
+
+#### 如何提高用户的转化率（更快下单）
+* 首先页面加载速度要快，让用户快速看到支付按钮
+* 交互响应要及时，提示友好
+* 页面设计要简洁清爽，支付按钮要突出，用户容易找到（不要一堆广告），支付页面的核心是让用户快速完成支付
+* 不能有中断性的广告啊，提示呀
+* 异常处理要友好，比如支付失败，有重新支付按钮，不能让用户有多余的操作
+* 所有的广告可以移到支付成功页去
+
+#### nodejs如何利用多核cpu
+
+#### http升级https前后端都要注意什么？http被劫持对过程及原理？
 
 
 

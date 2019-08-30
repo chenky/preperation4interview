@@ -59,14 +59,14 @@
         </div>
     </div> -->
     <script>
-        // if([]==false){console.log(1);
-        // }
-        // if({}==false){console.log(2);
-        // }
-        // if([]){console.log(3);
-        // }
-        // if([1]==[1]){console.log(4);
-        // }
+        if([]==false){console.log(1);
+        }
+        if({}==false){console.log(2);
+        }
+        if([]){console.log(3);
+        }
+        if([1]==[1]){console.log(4);
+        }
 
         // 节流
         // function throttle(delay, fn){
@@ -266,12 +266,12 @@
         //     return nodes;
         // }
 
-        let arr = [
-            {id: 0, parentId:""}
-            ,{id: 1, parentId:0}
-            ,{id: 2, parentId:1}
-            ,{id: 3, parentId:2}
-        ];
+        // let arr = [
+        //     {id: 0, parentId:""}
+        //     ,{id: 1, parentId:0}
+        //     ,{id: 2, parentId:1}
+        //     ,{id: 3, parentId:2}
+        // ];
         // console.log(arr2Tree(arr));
 
         // function arr2Tree(arr, pid){
@@ -291,23 +291,23 @@
         // }
         // console.log(arr2Tree(arr,""));
 
-        function toTree(data, parentId) {
-            var tree = [];
-            var temp;
-            for (var i = 0; i < data.length; i++) {
-                if (data[i].parentId == parentId) {
-                    var obj = data[i];
-                    temp = toTree(data, data[i].id);
-                    if (temp.length > 0) {
-                    obj.children = temp;
-                    }
-                    tree.push(obj);
-                }
-            }
-            return tree;
-        }
+        // function toTree(data, parentId) {
+        //     var tree = [];
+        //     var temp;
+        //     for (var i = 0; i < data.length; i++) {
+        //         if (data[i].parentId == parentId) {
+        //             var obj = data[i];
+        //             temp = toTree(data, data[i].id);
+        //             if (temp.length > 0) {
+        //             obj.children = temp;
+        //             }
+        //             tree.push(obj);
+        //         }
+        //     }
+        //     return tree;
+        // }
 
-        console.log(toTree(arr,""));
+        // console.log(toTree(arr,""));
 
 
     </script>

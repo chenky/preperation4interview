@@ -180,7 +180,7 @@ function asyncify(fn){
     }, 0);
     return function(){
         if(id){ // 同步代码
-            
+            fn();
         }
         else{
             // 已经是异步了不用再等待timeout了
@@ -193,7 +193,7 @@ function asyncify(fn){
 var a = 0;
 asyncify(function(){
     console.log(a);
-});
+})();
 // setTimeout(asyncify(function(){
 //     console.log(a);    
 // }),500);
