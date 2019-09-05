@@ -327,6 +327,9 @@ componentWillUnmount：清理垃圾，比如删除绑定的事件等等内存回
 * 异常处理要友好，比如支付失败，有重新支付按钮，不能让用户有多余的操作
 * 所有的广告可以移到支付成功页去
 
+#### javascript将扁平的数据转为树形结构
+* https://blog.csdn.net/qq_37746973/article/details/78662177
+
 #### nodejs如何利用多核cpu
 
 #### http升级https前后端都要注意什么？http被劫持对过程及原理？
