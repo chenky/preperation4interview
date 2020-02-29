@@ -1,0 +1,14 @@
+function reverse(str){
+  return str.split('').reverse().join('');
+}
+function getMinPalindromeNum(){
+  let num = 11;
+  while(true){
+    if(reverse(num.toString()) === num.toString() && 
+    reverse(num.toString(2)) === num.toString(2) && 
+    reverse(num.toString(8)) === num.toString(8)){
+      return num;
+    }
+    num+=2;
+  }
+}

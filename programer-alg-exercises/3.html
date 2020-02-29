@@ -1,0 +1,19 @@
+
+// let arr = Array.from(Array(100), (value, index)=>++index);
+let arr = Array(100).fill(false);
+
+// let arr1 = Array(10).map((value,index)=>++index);
+let len = arr.length;
+let res = [];
+for (let index = 2; index <= len; index++) {
+  let j = index-1;
+  while (j<len) {
+    arr[j] = !arr[j];
+    j+=index;
+  }  
+}
+for (let n = 0; n < arr.length; n++) {
+  const element = arr[n];
+  if(!element) res.push(n+1);
+}
+console.log(res);
