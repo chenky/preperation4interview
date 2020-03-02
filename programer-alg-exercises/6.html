@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    function kaola(n){
+      let check = n*3+1;
+      while (check!==1) {
+        if(check===n){
+          return true;
+        }
+        check = ((check % 2 === 0) ? (check/2) : (check*3+1));
+      }
+      return false;
+    }
+    function test(num){
+      for (let index = 2; index <= num; index++) {
+        // console.log( kaola(index) );
+        const res = kaola(index);
+        if(res){
+          console.log(index);
+        }
+      }
+    }
+    test(10000);
+  </script>
+</body>
+</html>
