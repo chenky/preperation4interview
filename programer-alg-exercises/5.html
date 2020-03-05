@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    // function change(target, coins, coinsAmout, count=0){
+    //   let coin = coins.shift();
+    //   if(coins.lenth===0 && (target/coin) <= coinsAmout){
+    //     count++;
+    //     console.log("coins count:",coins);
+    //   } else {
+    //     for (let index = 0; index < (target/coin); index++) {
+    //       change(target-coin*index, [...coins], coinsAmout-index, count);          
+    //     }
+    //   }
+    //   return count;
+    // }
+    // console.log(change(1000,[500,100,50,10],15));
+
+    // var coinChange = function(coins, amount) { 
+    //   let dp = (new Array(amount +1)).fill(Number.MAX_VALUE) 
+    //   dp[0] = 0 
+    //   for (let i = 1; i <= amount; i++) { 
+    //       for (let j = 0; j < coins.length; j++) { 
+    //           if (coins[j] <= i) { 
+    //               dp[i] = Math.min(dp[i], dp[i - coins[j]] + 1) 
+    //           } 
+    //       } 
+    //   } 
+    //   // 返回最少硬币数量 
+    //   // return dp[amount] >= Number.MAX_VALUE ? -1 : dp[amount] 
+    //   return dp 
+    // } 
+    // // console.log(coinChange([1,2,5],10));
+
+    // var changeDetail = function (coins, amount) { 
+    //   let i = coins.length - 1, 
+    //       dp = coinChange(coins, amount), 
+    //       result = []; 
+    //   do { 
+    //       while(dp[amount - coins[i]] < Number.MAX_VALUE) { 
+    //           // 当减去 coin 后，硬币数量没有减少，则说明硬币里已经没有该 coin 了 
+    //           if (dp[amount - coins[i]] > dp[amount]) { 
+    //               i-- 
+    //               continue 
+    //           } 
+    //           result.push(coins[i]) 
+    //           amount -= coins[i] 
+    //       } 
+    //       i-- 
+    //   } while (i >= 0) 
+  
+    //   return result 
+    // }
+    // console.log(changeDetail([1,2,5],13));
+
+    function minCoins(coins,total){
+      var T = [];
+      const n = coins.length;
+      const res = [];
+
+      for(let i = 0;i<n;i++){
+        T[i] = [];
+        res[i] = [];
+        for (let j=0;j<= total;j++){
+          if(j == 0){
+            T[i][j] = 0; // 总额为零的话，不需要任何硬币
+            res[i].push(coins[i]); 
+            continue;
+          }
+
+          if(i == 0){
+            T[i][j] = j/coins[i]; //硬币找零一定要有个 最小面额1，否则会无解
+          }else{
+            if(j >= coins[i]){
+              const temp1 = T[i-1][j];
+              const temp2 = 1+T[i][j-coins[i]];
+              // T[i][j] = Math.min(T[i-1][j],1+T[i][j-coins[i]])   
+              if(temp1>temp2){
+                T[i][j] = temp2;
+                // res[i].push(coins[i]); 
+              } else{
+                T[i][j] = temp1;
+              }               
+            }else{
+              T[i][j] = T[i-1][j];
+            }
+          }
+        }
+        // res[i].push(coins[i]); 
+      }
+      return {T,res};
+    }
+    console.log(minCoins([1,2,5],10));
+
+  </script>
+</body>
+</html>
