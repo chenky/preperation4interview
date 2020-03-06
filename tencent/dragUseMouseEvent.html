@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+    <style>
+      #child {
+        width: 100px;
+        height: 100px;
+        background: red;
+        position: absolute;
+        z-index: 2;
+      }
+      #parent {
+        position: absolute;
+        left: 500px;
+        top: 200px;
+        height: 300px;
+        width: 300px;
+        background-color: blueviolet;
+      }
+    </style>
+    <script>
+      window.onload = function() {
+        var oChild = document.getElementById("child");
+        var oParent = document.getElementById("parent");
+
+        drag(oChild);
+
+        function drag(obj) {
+          obj.onmousedown = function(ev) {
+            var ev = ev || event;
+
+            var disX = ev.clientX - this.offsetLeft;
+            var disY = ev.clientY - this.offsetTop;
+
+            // if ( obj.setCapture ) {
+            //     obj.setCapture();
+            // }
+
+            document.onmousemove = function(ev) {
+              var ev = ev || event;
+
+              var L = ev.clientX - disX;
+              var T = ev.clientY - disY;
+
+              var childLeft = L;
+              var childRight = L + obj.offsetWidth;
+              var childTop = T;
+              var childBottom = T + obj.offsetHeight;
+
+              var parentLeft = oParent.offsetLeft;
+              var parentRight = parentLeft + oParent.offsetWidth;
+              var parentTop = oParent.offsetTop;
+              var parentBottom = parentTop + oParent.offsetHeight;
+
+              // 是否和父节点有交集
+              if (
+                childRight < parentLeft ||
+                childLeft > parentRight ||
+                childBottom < parentTop ||
+                childTop > parentBottom
+              ) {
+                // oParent.src = '1.jpg';
+                oParent.style.backgroundColor = "";
+                console.log("out");
+              } else {
+                // oParent.src = '2.jpg';
+                oParent.style.backgroundColor = "#43384c";
+                console.log("in");
+              }
+              obj.style.left = L + "px";
+              obj.style.top = T + "px";
+            };
+
+            document.onmouseup = function() {
+              document.onmousemove = document.onmouseup = null;
+              oParent.style.backgroundColor = "";
+              // if ( obj.releaseCapture ) {
+              //     obj.releaseCapture();
+              // }
+            };
+
+            return false;
+          };
+        }
+      };
+    </script>
+  </head>
+
+  <body>
+    <div id="child"></div>
+    <div id="parent"></div>
+  </body>
+</html>
