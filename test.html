@@ -1,97 +1,124 @@
 <!DOCTYPE html>
 <html>
-<head>
-   <style>
-        body{margin:0; padding:0;}
-       /* #left{width:150px;position:absolute;left:0;top:0;}
-       #right{width:200px;position:absolute;right:0; top:0;}
-       #middle{word-wrap:break-word;}
-       
+  <head>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      #left {
+        width: 150px;
+        position: absolute;
+        left: 0;
+        top: 0;
+      }
+      #right {
+        width: 200px;
+        position: absolute;
+        right: 0;
+        top: 0;
+      }
+      #middle {
+        word-wrap: break-word;
+      }
 
-     #backLeft{background:red;padding-left:150px;}       
-     #backMiddle{background:blue;padding-right:200px;}
-     #backRight{background:green;} */
-     div[data-v-a]{
+      #backLeft {
+        background: red;
+        padding-left: 150px;
+      }
+      #backMiddle {
+        background: blue;
+        padding-right: 200px;
+      }
+      #backRight {
+        background: green;
+      }
+      div[data-v-a] {
         color: red;
       }
-      div.test-attr{
+      div.test-attr {
         color: blue;
       }
+    </style>
+  </head>
+  <body>
+    <div id="backLeft">
+      <div id="backMiddle">
+        <div id="backRight">
+          <div id="middle">
+            middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;
+            middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;
+            <p>middle;</p>
+            <p>middle;</p>
+            <p>middle;</p>
+            <p>middle;</p>
+            <p>middle;</p>
+            <p>middle;</p>
+            <p>middle;</p>
+            <p>middle;</p>
+            <p>middle;</p>
+            <p>middle;</p>
+            <p>middle;</p>
+            <p>middle;</p>
+            <p>middle;</p>
+            <p>middle;</p>
+            <p>middle;</p>
+          </div>
+          <div id="right">right</div>
+          <div id="left">left</div>
+        </div>
+      </div>
+    </div>
+    <div class="test-attr" data-v-a>
+      test attr
+    </div>
+    <script>
+      function testRest(...rest){
+        console.log(rest);
 
-       </style>
-</head>
-<body>
-             <!-- <div id="backLeft">
-                <div id="backMiddle">
-                    <div id="backRight">
-                <div id="middle">
-                            middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;
-                            middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;middle;
-                            <p>middle;</p>
-                            <p>middle;</p>
-                            <p>middle;</p>
-                            <p>middle;</p>
-                            <p>middle;</p>
-                            <p>middle;</p>
-                            <p>middle;</p>
-                            <p>middle;</p>
-                            <p>middle;</p>
-                            <p>middle;</p>
-                            <p>middle;</p>
-                            <p>middle;</p>
-                            <p>middle;</p>
-                            <p>middle;</p>
-                            <p>middle;</p>
-                </div>    
-                <div id="right">right</div>
-                    <div id="left">left</div>
-                    </div>    
-                </div>    
-             </div>                         -->
-  <div class="test-attr" data-v-a>
-    test attr
-  </div>
-  <script>
-    // function testRest(...rest){
-    //   console.log(rest);
-      
-    // }
-    // testRest(1,2,3,4);
+      }
+      testRest(1,2,3,4);
 
+      let listeners = [];
 
-    // let listeners = [];
-    
-    // let generaterFunc = (name) => () => {
-    //   console.log(name);      
-    // }
-    // let listener1 = generaterFunc('listener1')
-    // let listener2 = generaterFunc('listener2')
-    // listeners.push(listener1)
-    // listeners.push(listener2)
-    // console.log(listeners.indexOf(listener2));
-    // listener1()
-    // listener2()
+      let generaterFunc = (name) => () => {
+        console.log(name);
+      }
+      let listener1 = generaterFunc('listener1')
+      let listener2 = generaterFunc('listener2')
+      listeners.push(listener1)
+      listeners.push(listener2)
+      console.log(listeners.indexOf(listener2));
+      listener1()
+      listener2()
 
-    // 快速排序 最简明的递归算法，深入react技术（陈屹著）
-    function quickSort(arr){
-      if(!arr.length){
-        return []
+      // 快速排序 最简明的递归算法，深入react技术（陈屹著）
+      function quickSort(arr) {
+        if (!arr.length) {
+          return [];
+        }
+
+        let [pivot, ...rest] = arr;
+        return [
+          ...quickSort(
+            rest.filter(item => {
+              return item < pivot;
+            })
+          ),
+          pivot,
+          ...quickSort(
+            rest.filter(item => {
+              return item >= pivot;
+            })
+          )
+        ];
       }
 
-      let [pivot,...rest] = arr
-      return [...quickSort(rest.filter(item => {
-        return item<pivot
-      })), pivot, ...quickSort(rest.filter(item=>{ return item>=pivot }))]
-    }
+      console.log(quickSort([1, 6, 2, 9, 3, 7, 8, 90, 4, 6]));
 
-    console.log(quickSort([1,6,2,9,3,7,8,90,4,6]));
+      // function quickSort1(arr){
 
-    // function quickSort1(arr){
-
-    // }
-    
-    
-
-  </script>
-</body>
+      // }
+    </script>
+  </body>
 </html>
