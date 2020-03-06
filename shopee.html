@@ -8,35 +8,44 @@
 </head>
 <body>
     <script>
-        // function longestpalindrome(str){
-        //     let t = "$#" + str.split("").join("#")+"#";
-        //     let p = Array.from({length: t.length},()=>{return 0;});
+        function longestpalindrome(str){
+            let t = "$#" + str.split("").join("#")+"#";
+            let p = Array.from({length: t.length},()=>{return 0;});
 
-        //     let mi=0,right=0 //mi为最大回文串对应的中心点，right为该回文串能达到的最右端的值
-        //     let maxLen=0, maxPoint=0;    //maxLen为最大回文串的长度，maxPoint为最大回文字符中心点
-        //     for (let i = 1; i < t.length; ++i) {
-        //         p[i] = right > i ? Math.min(p[2 * mi - i], right - i) : 1;
-        //         while (t[i + p[i]] == t[i - p[i]]) ++p[i];
-        //         if (right < i + p[i]) {
-        //             right = i + p[i];
-        //             mi = i;
-        //         }
-        //         if (maxLen < p[i]) {
-        //             maxLen = p[i];
-        //             maxPoint = i;
-        //         }
-        //     }
-        //     return str.substr(((maxPoint - maxLen) / 2), maxLen-1);
-        // }
+            // console.log(t,p);
 
-        // console.log(longestpalindrome("a"));
-        // console.log(longestpalindrome("aab"));
-        // console.log(longestpalindrome("abcde"));
-        // console.log(longestpalindrome("zzbaabcd"));
-        // console.log(longestpalindrome(""));
-        // console.log(longestpalindrome("abbaz"));
-        // console.log(longestpalindrome("i like racecars that go fast"));
-        // console.log(longestpalindrome("i am baab mbcd"));
+            //lastMiddle为上一个中心点，lastRight为上一个最右端的点
+            let lastMiddle=0,lastRight=0 
+            //maxRadius为最大回文串的半径，maxMiddle为最大回文字符中心点
+            let maxRadius=0, maxMiddle=0;    
+            // 从第二个字符开始以i作为移动的中心点
+            for (let i = 1; i < t.length; ++i) {
+                p[i] = lastRight > i ? Math.min(p[2 * lastMiddle - i], lastRight - i) : 1;
+                // i是移动的中心点，p中存储的是以索引i为中心点的半径数组，只要对称则半径加1
+                while (t[i + p[i]] === t[i - p[i]]) ++p[i]; 
+                if (lastRight < i + p[i]) {
+                    lastRight = i + p[i];
+                    lastMiddle = i;
+                }
+                if (maxRadius < p[i]) {
+                    maxRadius = p[i];
+                    maxMiddle = i;
+                }
+            }
+
+            // console.log(t.substring((maxMiddle-maxRadius+1), (maxMiddle+maxRadius-1)));
+            // 开始位置：索引从零开始加了$符抵消了，所以不用-1了（中点-半径除于2即可），截取长度等于半径-1，因为半径都是加过1的。
+            return str.substr(((maxMiddle - maxRadius) / 2), maxRadius-1);
+        }
+
+        console.log(longestpalindrome("a"));
+        console.log(longestpalindrome("aab"));
+        console.log(longestpalindrome("abcde"));
+        console.log(longestpalindrome("zzbaabcd"));
+        console.log(longestpalindrome(""));
+        console.log(longestpalindrome("abbaz"));
+        console.log(longestpalindrome("i like racecars that go fast"));
+        console.log(longestpalindrome("i am baab mbcd"));
 
         // let fn = (a,b)=>{
         //     return a+b;
@@ -104,7 +113,7 @@
 
         class test{
             constructor(name){
-                this.name = name;
+                // this.name = name;
             }
             static sMethod(){
                 console.log("smethod");
@@ -118,13 +127,15 @@
         // for (const key in test) {
         //     if (test.hasOwnProperty(key)) {
         //         const element = test[key];
-                
+        //         console.log(element);
         //     }
         // }
-        Reflect.ownKeys(test).map((val, index)=>{
-            console.log(val);
+        // console.log("-----")
+        // // 不可枚举属性也可以遍历出来
+        // Reflect.ownKeys(test).map((val, index)=>{
+        //     console.log(val);
             
-        });
+        // });
 
     </script>
 </body>
