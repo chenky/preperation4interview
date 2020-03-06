@@ -133,8 +133,8 @@
 // function testRef(fn){
 
 //     var original_fn = fn;
-//     // console.log(typeof original_fn);
-//     // console.log(typeof fn);
+//     console.log(typeof original_fn);
+//     console.log(typeof fn);
 //     original_fn();
 //     fn();
 //     // fn = null;
@@ -152,24 +152,24 @@
 //     console.log("aaa");
 // });
 
-// function testObj(obj){
-//     var original_obj = obj;
-//     console.log(JSON.stringify(original_obj));
-//     console.log(JSON.stringify(obj));
-//     obj.name.first = "c";
-//     console.log(JSON.stringify(original_obj));
-//     console.log(JSON.stringify(obj));
-// }
-// testObj({name:{first:"a"}});
+function testObj(obj){
+    var original_obj = obj;
+    console.log(JSON.stringify(original_obj));
+    console.log(JSON.stringify(obj));
+    obj.name.first = "c";
+    console.log(JSON.stringify(original_obj));
+    console.log(JSON.stringify(obj));
+}
+testObj({name:{first:"a"}});
 
-// function testTimeoutId(){
-//     var timeoutId = setTimeout(function(){
-//         console.log("inner:"+ timeoutId);
+function testTimeoutId(){
+    var timeoutId = setTimeout(function(){
+        console.log("inner:"+ timeoutId);
         
-//     }, 1000);
-//     console.log("out:"+ timeoutId);
-// }
-// testTimeoutId();
+    }, 1000);
+    console.log("out:"+ timeoutId);
+}
+testTimeoutId();
 
 
 function asyncify(fn){
@@ -180,10 +180,12 @@ function asyncify(fn){
     }, 0);
     return function(){
         if(id){ // 同步代码
+          console.log("call return fn and id exist");
             fn();
         }
         else{
             // 已经是异步了不用再等待timeout了
+            console.log("call return fn and clearTimeout");
             clearTimeout(id);
             typeof fn === "function" ? fn() : "";
         }
@@ -194,9 +196,11 @@ var a = 0;
 asyncify(function(){
     console.log(a);
 })();
-// setTimeout(asyncify(function(){
-//     console.log(a);    
-// }),500);
+asyncify(function(){
+  setTimeout(function(){
+    console.log(a);
+  });    
+})();
 a++;
 
 
