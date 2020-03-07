@@ -42,19 +42,25 @@
         //     }, []);
         // }
         // 使用栈，不使用递归
-        let flat = arr =>{
-            let queue = arr;
-            let result = [];
-            while (queue.length) {
-                let next = queue.shift();
-                if(Array.isArray(next)){
-                    queue.unshift(...next);
-                }
-                else{
-                    result.push(next);
-                }
-            }
-            return result;
+        // let flat = arr =>{
+        //     let queue = arr;
+        //     let result = [];
+        //     while (queue.length) {
+        //         let next = queue.shift();
+        //         if(Array.isArray(next)){
+        //             queue.unshift(...next);
+        //         }
+        //         else{
+        //             result.push(next);
+        //         }
+        //     }
+        //     return result;
+        // }
+        let flat = arr => {
+          while (arr.some((item)=>Array.isArray(item))) {
+            arr = [].concat(...arr);
+          }
+          return arr;
         }
         console.log(flat([1,[2,3,[4,5,[6,7]]],8,[9,10],11]));
         
