@@ -88,6 +88,7 @@
         // function createArr(length){
         //     // 展开运算符+from
         //     // return [...Array.from({length:length}).keys()];
+        //     Array.from({length: 10}, (value, key)=>key)
 
         //     return Object.keys(Array.apply(null,{length:length}));
 
@@ -125,6 +126,7 @@
         // a = 66;
 
         // let testElm = document.getElementById("test");
+        // // 触发的顺序看那个先注册，先注册捕获阶段事件就先触发捕获事件，先注册冒泡阶段事件就先触发冒泡事件。
         // testElm.addEventListener("click",function(e){
         //     alert("i am capture")
         // },true);

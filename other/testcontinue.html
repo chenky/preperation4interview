@@ -10,6 +10,7 @@
   <script>
     function testContinue(){
       let arr = [7,2,8,1,9,6,8];
+      let count=0;
       for (let index = 0; index < arr.length-1; index++) {
         const current = arr[index];
         const next = arr[index+1];
@@ -19,8 +20,10 @@
         else{
           continue;
         }
+        count++;
         console.log("current"+current);        
       }
+      console.log(count);
     }  
     testContinue();
   </script>
