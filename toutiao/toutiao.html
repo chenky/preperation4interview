@@ -5,60 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
-    <style>
-        /* css transform */
-        /* #flexrect{
-            width: 100px;
-            height: 100px;
-            padding: 0 10px;
-            background: red;
-        }
-        #flexinner{
-            width: 100%;
-            overflow: hidden;
-            background-color: yellow;
-            height: 50%;
-            transform: translateY(50%);
-        } */
-        /* flex布局 */
-        /* #flexrect{
-            width: 100px;
-            height: 100px;
-            display: flex;
-            background: red;
-            align-items: center;
-        }
-        #flexinner{
-            width: 100%;
-            background-color: yellow;
-            height: 50%;
-            margin: 0 10px;            
-        } */
-        /* position */
-        #flexrect{
-            width: 100px;
-            height: 100px;
-            background: red;
-            padding: 0 10px;
-            position: relative;
-        }
-        #flexinner{
-            width: 100%;
-            background-color: yellow;
-            height: 50%;     
-            position: absolute;
-            top: 50%;
-            margin-top: -25%;
-        }
-    </style>
 </head>
 <body>
-    <!-- <div id="flexrect">
-        <div id="flexinner">
-            <span class="innertxt">test</span>
-        </div>
-    </div> -->
     <script>
+      /*
+      1. Object == Boolean 对象先转换为字符串，然后再转换为数字，布尔值直接转换为数字，二者比较 
+      2. Object == String对象转换为字符串，两者进行比较。
+      3. Object == Number对象先转换为字符串，然后转换为数值，再和数值进行比较。 
+      4. String == Number 字符串转换成数值，二者比较 
+      5. String == Boolean全部转换成数值再比较6. Boolean == Number布尔转换为数值，二者比较
+      链接：https://www.zhihu.com/question/61106507/answer/183994224
+      */
         if([]==false){console.log(1);
         }
         if({}==false){console.log(2);
