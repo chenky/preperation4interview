@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Document</title>
-</head>
-<body>
+  </head>
+  <body>
     <script>
       /*
       1. Object == Boolean 对象先转换为字符串，然后再转换为数字，布尔值直接转换为数字，二者比较 
@@ -16,257 +16,262 @@
       5. String == Boolean全部转换成数值再比较6. Boolean == Number布尔转换为数值，二者比较
       链接：https://www.zhihu.com/question/61106507/answer/183994224
       */
-        if([]==false){console.log(1);
-        }
-        if({}==false){console.log(2);
-        }
-        if([]){console.log(3);
-        }
-        if([1]==[1]){console.log(4);
-        }
+      // if([]==false){console.log(1);
+      // }
+      // if({}==false){console.log(2);
+      // }
+      // if([]){console.log(3);
+      // }
+      // if([1]==[1]){console.log(4);
+      // }
 
-        // 节流
-        // function throttle(delay, fn){
-        //     let isCanrun = true;
-        //     return function(){
-        //         if(!isCanrun) return;
-        //         let args = [...arguments];
-        //         isCanrun = false;
-        //         setTimeout(function(){
-        //             fn.apply(null, arguments);
-        //             isCanrun = true;
-        //         },delay);
-        //     }
-        // }
-        // // 防抖
-        // function debounce(delay, fn){
-        //     let lastid = null;
-        //     return function(...args){
-        //         clearTimeout(lastid);
-        //         lastid = setTimeout(()=>{
-        //             fn.apply(null, args);
-        //         }, delay);
-        //     }
-        // }
+      // 节流
+      // function throttle(delay, fn){
+      //     let isCanrun = true;
+      //     return function(){
+      //         if(!isCanrun) return;
+      //         let args = [...arguments];
+      //         isCanrun = false;
+      //         setTimeout(function(){
+      //             fn.apply(null, arguments);
+      //             isCanrun = true;
+      //         },delay);
+      //     }
+      // }
+      // // 防抖
+      // function debounce(delay, fn){
+      //     let lastid = null;
+      //     return function(...args){
+      //         clearTimeout(lastid);
+      //         lastid = setTimeout(()=>{
+      //             fn.apply(null, args);
+      //         }, delay);
+      //     }
+      // }
 
-        // 动态规划
-        // function MiniCoinChange(coins){
-        //     let coins = coins;
-        //     let cache = {};
-        // }
-        // MiniCoinChange.prototype.change = function(amount){
+      // 动态规划
+      // function MiniCoinChange(coins){
+      //     let coins = coins;
+      //     let cache = {};
+      // }
+      // MiniCoinChange.prototype.change = function(amount){
 
-        // };
+      // };
 
-        // 数组中取size个元素，和为total
-        // https://blog.csdn.net/foren_whb/article/details/86491019
-    //     function choose(arr, size, total) {
-    //         var allResult = [];
-    //         return (function (arr, size, result, tal) {
-    //             var arrLen = arr.length;
-    //             if (size < arrLen) {
-    //                 for (var i = 0 ; i < arrLen; i++) {
-    //                     var newResult = [].concat(result);
-    //                     newResult.push(arr[i]);
-    //                     if (size == 1) {
-    //                         if (eval(newResult.join("+"))== tal) {
-    //                             allResult.push(newResult);
-    // // return newResult;
-    //                         }
-    //                     } else {
-    //                         var newArr = [].concat(arr);
-    //                         newArr.splice(0, i + 1);
-    //                         arguments.callee(newArr, size - 1, newResult, tal);
-    //                     }
-    //                 }
-    //             }
-    //         })(arr, size, [], total);
-    //         return allResult;
-    //     }
-    //     var data = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
-    //     console.log(choose(data, 3, 20));
+      // 数组中取size个元素，和为total
+      // https://blog.csdn.net/foren_whb/article/details/86491019
+      function choose(arr, size, total) {
+        // allResult为数组中所有长度为size和为total的二维数组
+        var allResult = [];
+        // result为存储一组和为total长度为size的数组
+        (function temp(arr, size, result, tal) {
+          var arrLen = arr.length;
+          if (size < arrLen) {
+            for (var i = 0; i < arrLen; i++) {
+              var newResult = [].concat(result);
+              newResult.push(arr[i]);
+              if (size == 1) {
+                if (eval(newResult.join("+")) == tal) {
+                  allResult.push(newResult);
+                  // return newResult;
+                }
+              } else {
+                var newArr = [].concat(arr);
+                newArr.splice(0, i + 1);
+                temp(newArr, size - 1, newResult, tal);
+              }
+            }
+          }
+        })(arr, size, [], total);
+        // console.log(allResult);
+        return allResult;
+      }
+      //     var data = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
+      var data =[1,2,17];
+      console.log(choose(data, 3, 20));
 
-        // 判断是否整型, 有五种方式
-        // https://www.jb51.net/article/75813.htm  
-        // function isInteger(obj) {
-        //     return Math.floor(obj) === obj
-        // }
-        // isInteger(3) // true
-        // isInteger(3.3) // false
-        // isInteger('') // false
-        // isInteger('3') // false
-        // isInteger(true) // false
-        // isInteger([]) // false
-    
+      // 判断是否整型, 有五种方式
+      // https://www.jb51.net/article/75813.htm
+      // function isInteger(obj) {
+          // 1. 任何整数都会被1整除，即余数是0 obj%1 === 0
+          // 2. 使用Math.round、Math.ceil、Math.floor判断,取整后还是等于自己,Math.floor(obj) === obj
+          // 3. parseInt(obj, 10) === obj
+          // 4. ES6提供了Number.isInteger
+      //     return Math.floor(obj) === obj
+      // }
+      // isInteger(3) // true
+      // isInteger(3.3) // false
+      // isInteger('') // false
+      // isInteger('3') // false
+      // isInteger(true) // false
+      // isInteger([]) // false
 
-        // function a () {
-        //     for (let i = 0; i < 5; i++) {
-        //         this.i = i
-        //         setTimeout(function () {
-        //             console.log(i)
-        //         }, 0)
-        //         console.log(this.i)
-        //     }
-        // }
-        // a()
+      // function a () {
+      //     for (let i = 0; i < 5; i++) {
+      //         this.i = i
+      //         setTimeout(function () {
+      //             console.log(i)
+      //         }, 0)
+      //         console.log(this.i)
+      //     }
+      // }
+      // a()
 
-        // function a () {
-        //     for (let i = 0; i < 5; i++) {
-        //         this.i = i;
-        //         (function (i) {                    
-        //             setTimeout(() => {
-        //                 console.log(i)
-        //             }, 0)                    
-        //         })(i);
-        //         console.log(this.i);
-        //     }
-        // }
+      // function a () {
+      //     for (let i = 0; i < 5; i++) {
+      //         this.i = i;
+      //         (function (i) {
+      //             setTimeout(() => {
+      //                 console.log(i)
+      //             }, 0)
+      //         })(i);
+      //         console.log(this.i);
+      //     }
+      // }
 
-        // a()
+      // a()
 
-        // Function.prototype.bind2 = function (context) {
+      // Function.prototype.bind2 = function (context) {
 
-        //     if (typeof this !== "function") {
-        //         throw new Error("Function.prototype.bind - what is trying to be bound is not callable");
-        //     }
+      //     if (typeof this !== "function") {
+      //         throw new Error("Function.prototype.bind - what is trying to be bound is not callable");
+      //     }
 
-        //     var self = this;
-        //     var args = Array.prototype.slice.call(arguments, 1);
-        //     var fNOP = function () {};
+      //     var self = this;
+      //     var args = Array.prototype.slice.call(arguments, 1);
+      //     var fNOP = function () {};
 
-        //     var fbound = function () {
-        //         self.apply(this instanceof self ? this : context, args.concat(Array.prototype.slice.call(arguments)));
-        //     }
+      //     var fbound = function () {
+      //         self.apply(this instanceof self ? this : context, args.concat(Array.prototype.slice.call(arguments)));
+      //     }
 
-        //     fNOP.prototype = this.prototype;
-        //     fbound.prototype = new fNOP();
+      //     fNOP.prototype = this.prototype;
+      //     fbound.prototype = new fNOP();
 
-        //     return fbound;
+      //     return fbound;
 
-        // }
+      // }
 
-        // 快速排序
-        // function partition(items, left, right) {
-        //     var pivot   = items[Math.floor((right + left) / 2)],
-        //         i       = left,
-        //         j       = right;
-        //     while (i <= j) {
-        //         while (items[i] < pivot) {
-        //             i++;
-        //         }
-        //         while (items[j] > pivot) {
-        //             j--;
-        //         }
-        //         if (i <= j) {
-        //             swap(items, i, j);
-        //             i++;
-        //             j--;
-        //         }
-        //     }
-        //     return i;
-        // }
-        // function quickSort(items, left, right) {
-        //     var index;
-        //     if (items.length > 1) {
-        //         index = partition(items, left, right);
-        //         if (left < index - 1) {
-        //             quickSort(items, left, index - 1);
-        //         }
-        //         if (index < right) {
-        //             quickSort(items, index, right);
-        //         }
+      // 快速排序
+      // function partition(items, left, right) {
+      //     var pivot   = items[Math.floor((right + left) / 2)],
+      //         i       = left,
+      //         j       = right;
+      //     while (i <= j) {
+      //         while (items[i] < pivot) {
+      //             i++;
+      //         }
+      //         while (items[j] > pivot) {
+      //             j--;
+      //         }
+      //         if (i <= j) {
+      //             swap(items, i, j);
+      //             i++;
+      //             j--;
+      //         }
+      //     }
+      //     return i;
+      // }
+      // function quickSort(items, left, right) {
+      //     var index;
+      //     if (items.length > 1) {
+      //         index = partition(items, left, right);
+      //         if (left < index - 1) {
+      //             quickSort(items, left, index - 1);
+      //         }
+      //         if (index < right) {
+      //             quickSort(items, index, right);
+      //         }
 
-        //     }
-        //     return items;
-        // }
-        // var result = quickSort(items, 0, items.length - 1);
+      //     }
+      //     return items;
+      // }
+      // var result = quickSort(items, 0, items.length - 1);
 
-        // 求一个字符串中最大的无重复的字符长度
-        // var lengthOfLongestSubstring = function(s){
-		// 	var str = '';//存放当前最大无重复项字符串
-		// 	var len = 0;//存放当前当前最大无重复项字符串长度
-		// 	for(var i=0;i<s.length;i++){
-		// 		var char = s.charAt(i);
-		// 		var index = str.indexOf(char);
-		// 		if(index === -1){  //遍历s将元素挨个放入到str中，每放入一次判断str中是否有重复项
-		// 			str += char;
-		// 			len = len<str.length?str.length:len;//记录最大长度项,每次重新记录str进行判断，是否大于上次一次最大项
-		// 		}
-		// 		else{
-		// 			str = str.substr(index + 1) + char; //从当前重复项开始重新记录str
-		// 		}
-		// 	}
-		// 	return len;
-        // }
+      // 求一个字符串中最大的无重复的字符长度
+      // var lengthOfLongestSubstring = function(s){
+      // 	var str = '';//存放当前最大无重复项字符串
+      // 	var len = 0;//存放当前当前最大无重复项字符串长度
+      // 	for(var i=0;i<s.length;i++){
+      // 		var char = s.charAt(i);
+      // 		var index = str.indexOf(char);
+      // 		if(index === -1){  //遍历s将元素挨个放入到str中，每放入一次判断str中是否有重复项
+      // 			str += char;
+      // 			len = len<str.length?str.length:len;//记录最大长度项,每次重新记录str进行判断，是否大于上次一次最大项
+      // 		}
+      // 		else{
+      // 			str = str.substr(index + 1) + char; //从当前重复项开始重新记录str
+      // 		}
+      // 	}
+      // 	return len;
+      // }
 
-        // console.log(lengthOfLongestSubstring("abcaadaadb"));
-        
-        // console.log(lengthOfLongestSubstring("abcaadcefggabcd"));
- // https://blog.csdn.net/qq_37746973/article/details/78662177   
-        // function arr2Tree(arr){
-        //     let hash = {};
-        //     let nodes = [];
-        //     arr.forEach(element => {
-        //        hash[element.id] = element; 
-        //     });
+      // console.log(lengthOfLongestSubstring("abcaadaadb"));
 
-        //     arr.forEach(ele=>{
-        //         let parent = hash[ele.parentId];
-        //         if(parent){
-        //             !parent.child && (parent.child = []);
-        //             parent.child.push(ele);
-        //         }
-        //         else{
-        //             nodes.push(ele);
-        //         }
-        //     });
-        //     return nodes;
-        // }
+      // console.log(lengthOfLongestSubstring("abcaadcefggabcd"));
+      // https://blog.csdn.net/qq_37746973/article/details/78662177
+      // function arr2Tree(arr){
+      //     let hash = {};
+      //     let nodes = [];
+      //     arr.forEach(element => {
+      //        hash[element.id] = element;
+      //     });
 
-        // let arr = [
-        //     {id: 0, parentId:""}
-        //     ,{id: 1, parentId:0}
-        //     ,{id: 2, parentId:1}
-        //     ,{id: 3, parentId:2}
-        // ];
-        // console.log(arr2Tree(arr));
+      //     arr.forEach(ele=>{
+      //         let parent = hash[ele.parentId];
+      //         if(parent){
+      //             !parent.child && (parent.child = []);
+      //             parent.child.push(ele);
+      //         }
+      //         else{
+      //             nodes.push(ele);
+      //         }
+      //     });
+      //     return nodes;
+      // }
 
-        // function arr2Tree(arr, pid){
-        //     // pid = pid || "";
-        //     let nodes = [];
-        //     let child;
-        //     arr.forEach(element => {
-        //         if(element.parentId == pid){
-        //             child = arr2Tree(arr, element.id);
-        //             if(child.length>0){
-        //                 element.child = child;
-        //             }
-        //             nodes.push(element);
-        //         }               
-        //     });
-        //     return nodes;
-        // }
-        // console.log(arr2Tree(arr,""));
+      // let arr = [
+      //     {id: 0, parentId:""}
+      //     ,{id: 1, parentId:0}
+      //     ,{id: 2, parentId:1}
+      //     ,{id: 3, parentId:2}
+      // ];
+      // console.log(arr2Tree(arr));
 
-        // function toTree(data, parentId) {
-        //     var tree = [];
-        //     var temp;
-        //     for (var i = 0; i < data.length; i++) {
-        //         if (data[i].parentId == parentId) {
-        //             var obj = data[i];
-        //             temp = toTree(data, data[i].id);
-        //             if (temp.length > 0) {
-        //             obj.children = temp;
-        //             }
-        //             tree.push(obj);
-        //         }
-        //     }
-        //     return tree;
-        // }
+      // function arr2Tree(arr, pid){
+      //     // pid = pid || "";
+      //     let nodes = [];
+      //     let child;
+      //     arr.forEach(element => {
+      //         if(element.parentId == pid){
+      //             child = arr2Tree(arr, element.id);
+      //             if(child.length>0){
+      //                 element.child = child;
+      //             }
+      //             nodes.push(element);
+      //         }
+      //     });
+      //     return nodes;
+      // }
+      // console.log(arr2Tree(arr,""));
 
-        // console.log(toTree(arr,""));
+      // function toTree(data, parentId) {
+      //     var tree = [];
+      //     var temp;
+      //     for (var i = 0; i < data.length; i++) {
+      //         if (data[i].parentId == parentId) {
+      //             var obj = data[i];
+      //             temp = toTree(data, data[i].id);
+      //             if (temp.length > 0) {
+      //             obj.children = temp;
+      //             }
+      //             tree.push(obj);
+      //         }
+      //     }
+      //     return tree;
+      // }
 
-
+      // console.log(toTree(arr,""));
     </script>
-</body>
+  </body>
 </html>
