@@ -12,8 +12,8 @@
         // symmetric(lastRight对称点) j(i对称点)     lastMiddle              i                       lastRight
         // lastRight<=i, =>没有计算过点数据可以复用，乖乖从半径1开始一个一个计算是否对称
         // lastRight>i 分两种情况，但是 j= 2*lastMiddle-i
-        // 1. lastRight-i > radiusArr[j] => 说明radiusArr[j]肯定回文对比过，但lastRight-radiusArr[j]是没有做过回文对比的，所以radiusArr[i]的初始半径应该是radiusArr[j]
-        // 2. lastRight-i <= radiusArr[j] => 说明lastRight-i肯定已经回文对比过，再大的半径就不确定了，所以radiusArr[i]的初始半径应该是lastRight-i
+        // 1. lastRight-i > radiusArr[j] => radiusArr[j]回文已经对比过，lastMiddle是[j,i]和[symmetric, lastRight]中点，所以radiusArr[i]的最小初始半径应该是radiusArr[j]
+        // 2. lastRight-i <= radiusArr[j] => lastRight-i回文已经对比过，lastMiddle是[j,i]和[symmetric, lastRight]中点，，所以radiusArr[i]的最小初始半径应该是lastRight-i
         // 综上所述， radiusArr[i] = lastRight>i ? Math.min(radiusArr[2*lastMiddle-i],lastRight-i) : 1
 
         // 使用拉马车算法，Manacher算法，马拉车算法
@@ -32,8 +32,8 @@
             for (let i = 1; i < formatStr.length; ++i) {
               // lastRight<=i, =>没有计算过点数据可以复用，乖乖从半径1开始一个一个计算是否对称
               // lastRight>i 分两种情况，但是 j= 2*lastMiddle-i
-              // 1. lastRight-i > radiusArr[j] => 说明radiusArr[j]肯定回文对比过，但lastRight-radiusArr[j]是没有做过回文对比的，所以radiusArr[i]的初始半径应该是radiusArr[j]
-              // 2. lastRight-i <= radiusArr[j] => 说明lastRight-i肯定已经回文对比过，再大的半径就不确定了，所以radiusArr[i]的初始半径应该是lastRight-i
+              // 1. lastRight-i > radiusArr[j] => radiusArr[j]回文已经对比过，lastMiddle是[j,i]和[symmetric, lastRight]中点，所以radiusArr[i]的最小初始半径应该是radiusArr[j]
+              // 2. lastRight-i <= radiusArr[j] => lastRight-i回文已经对比过，lastMiddle是[j,i]和[symmetric, lastRight]中点，，所以radiusArr[i]的最小初始半径应该是lastRight-i
               // 综上所述， radiusArr[i] = lastRight>i ? Math.min(radiusArr[2*lastMiddle-i],lastRight-i) : 1
               radiusArr[i] = lastRight > i ? Math.min(radiusArr[2 * lastMiddle - i], lastRight - i) : 1;
               // i是移动的中心点，p中存储的是以索引i为中心点的半径数组，只要对称则半径加1
