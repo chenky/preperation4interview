@@ -8,32 +8,47 @@
 </head>
 <body>
     <script>
+        // ----↓---------------------↓------------------↓------------------↓--------------------------↓---------------------------
+        // symmetric(lastRight对称点) j(i对称点)     lastMiddle              i                       lastRight
+        // lastRight<=i, =>没有计算过点数据可以复用，乖乖从半径1开始一个一个计算是否对称
+        // lastRight>i 分两种情况，但是 j= 2*lastMiddle-i
+        // 1. lastRight-i > radiusArr[j] => 说明radiusArr[j]肯定回文对比过，但lastRight-radiusArr[j]是没有做过回文对比的，所以radiusArr[i]的初始半径应该是radiusArr[j]
+        // 2. lastRight-i <= radiusArr[j] => 说明lastRight-i肯定已经回文对比过，再大的半径就不确定了，所以radiusArr[i]的初始半径应该是lastRight-i
+        // 综上所述， radiusArr[i] = lastRight>i ? Math.min(radiusArr[2*lastMiddle-i],lastRight-i) : 1
+
+        // 使用拉马车算法，Manacher算法，马拉车算法
         function longestpalindrome(str){
-            let t = "$#" + str.split("").join("#")+"#";
-            let p = Array.from({length: t.length},()=>{return 0;});
 
-            // console.log(t,p);
+            let formatStr = "$#" + str.split("").join("#")+"#";
+            let radiusArr = Array.from({length: formatStr.length},()=>{return 0;});
 
-            //lastMiddle为上一个中心点，lastRight为上一个最右端的点
+            // console.log(formatStr,radiusArr);
+
+            //lastMiddle为上一个中心点的位置，lastRight为上一个最右端的点的位置
             let lastMiddle=0,lastRight=0 
-            //maxRadius为最大回文串的半径，maxMiddle为最大回文字符中心点
+            //maxRadius为最大回文串的半径，maxMiddle为最大回文字符中心点的位置
             let maxRadius=0, maxMiddle=0;    
-            // 从第二个字符开始以i作为移动的中心点
-            for (let i = 1; i < t.length; ++i) {
-                p[i] = lastRight > i ? Math.min(p[2 * lastMiddle - i], lastRight - i) : 1;
-                // i是移动的中心点，p中存储的是以索引i为中心点的半径数组，只要对称则半径加1
-                while (t[i + p[i]] === t[i - p[i]]) ++p[i]; 
-                if (lastRight < i + p[i]) {
-                    lastRight = i + p[i];
-                    lastMiddle = i;
-                }
-                if (maxRadius < p[i]) {
-                    maxRadius = p[i];
-                    maxMiddle = i;
-                }
+            // 从第二个字符开始以i作为移动的中心点的位置
+            for (let i = 1; i < formatStr.length; ++i) {
+              // lastRight<=i, =>没有计算过点数据可以复用，乖乖从半径1开始一个一个计算是否对称
+              // lastRight>i 分两种情况，但是 j= 2*lastMiddle-i
+              // 1. lastRight-i > radiusArr[j] => 说明radiusArr[j]肯定回文对比过，但lastRight-radiusArr[j]是没有做过回文对比的，所以radiusArr[i]的初始半径应该是radiusArr[j]
+              // 2. lastRight-i <= radiusArr[j] => 说明lastRight-i肯定已经回文对比过，再大的半径就不确定了，所以radiusArr[i]的初始半径应该是lastRight-i
+              // 综上所述， radiusArr[i] = lastRight>i ? Math.min(radiusArr[2*lastMiddle-i],lastRight-i) : 1
+              radiusArr[i] = lastRight > i ? Math.min(radiusArr[2 * lastMiddle - i], lastRight - i) : 1;
+              // i是移动的中心点，p中存储的是以索引i为中心点的半径数组，只要对称则半径加1
+              while (formatStr[i + radiusArr[i]] === formatStr[i - radiusArr[i]]) ++radiusArr[i]; 
+              if (lastRight < i + radiusArr[i]) {
+                  lastRight = i + radiusArr[i];
+                  lastMiddle = i;
+              }
+              if (maxRadius < radiusArr[i]) {
+                  maxRadius = radiusArr[i];
+                  maxMiddle = i;
+              }
             }
 
-            // console.log(t.substring((maxMiddle-maxRadius+1), (maxMiddle+maxRadius-1)));
+            // console.log(formatStr.substring((maxMiddle-maxRadius+1), (maxMiddle+maxRadius-1)));
             // 开始位置：索引从零开始加了$符抵消了，所以不用-1了（中点-半径除于2即可），截取长度等于半径-1，因为半径都是加过1的。
             return str.substr(((maxMiddle - maxRadius) / 2), maxRadius-1);
         }
