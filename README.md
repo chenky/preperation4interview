@@ -6,6 +6,9 @@
 ### 笔试
 * https://www.jianshu.com/p/35a027c7e4d9
 
+### 跨域CORS
+* http://www.ruanyifeng.com/blog/2016/04/cors.html
+
 ### 前端面试：
 * https://github.com/azl397985856/fe-interview（或者https://lucifer.ren/fe-interview/#/）
 
