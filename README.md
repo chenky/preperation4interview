@@ -13,6 +13,8 @@
 * https://github.com/azl397985856/fe-interview（或者https://lucifer.ren/fe-interview/#/）
 
 ### ReactNative原理:
+- ui跨端通过虚拟dom（ui描述json文件），不同平台拿到标准描述文件去实现各个平台ui，从而实现跨端
+- 通讯则通过javascriptcore，或jscore.so实现与原生平台通讯
 * https://www.jianshu.com/p/038975d7f22d
 * https://blog.cnbang.net/tech/2698/
 * [react native三端同构](https://www.ibm.com/developerworks/cn/web/wa-universal-react-native/index.html)
@@ -35,6 +37,16 @@ custom element, shodaw dom, template模板（x-tag，polymer），小程序貌�
 * http://es6.ruanyifeng.com/#docs/decorator
 * https://segmentfault.com/a/1190000014495089
 
+### [websocket](http://www.ruanyifeng.com/blog/2017/05/websocket.html)
+- HTTP 协议有一个缺陷：通信只能由客户端发起,websocket全双工通讯
+- 建立在 TCP 协议之上，服务器端的实现比较容易。
+- 与 HTTP 协议有着良好的兼容性。默认端口也是80和443，并且握手阶段采用 HTTP 协议，因此握手时不容易屏蔽，能通过各种 HTTP 代理服务器。 
+- 数据格式比较轻量，性能开销小，通信高效。
+- 可以发送文本，也可以发送二进制数据。
+- 没有同源限制，客户端可以与任意服务器通信。
+- 协议标识符是ws（如果加密，则为wss），服务器网址就是 URL。
+
+
 ### serviceWorker：
 * 1.Service worker运行在worker上下文，因此它不能访问DOM。
 * 2.相对于驱动应用的主JavaScript线程，它运行在其他线程中，所以不会造成阻塞。它设计为完全异步，同步API（如XHR和localStorage）不能在service worker中使用。
@@ -44,6 +56,13 @@ custom element, shodaw dom, template模板（x-tag，polymer），小程序貌�
 * https://developer.mozilla.org/zh-CN/docs/Web/API/Service_Worker_API
 * http://www.alloyteam.com/2016/01/9274/
 * http://taobaofed.org/blog/2018/08/08/workbox3/
+
+### PWA
+- 基于service worker
+- 配置manifest，可配置到主屏到标题，logo，主题等等
+- 就是一层代理，拦截所有请求，从而控制整个站点
+- 单独的运行环境和执行线程，不操作dom，事件机制通讯，后台运行
+- 支持离线缓存，消息推送
 
 ### webpack
 * https://github.com/gwuhaolin/dive-into-webpack
@@ -129,7 +148,13 @@ custom element, shodaw dom, template模板（x-tag，polymer），小程序貌�
 * https://segmentfault.com/a/1190000012092552
 * https://blog.csdn.net/LEoe_/article/details/79476279
 
+#### 状态码
+- 1表示信息类，2表示状态类，3表示重定向301永久，302临时 4请求错误403禁止访问，404找不到 5服务器错误 500服务器错误 503服务不可用
+
 ### http https，udp，tcp，三次握手，四次挥别
+- tcp面向连接，可靠，正确顺序，三次握手，连接时间长，适合大量数据传输
+- udp非面向连接，不可靠，少量数据传输，速度快
+- dns中机房到机房用tcp，用户到机房则udp
 * https://www.cnblogs.com/zhuqil/archive/2012/07/23/2604572.html
 * https://blog.csdn.net/zhongzh86/article/details/69389967
 * https://segmentfault.com/a/1190000017524542
@@ -180,6 +205,8 @@ custom element, shodaw dom, template模板（x-tag，polymer），小程序貌�
 - https://mp.weixin.qq.com/s/sICGZ55uRgiWAXr-EDGhZw
 
 ### 域名收敛
+- PC 时代为了突破浏览器的域名并发限制。有了域名发散，但多了dns解析开销及劫持风险
+- 收敛则反之，减少多个域名
 * https://www.jianshu.com/p/7c7ea420cee8
 
 ### nodejs和javascript事件循环(包括macrotask，microtask说明)
@@ -187,8 +214,12 @@ custom element, shodaw dom, template模板（x-tag，polymer），小程序貌�
 * http://lynnelv.github.io/js-event-loop-nodejs
 
 ### 同步，异步，阻塞，非阻塞概念
+- cpu速度比i/o速度快，执行需要等待，就阻塞了，如果同步执行浪费时间
+- 所以在nodejs中往往都有异步方法，通过回调达到非阻塞的目的
 * https://zhuanlan.zhihu.com/p/22707398
 * https://nodejs.org/zh-cn/docs/guides/blocking-vs-non-blocking/
+
+### str.match(reg)返回匹配数组 reg.test(str)返回bool
 
 ### new发生了什么
 * 创建一个空的简单JavaScript对象（即{}）；
@@ -333,7 +364,6 @@ GBK是国家标准GB2312基础上扩容后兼容GB2312的标准。GBK的文字�
 * 域名收敛，dns预解析（<meta http-equiv="x-dns-prefetch-control" content="on" ><link rel="dns-prefetch" href="//cdn.domain.com" >）
 * 通常情况下，我们认为 TCP 网络传输的最大传输单元（Maximum Transmission Unit，MTU）为 1500B，即一个RTT（Round-Trip Time，网络请求往返时间）内可以传输的数据量最大为 1500 字节。因此，在前后端分离的开发模式中，尽量保证页面的 HTML 内容在 1KB 以内，这样整个 HTML 的内容请求就可以在一个 RTT 内请求完成，最大限度地提高 HTML 载入速度。
 * pwa，serviceworker
-* https://juejin.im/post/59ff2dbe5188254dd935c8ab
 
 #### 前端埋点监控怎么做（白屏，首屏，onload时间，html5的performance）
 * head开发的地方定义起始时间，body开始处定义白屏结束时间，首屏html片段处定义首屏结束时间
@@ -433,6 +463,83 @@ componentWillUnmount：清理垃圾，比如删除绑定的事件等等内存回
 - display: table,子元素 table-cell
 - flex,一维布局
 - grid，二维布局
+
+#### es6中的class
+- 类中的prototype不可以被重写
+- 所有成员不可枚举
+- 必须使用new调用构造函数
+- 只可以在派生类中使用super函数且只能第一个使用，new.target指向构造函数
+  
+#### 浏览器存储数据有cookie，localstorage，sessionstorage，indexDB
+- cookie大概4kb左右，http请求会携带给服务器
+- 本地存储5m
+
+#### js数据类型，String, Number, undefined, null, Boolean, Object 
+
+#### 5.15多少度 67.5度
+
+#### 数字和字母8位  /^[0-9a-zA-Z]{8,}$/意思是数字或字母长度至少为8位，/^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]*$/ 数字和字母组合
+- https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Guide/Regular_Expressions
+- 对 "123abc" 使用 /\d+/ 将会匹配 "123"，而使用 /\d+?/ 则只会匹配到 "1"。
+- /(?:foo){1,2}/。如果表达式是 /foo{1,2}/，{1,2} 将只应用于 'foo' 的最后一个字符 'o'。如果使用非捕获括号，则 {1,2} 会应用于整个 'foo' 单词。
+- /Jack(?=Sprat)/会匹配到'Jack'仅当它后面跟着'Sprat'。/Jack(?=Sprat|Frost)/匹配‘Jack’仅当它后面跟着'Sprat'或者是‘Frost’。但是‘Sprat’和‘Frost’都不是匹配结果的一部分。
+- /(?<=Jack)Sprat/会匹配到' Sprat '仅仅当它前面是' Jack '。/(?<=Jack|Tom)Sprat/匹配‘ Sprat ’仅仅当它前面是'Jack'或者是‘Tom’。但是‘Jack’和‘Tom’都不是匹配结果的一部分。
+- 
+
+#### 负载均衡
+- 轮循算法，就是将来自网络的请求依次分配给集群中的节点进行处理。
+- 最小连接数算法，就是为集群中的每台服务器设置一个记数器，记录每个服务器当前的连接数，负载均衡系统总是选择当前连接数最少的服务器分配任务。
+- 快速响应优先算法，是根据群集中的节点的状态（CPU、内存等主要处理部分）来分配任务。 这一点很难做到，事实上到目前为止，采用这个算法的负载均衡系统还很少。尤其对于硬件负载均衡设备来说，只能在TCP/IP协议方面做工作，几乎不可能深入到服务器的处理系统中进行监测。但是它是未来发展的方向。
+
+#### href是当前元素与链接资源的关联，非阻塞；而src引入的资源是页面不可少部分，嵌入页面当前位置，要占位置
+
+#### title是站点级别标题，h是文章标题，而em和strong是部分强调
+
+#### 事件注册到同一元素与冒泡捕获无关，触发的顺序只与注册先后有关
+
+#### let，var
+- var声明要么全局要么函数作用域
+- let局部作用域，不会声明提升，不能重复声明
+
+### 进程
+- 进程可以包含多个线程，线不可包含多个进程
+- 进程独占内存，线程共享内存
+- 进程上下文切换大于线程切换消耗
+
+#### 死锁
+- 互斥，请求保持，不可剥夺，循环等待
+- 一次分配好所有资源
+- 减少资源占用时间，减少竞争资源，顺序访问资源
+
+#### n个台阶，每次只能走一步或两步，有多少种走法，斐波那契数列
+
+#### [sql join](https://www.cnblogs.com/logon/p/3748020.html)
+- inner join保留两张表中完全匹配到结果集（交集）
+- left join以左表为准的结果集合，即使右表没有（）
+- right join以右表为准的结果集合，即使左表没有
+- full join左右表的并集（并集）
+
+#### 防止参数被篡改，使用数字签名，即对参数做hash签名，服务器端校验参数和签名是否一致即可辨别是否被篡改
+
+### 浏览器缓存
+- 首先通过expires（1.0），cache-control判断缓存是否过期，如果没有过期使用浏览器缓存不发请求
+- 过期则发请求，会带上etag或者last-modify与服务器上的相应值对比，如果没有变化返回304，否则返回新文件和新的etag和modify时间戳
+- 如果需要强制更新，加版本号或者文件hash
+- modify只能精确到秒
+
+#### 使用fastclick解决移动端单击延迟问题，点透问题（因为单击延迟，所以浮层隐藏后会单击到下面到元素）
+
+### 安全
+- 机密性，不可明文传输，秘文
+- 完整性不被篡改（数字签名）
+- 可用性，防止dos，ddos攻击
+- 可审计，不可抵赖
+- 系统设计，服务器配置的时候，只允许做什么，而不是不允许做什么
+- 最小权限原则，开通的权限越小越好
+- 多维度防御，网络防御，防火墙，数据库，后台语言，前端都要做防御
+- 数据和代码分离，xss，sql注入等等
+- 不可预测原则，csrf攻击，加一个token串
+- httponly，csp（script-src，style-src，img-src），x-frame-option，
 
 #### 二叉树，冒泡排序，快速排序，动态规划，递归算法
 
