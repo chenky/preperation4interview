@@ -15,6 +15,7 @@
 ### ReactNative原理:
 * https://www.jianshu.com/p/038975d7f22d
 * https://blog.cnbang.net/tech/2698/
+* [react native三端同构](https://www.ibm.com/developerworks/cn/web/wa-universal-react-native/index.html)
 
 ### web components
 custom element, shodaw dom, template模板（x-tag，polymer），小程序貌似使用web component标准
@@ -118,10 +119,65 @@ custom element, shodaw dom, template模板（x-tag，polymer），小程序貌�
 * https://www.cnblogs.com/zxin/archive/2013/01/26/2877765.html
 * https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Guide/Regular_Expressions
 
+#### 浏览器输入网址回车后的一系列事情
+* dns域名解析获取到ip地址（浏览器缓存->系统缓存->路由器缓存->dns服务器缓存->递归搜索）
+* 基于ip地址建立tcp连接，tcp三次握手，http连接建立
+* 如果是https则还需要进行秘钥交换，随后建立连接
+* 服务器接收请求查看http header，看是否有301,302跳转，没有就下载html页面，拿到html静态页面
+* 解析页面中的外链，css，js，img等，判断是否有缓存，根据相应策略得到资源
+* 同时dom树附加样式产生渲染树
+* https://segmentfault.com/a/1190000012092552
+* https://blog.csdn.net/LEoe_/article/details/79476279
+
 ### http https，udp，tcp，三次握手，四次挥别
 * https://www.cnblogs.com/zhuqil/archive/2012/07/23/2604572.html
 * https://blog.csdn.net/zhongzh86/article/details/69389967
 * https://segmentfault.com/a/1190000017524542
+
+#### https过程
+- client发送request（包含支持的加密协议及版本）请求到server
+- server下发证书（包含公钥），证书为ca颁发的
+- client到ca验证证书到合法性，生成随机数及数字签名（即对随机数hash）公钥加密发送到server
+- server私钥解密，并用hash验证是否篡改，合法则再生成一个随机信息用client的随机数加密并生成签名（即对随机信息hash）发送到client
+- client用随机数解密验证合法性
+- 对称加密通讯
+
+#### http劫持及防御
+- 因为http是明文传输，所以中间运营商就可以在页面中加人恶意广告代码
+- 投诉中间运营商
+- 升级成https秘文传输，无法加人任何恶意代码
+
+#### http2
+- 二进制分帧（所有帧共享8个首字节，包括帧长，类型，标志，保留位标识当前帧，多帧任意发送，通过标识帧组装）
+- 首部压缩（客户端有首部表，通过它追加或替换首部）
+- 流量控制（每一跳而非端到端，接收方设置流量窗口大小，只有data部分可以控制流量大小）
+- 多路复用（基于分帧和首部组装，交错发送请求响应，一个连接并行发送多个请求响应）
+- 请求优先级（0最高，2**31-1最低，客户端设置优先级，服务器响应优先级）
+- 服务器推送
+- 低延迟高吞吐
+  
+#### http3
+- http是基于tcp连接，需要三次握手
+- 而http3是基于udp的
+
+#### DNS劫持及防御
+- 在域名映射成ip的过程中被指向一个恶意ip
+- 区域传输用tcp(面向连接，可靠)，客户端请求用udp（非连接，开销少）
+- 通过http请求域名ip（app上使用）
+- dns-over-https加密传输防止被劫持
+- 投诉，要求放开劫持
+- [缓存设置短一些，切换到其他dns服务商，甚至自己建设dns](https://www.dns.com/supports/675.html)
+  - DNS云加速覆盖国内6大主要运营商以及31个省份及地区的10w＋加速节点，模拟普通用户上网请求不间断的向运营商DNS服务器发起主动查询推送请求，从而让运营商的DNS服务器一直拥有准确的域名解析记录，保障国内绝大部分地区的运营商DNS服务器都能响应准确的解析结果，这样当真实的用户进行访问的时候就能获取到真实准确的地址了，能够有效从而降低DNS被劫持的风险。
+
+#### http升级https前后端都要注意什么？
+- 前端
+  - 资源引用最好的方式是不加协议，用://xxx.xxx.com/
+- 后端
+  - 安装支持https的nginx版本，包括依赖库
+  - 购买ssl证书，放到指定目录
+  - 监听443端口，配置证书位置和私钥位置
+  - 同时监听80端口，return 301 https://$server_name$request_uri
+- https://mp.weixin.qq.com/s/sICGZ55uRgiWAXr-EDGhZw
 
 ### 域名收敛
 * https://www.jianshu.com/p/7c7ea420cee8
@@ -219,8 +275,9 @@ custom element, shodaw dom, template模板（x-tag，polymer），小程序貌�
 GBK是国家标准GB2312基础上扩容后兼容GB2312的标准。GBK的文字编码是用双字节来表示的，即不论中、英文字符均使用双字节来表示，为了区分中文，将其最高位都设定成1。GBK包含全部中文字符，是国家编码，通用性比UTF8差，不过UTF8占用的数据库比GBD大。
 
 ### 前端数据采集
+- onError事件，try catch，自定义错误及日志
+- html5的performance帮助采集性能数据
 * https://cdc.tencent.com/2018/09/13/frontend-exception-monitor-research/
-* http://taobaofed.org/blog/2015/10/28/jstracker-how-to-collect-data/
 
 ### 腾讯面试题
 #### jsonp有哪些安全问题，服务端可能存在csrf攻击
@@ -270,15 +327,6 @@ GBK是国家标准GB2312基础上扩容后兼容GB2312的标准。GBK的文字�
 * https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Access_control_CORS
 * http://www.ruanyifeng.com/blog/2016/04/cors.html
 
-#### 浏览器输入网址回车后的一系列事情
-* dns域名解析获取到ip地址（浏览器缓存->系统缓存->路由器缓存->dns服务器缓存->递归搜索）
-* 基于ip地址建立tcp连接，tcp三次握手，http连接建立
-* 如果是https则还需要进行秘钥交换，随后建立连接
-* 服务器接收请求查看http header，看是否有301,302跳转，没有就下载html页面，拿到html静态页面
-* 解析页面中的外链，css，js，img等，判断是否有缓存，根据相应策略得到资源
-* 同时dom树附加样式产生渲染树
-* https://segmentfault.com/a/1190000012092552
-* https://blog.csdn.net/LEoe_/article/details/79476279
 
 #### 前端优化描述，除了雅虎军规之外的优化
 * http2(多路复用，首部压缩，服务器推送，流量控制)，http3基于udp，ttr
@@ -302,7 +350,8 @@ componentWillUnmount：清理垃圾，比如删除绑定的事件等等内存回
 * 使用html5的方式拷贝，但是最大的问题是异步
 
 #### 前端继承的方式有哪些
-* 借用父级构造函数，二是通过原型，三是通过两种的组合方式（other/oop.html）
+- 借用父级构造函数，二是通过原型，三是通过两种的组合方式（other/oop.html）
+- __proto__指向构造函数的prototype对象，而非构造函数s
 
 #### 缓存机制及如何定制缓存时间？为什么使用这种策略？
 * https://imweb.io/topic/5795dcb6fb312541492eda8c
@@ -334,11 +383,56 @@ componentWillUnmount：清理垃圾，比如删除绑定的事件等等内存回
 * https://blog.csdn.net/qq_37746973/article/details/78662177
 
 #### nodejs如何利用多核cpu
+- cluster模块(child_process,net组合)
+- 使用child_process模块，提供了child_process.fork()函数实现进程复制，onmessage,send来监听和发送消息
 
-#### http升级https前后端都要注意什么？http被劫持对过程及原理？
+#### 响应式布局
+- <meta name="viewport" content="width=device-width, initial-scale=1" />
+- 媒体查询（media queries)
+- rem,vw,淘宝的felxiable库
+- srcset解决图片高清问题
+- 尽量用svg或者css3构建一些背景图，替代png
+- 1px问题
+  - viewport+rem+js（对整个网页进行缩放）
+  - 直接1/dpr设置像素
+  - 伪元素+transform:scale(1,0.5)
+  - 图片，每次更新颜色要换背景图片
+  - boxshodow
 
+#### for in和Reflect.ownKeys
+- for in 遍历所有可枚举属性
+- Reflect.ownKeys遍历所有属性（包括不可枚举）
 
+#### for in和for of
+- for in遍历的时候是key值
+- for of遍历的是[key, value]可遍历所有实现了iterbale的列表
 
+#### [new发生了什么](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/new)
+- 创建一个空的简单JavaScript对象（即{}）；
+- 链接该对象（即设置该对象的构造函数）到另一个对象 ；
+- 将步骤1新创建的对象作为this的上下文 ；
+- 如果该函数没有返回对象，则返回this，如果返回非对象则忽略（即还是返回this）
 
+#### React与三方库协同
+- 集成带有 DOM 操作的插件
+  - 做组件隔离，你可以渲染一个无需更新到react元素，然后组件放在这个div里面隔离
+  - 留一个ref值给jquery插件即可
+  - 要注意自己去销毁注册的事件防止内存泄漏
 
+#### ES6
+- const,let,默认参数，箭头函数，尾调用优化，解构对象、数组，for of 展开运算符，set，map，Array.from
+
+#### 箭头函数和普通函数区别
+- 箭头函数不能new，没有prototype
+- this指向定义时父函数（如果父也是箭头函数则往上再找）所指的this
+- 没有arguments绑定，使用rest替代
+- call和apply不会改变this指向
+
+#### css布局方式
+- position
+- display: table,子元素 table-cell
+- flex,一维布局
+- grid，二维布局
+
+#### 二叉树，冒泡排序，快速排序，动态规划，递归算法
 
