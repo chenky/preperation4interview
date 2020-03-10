@@ -541,5 +541,7 @@ componentWillUnmount：清理垃圾，比如删除绑定的事件等等内存回
 - 不可预测原则，csrf攻击，加一个token串
 - httponly，csp（script-src，style-src，img-src），x-frame-option，
 
+#### disable readonly区别都不可更改，但readonly会提交数据，input针对输入框，而disable针对所有表单
+
 #### 二叉树，冒泡排序，快速排序，动态规划，递归算法
 
