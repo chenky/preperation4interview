@@ -539,7 +539,30 @@ componentWillUnmount：清理垃圾，比如删除绑定的事件等等内存回
 - 多维度防御，网络防御，防火墙，数据库，后台语言，前端都要做防御
 - 数据和代码分离，xss，sql注入等等
 - 不可预测原则，csrf攻击，加一个token串
-- httponly，csp（script-src，style-src，img-src），x-frame-option，
+
+### 安全防御措施
+- 前端不操作任何敏感cookie，后台设置cookie为httponly
+- 敏感信息不存储在前端，包括cookie，localstorage，本地数据库
+- [单击劫持设置X-Frame-Options deny sameorigin allow-from uri](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/X-Frame-Options)
+- [csrf防御](https://cloud.tencent.com/developer/article/1494289)
+  - 判断请求来源，referer，origin
+  - 表单携带token（黑客虽然携带cookie，但是我们可以控制请求参数，此token可以约定算法或者服务器存储【安全系数高】）
+  - cookie的SameSite属性， lax（link，form get），strict（其他域都不允许）属性
+- xss攻击，存储型和反射型，对输入和输出都要进行编码，分为html编码，url编码，javascritp编码，css编码，html标签属性编码，json编码，目前框架基本都已经做了编码处理，结合csp（script-src，style-src，img-src）
+  - [防御类库](https://github.com/leizongmin/js-xss)
+  - [owasp类库，org.owasp.encoder](https://owasp.org/www-project-java-encoder/#tab=Use_the_Java_Encoder_Project)
+  - 后端将数据存入数据库之前，先进行转义。
+  - 后端输出给前端的数据，需要进行统一转义处理。
+  - 前端获取后端的数据后，对数据进行转义处理。
+  - 转义的内容包括，html标签，html标签属性（onerror,href）,css内联样式，script标签js，内联json，跳转链接
+  - DOM 中的内联事件监听器，如 location、onclick、onerror、onload、onmouseover 等，<a> 标签的 href 属性，JavaScript 的 eval()、setTimeout()、setInterval() 等，都能把字符串作为代码运行。如果不可信的数据拼接到字符串中传递给这些 API，很容易产生安全隐患，请务必避免
+  - 输入页面转义的字符有 & < > " ' / 
+  - url中取参数需要过滤javascript，http, https, script等等
+  - json需要转义U+2028 U+2029 <
+  - 在 style 属性和标签中，包含类似 background-image:url("javascript:...") expression(...) 的代码（新版本浏览器已经可以防范）
+  - html标签中危险属性直接过滤调
+- [iframe嵌入三方应用时，sandbox的安全属性限制其行为，默认是最小权限原则，有允许提交表单，弹窗，执行脚步等等](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/iframe)
+- 上传一段js（本来要求用户上传图片的），浏览器强大等容错能力识别是js并执行，防御方式设置X-Content-Type-Options这个HTTP Header明确禁止浏览器去推断响应类型。
 
 #### disable readonly区别都不可更改，但readonly会提交数据，input针对输入框，而disable针对所有表单
 
