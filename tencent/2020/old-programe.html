@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    // function getPathValue(obj, path){
+    //   let pathArr = path.split(".");
+    //   try {
+    //     return pathArr.reduce((prev, current)=>{
+    //       return prev[current];
+    //     }, obj)
+    //   } catch (error) {
+    //     return undefined;
+    //   }
+    // }
+    // let obj = {a:{b:"b"}};
+    // console.log(getPathValue(obj, "a.b"));
+    // console.log(getPathValue(obj, "a.b.c"));
+    // console.log(getPathValue(obj, "a.b.c.d.e"));
+
+
+    // reference:https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/String/replace
+    // function replaceChar(str){
+    //   return str.replace(/[a-zA-Z]/g,function(char,arr){
+    //     return char += " ";
+    //   });
+    // };
+    // console.log(replaceChar("this is a book"));
+
+    // function createXhr(){
+    //   let xhr = new XMLHttpRequest();
+    //   xhr.open("post", url, true);
+    //   xhr.onreadystatechange = function(event){
+    //     xhr.setRequestHeader("name","value")
+    //     if(xhr.readyState===4 && xhr.status===200){
+    //       xhr.responseText;
+    //     }
+    //   }
+    //   xhr.send(params)
+    // }
+
+      function customLog(str){
+        customLog.flag = customLog.flag || 0;
+        console.log(`${customLog.flag++}: ${str}`);
+      }
+      customLog("aa");
+      customLog("bb");
+      customLog("cc");
+  </script>
+</body>
+</html>
