@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      // 数组中取size个元素，和为total
+      // https://blog.csdn.net/foren_whb/article/details/86491019 这里的代码有错误，我修改了其中的bug
+      function choose(arr, size, total) {
+        // allResult为数组中所有长度为size和为total的二维数组
+        var allResult = [];
+        // lastArr为存储一组和为total长度为size的数组
+        (function temp(arr, size, lastArr) {
+          var arrLen = arr.length;
+          if (size <= arrLen) {
+            for (var i = 0; i < arrLen; i++) {
+              // 本次的value和上次的
+              var newResult = [].concat(lastArr);
+              newResult.push(arr[i]);
+              if (size == 1) {
+                if (eval(newResult.join("+")) == total) {
+                  // 得到一组长度为size和为total的数组，放到结果集allResult中
+                  allResult.push(newResult);
+                }
+              } else {
+                var newArr = [].concat(arr);
+                // 已经被加过的需要从数组中剔除掉
+                newArr.splice(0, i + 1);
+                temp(newArr, size - 1, newResult);
+              }
+            }
+          }
+        })(arr, size, []);
+        return allResult;
+      }
+      console.log(choose([1,2,17], 3, 20));
+      console.log(choose([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20], 3, 20));
+    </script>
+  </body>
+</html>
