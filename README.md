@@ -72,8 +72,6 @@ custom element, shodaw dom, template模板（x-tag，polymer），小程序貌�
 ### react redux react-router
 * 深入REACT技术栈+陈屹著.pdf （必看书目）
 * https://github.com/renderedtext/react-redux-demo
-* https://segmentfault.com/a/1190000004355491#articleHeader13
-* https://github.com/huangtengfei/redux-demo
 * https://coding.imooc.com/learn/list/313.html (综合实例)
 
 ### nodejs架构及大概介绍
@@ -561,6 +559,9 @@ componentWillUnmount：清理垃圾，比如删除绑定的事件等等内存回
   - json需要转义U+2028 U+2029 <
   - 在 style 属性和标签中，包含类似 background-image:url("javascript:...") expression(...) 的代码（新版本浏览器已经可以防范）
   - html标签中危险属性直接过滤调
+  - 富文本编辑器
+    - 事件应该被严格禁止，标签选择应该用白名单，只允许a,img,div
+    - 禁止用户自定义css，style等
 - [iframe嵌入三方应用时，sandbox的安全属性限制其行为，默认是最小权限原则，有允许提交表单，弹窗，执行脚步等等](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/iframe)
 - 上传一段js（本来要求用户上传图片的），浏览器强大等容错能力识别是js并执行，防御方式设置X-Content-Type-Options这个HTTP Header明确禁止浏览器去推断响应类型。
 
