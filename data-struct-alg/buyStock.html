@@ -95,13 +95,16 @@
                         change= change-wallet.shift();
                     }
                     if(change!==0){
+                      // 找不开钱了
                         return false;
                     }
                     else{
+                      // 可以找开，直接放到钱包
                         wallet.push(element);
                     }
                 }
             }
+            console.log(wallet)
             return true;
         }
         console.log(makeChange([5]));
