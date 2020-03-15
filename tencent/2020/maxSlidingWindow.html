@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      //  reference: https://www.cnblogs.com/grandyang/p/4656517.html
+      // 大概思路是用双向队列保存数字的下标，遍历整个数组，如果此时队列的首元素是 i-k 的话，
+      // 表示此时窗口向右移了一步，则移除队首元素。然后比较队尾元素和将要进来的值，如果小的话就都移除，
+      // 然后此时我们把队首元素加入结果中即可
+      // 滑动窗口最大值
+      function maxSlidingWindow(arr, k) {
+        // 存储结果数组
+        let res = [];
+        // 储存每次遍历窗口的下标，长度永远小于等于k，
+        let q = [];
+        for (let i = 0; i < arr.length; ++i) {
+          // 队列q首个元素代表当前窗口数组元素最小下标值，如果等于i-k，
+          // 说明q队列满了，要删除q队列首个元素，不然没法再push新下标到q队列了
+          // q队列的首个元素（即上一个窗口最大值的下标），已经不能作为当前窗口的最大值的下标了
+          if (q.length > 0 && q[0] === i - k){
+            q.shift();
+          } 
+          // 如果新元素arr[i]比上一个元素大，则上一个元素没有存在到必要，
+          // 因此需要删除队列q的最后一个元素, 即删除上一个元素的下标
+          // 保证首个元素是当前窗口最大元素的下标
+          while (q.length > 0 && arr[q[q.length - 1]] < arr[i]){
+            q.pop();
+          } 
+          // 插入新的下标
+          q.push(i);
+          // 每次到了k范围的最后一个元素，都需要添加当前窗口最大的元素
+          // 因为q队列的第一个元素永远存储的是当前窗口最大元素的下标
+          if (i >= k - 1){
+            res.push(arr[q[0]]);
+          } 
+        }
+        return res;
+      }
+      let test1 = maxSlidingWindow([1,3,-1,-3,5,3,6,7],3);
+      console.log(test1);
+    </script>
+  </body>
+</html>
