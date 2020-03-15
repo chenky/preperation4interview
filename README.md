@@ -146,7 +146,7 @@ custom element, shodaw dom, template模板（x-tag，polymer），小程序貌�
 * https://segmentfault.com/a/1190000012092552
 * https://blog.csdn.net/LEoe_/article/details/79476279
 
-#### 状态码
+#### [状态码](https://www.runoob.com/http/http-status-codes.html)
 - 1表示信息类，2表示状态类，3表示重定向301永久，302临时 4请求错误403禁止访问，404找不到 5服务器错误 500服务器错误 503服务不可用
 
 ### http https，udp，tcp，三次握手，四次挥别
@@ -156,9 +156,26 @@ custom element, shodaw dom, template模板（x-tag，polymer），小程序貌�
 - TCP三次握手和四次挥手
   - https://cloud.tencent.com/developer/article/1421145
   - https://blog.csdn.net/weixin_39924293/article/details/97371860
+- [tcp保证可靠性](https://blog.csdn.net/cbjcry/article/details/84925028)
 * https://www.cnblogs.com/zhuqil/archive/2012/07/23/2604572.html
 * https://blog.csdn.net/zhongzh86/article/details/69389967
 * https://segmentfault.com/a/1190000017524542
+- TIMEWAIT问题及解决方案
+  - 造成资源被占用，比如端口号，无法处理更多的请求，高并发的天敌
+  - net.ipv4.tcp_syncookies = 1 表示开启SYN Cookies。当出现SYN等待队列溢出时，启用cookies来处理，可防范少量SYN攻击，默认为0，表示关闭；
+net.ipv4.tcp_tw_reuse = 1 表示开启重用。允许将TIME-WAIT sockets重新用于新的TCP连接，默认为0，表示关闭；
+net.ipv4.tcp_tw_recycle = 1 表示开启TCP连接中TIME-WAIT sockets的快速回收，默认为0，表示关闭。
+net.ipv4.tcp_fin_timeout 修改系默认的 TIMEOUT 时间
+  - vi /etc/sysctl.conf
+  - net.ipv4.tcp_keepalive_time = 1200 
+  - #表示当keepalive起用的时候，TCP发送keepalive消息的频度。缺省是2小时，改为20分钟。
+  - net.ipv4.ip_local_port_range = 1024 65000 
+  - #表示用于向外连接的端口范围。缺省情况下很小：32768到61000，改为1024到65000。
+  - net.ipv4.tcp_max_syn_backlog = 8192 
+  - #表示SYN队列的长度，默认为1024，加大队列长度为8192，可以容纳更多等待连接的网络连接数。
+  - net.ipv4.tcp_max_tw_buckets = 5000 
+  - #表示系统同时保持TIME_WAIT套接字的最大数量，如果超过这个数字，TIME_WAIT套接字将立刻被清除并打印警告信息。
+  - 默认为180000，改为5000。对于Apache、Nginx等服务器，上几行的参数可以很好地减少TIME_WAIT套接字数量，但是对于 Squid，效果却不大。此项  参数可以控制TIME_WAIT套接字的最大数量，避免Squid服务器被大量的TIME_WAIT套接字拖死。
 
 #### https过程
 - client发送request（包含支持的加密协议及版本）请求到server
@@ -587,7 +604,14 @@ str.replace(reg, function(word) { // 去除注释后的文本
 ```
 
 #### 把1000个苹果分到10个箱子里。分好后随便我要几个苹果，你都可以整箱整箱的搬给我
-- 1，2，4，8，16，32，64，128，256，512 $$ 2^{n-1} $$
+- 1，2，4，8，16，32，64，128，256，512 
+$$ 2^{n-1} $$
+
+#### [如果一个处理器同时只能处理一个进程，现给出每个进程的时间戳，问最少需要几个处理器才能全部处理完毕?（leetcode 253）](https://www.cnblogs.com/grandyang/p/5244720.html)
+
+#### [滑动窗口最大值问题](https://www.cnblogs.com/grandyang/p/4656517.html)
+
+#### [断点续传](https://juejin.im/post/5dff8a26e51d4558105420ed)
 
 #### 二叉树，冒泡排序，快速排序，动态规划，递归算法
 
