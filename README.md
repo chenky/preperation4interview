@@ -613,5 +613,14 @@ $$ 2^{n-1} $$
 
 #### [断点续传](https://juejin.im/post/5dff8a26e51d4558105420ed)
 
+#### 异常捕获
+- 使用try catch，reject会触发
+- Promise全局异常使用window.addEventListener('unhandledrejection', function browserRejectionHandler(event) {
+  event && event.preventDefault()
+})
+- componentDidCatch(error：抛出的错误, info：带有 componentStack key 的对象，其中包含有关组件引发错误的栈信息) 
+
+#### [js懒加载原理](https://blog.csdn.net/qq_25600055/article/details/82086377)
+
 #### 二叉树，冒泡排序，快速排序，动态规划，递归算法
 
