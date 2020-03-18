@@ -382,6 +382,7 @@ GBK是国家标准GB2312基础上扩容后兼容GB2312的标准。GBK的文字�
 * 域名收敛，dns预解析（<meta http-equiv="x-dns-prefetch-control" content="on" ><link rel="dns-prefetch" href="//cdn.domain.com" >）
 * 通常情况下，我们认为 TCP 网络传输的最大传输单元（Maximum Transmission Unit，MTU）为 1500B，即一个RTT（Round-Trip Time，网络请求往返时间）内可以传输的数据量最大为 1500 字节。因此，在前后端分离的开发模式中，尽量保证页面的 HTML 内容在 1KB 以内，这样整个 HTML 的内容请求就可以在一个 RTT 内请求完成，最大限度地提高 HTML 载入速度。
 * pwa，serviceworker
+* ssr,服务器端渲染
 
 #### 前端埋点监控怎么做（白屏，首屏，onload时间，html5的performance）
 * head开发的地方定义起始时间，body开始处定义白屏结束时间，首屏html片段处定义首屏结束时间
@@ -621,6 +622,8 @@ $$ 2^{n-1} $$
 - componentDidCatch(error：抛出的错误, info：带有 componentStack key 的对象，其中包含有关组件引发错误的栈信息) 
 
 #### [js懒加载原理](https://blog.csdn.net/qq_25600055/article/details/82086377)
+
+#### [懒加载延迟加载新api，IntersectionObserver API 使用教程](http://www.ruanyifeng.com/blog/2016/11/intersectionobserver_api.html)
 
 #### 二叉树，冒泡排序，快速排序，动态规划，递归算法
 
