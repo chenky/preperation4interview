@@ -211,7 +211,12 @@ net.ipv4.tcp_fin_timeout 修改系默认的 TIMEOUT 时间
 - 二进制分帧（所有帧共享8个首字节，包括帧长，类型，标志，保留位标识当前帧，多帧任意发送，通过标识帧组装）
 - 首部压缩（客户端有首部表，通过它追加或替换首部）
 - 流量控制（每一跳而非端到端，接收方设置流量窗口大小，只有data部分可以控制流量大小）
-- 多路复用（基于分帧和首部组装，交错发送请求响应，一个连接并行发送多个请求响应）
+- [多路复用（基于分帧和首部组装，交错发送请求响应，一个连接并行发送多个请求响应）（多路复用允许同时通过单一的 HTTP/2 连接发起多重的请求-响应消息）](https://www.cnblogs.com/ainyi/p/9723563.html)
+  - 与http1.1 keepalive区别（是完全多路复用的，而非有序并阻塞的——只需一个连接即可实现并行）
+  - 在一个 TCP 连接上，我们可以向对方不断发送帧，每帧的 stream identifier 的标明这一帧属于哪个流，然后在对方接收时，根据 stream identifier 拼接每个流的所有帧组成一整块数据。
+把 HTTP/1.1 每个请求都当作一个流，那么多个请求变成多个流，请求响应数据分成多个帧，不同流中的帧交错地发送给对方，这就是 HTTP/2 中的多路复用。
+流的概念实现了单连接上多请求 - 响应并行，解决了线头阻塞的问题，减少了 TCP 连接数量和 TCP 连接慢启动造成的问题
+所以 http2 对于同一域名只需要创建一个连接就可以加载页面，而不是像 http/1.1 那样创建 6~8 个连接
 - 请求优先级（0最高，2**31-1最低，客户端设置优先级，服务器响应优先级）
 - 服务器推送
 - 低延迟高吞吐
@@ -219,6 +224,7 @@ net.ipv4.tcp_fin_timeout 修改系默认的 TIMEOUT 时间
 #### http3
 - http是基于tcp连接，需要三次握手
 - 而http3是基于udp的
+- http3炒tcp的作业，发送方对发送的数据进行编号，接收方对接收到的编号进行确认
 
 #### DNS劫持及防御
 - 在域名映射成ip的过程中被指向一个恶意ip
@@ -592,7 +598,7 @@ componentWillUnmount：清理垃圾，比如删除绑定的事件等等内存回
   - 后端输出给前端的数据，需要进行统一转义处理。
   - 前端获取后端的数据后，对数据进行转义处理。
   - 转义的内容包括，html标签，html标签属性（onerror,href）,css内联样式，script标签js，内联json，跳转链接
-  - DOM 中的内联事件监听器，如 location、onclick、onerror、onload、onmouseover 等，<a> 标签的 href 属性，JavaScript 的 eval()、setTimeout()、setInterval() 等，都能把字符串作为代码运行。如果不可信的数据拼接到字符串中传递给这些 API，很容易产生安全隐患，请务必避免
+  - DOM 中的内联事件监听器，如 location、onclick、onerror、onload、onmouseover 等，a标签的 href 属性，JavaScript 的 eval()、setTimeout()、setInterval() 等，都能把字符串作为代码运行。如果不可信的数据拼接到字符串中传递给这些 API，很容易产生安全隐患，请务必避免
   - 输入页面转义的字符有 & < > " ' / 
   - url中取参数需要过滤javascript，http, https, script等等
   - json需要转义U+2028 U+2029 <
@@ -667,6 +673,19 @@ $$ 2^{n-1} $$
   animation-direction: alternate;
   animation-play-state: running;
 }
+
+#### nodejs主进程和子进程挂了怎么办
+- 如果子进程挂了，通过监听子进程的exit，uncaughtException事件自动重启，其实就是再递归调用自己一次
+  - 同时监听process主进程的exit事件，这样可以温和的kill所有子进程
+- 通过监听主进程即process的exit，uncaughtException事件来
+
+#### react性能优化
+- 打包使用生产环境的包，mode: 'production'
+- BundleAnalyzerPlugin插件分析脚本大小
+- 虚拟长列表react-window 和 react-virtualized 是热门的虚拟滚动库
+- shouldComponentUpdate(nextProps, nextState) 默认返回true表示需要diff更新dom，false不diff更新dom
+- 使用PureComponent组件，无状态组件
+- 动态加载路由
 
 #### 二叉树，冒泡排序，快速排序，动态规划，递归算法
 
