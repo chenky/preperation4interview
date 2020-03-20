@@ -8,6 +8,23 @@
 
 ### 跨域CORS
 * http://www.ruanyifeng.com/blog/2016/04/cors.html
+- Access-Control-Allow-Origin: http://api.bob.com
+Access-Control-Request-Method
+Access-Control-Allow-Credentials: true
+Access-Control-Expose-Headers: FooBar
+- 只要同时满足以下两大条件，就属于简单请求
+  - （1) 请求方法是以下三种方法之一：
+
+    HEAD
+    GET
+    POST
+  （2）HTTP的头信息不超出以下几种字段：
+
+    Accept
+    Accept-Language
+    Content-Language
+    Last-Event-ID
+    Content-Type：只限于三个值application/x-www-form-urlencoded、multipart/form-data、text/plain
 
 ### 前端面试：
 * https://github.com/azl397985856/fe-interview（或者https://lucifer.ren/fe-interview/#/）
@@ -400,7 +417,8 @@ componentWillUnmount：清理垃圾，比如删除绑定的事件等等内存回
 
 #### 前端继承的方式有哪些
 - 借用父级构造函数，二是通过原型，三是通过两种的组合方式（other/oop.html）
-- __proto__指向构造函数的prototype对象，而非构造函数s
+- __proto__指向构造函数的prototype对象，而非构造函数
+- ![javascript 原型链 继承 prototype](/asset/img/javascript-prototype.jpg 'javascript prototype')
 
 #### 缓存机制及如何定制缓存时间？为什么使用这种策略？
 * https://imweb.io/topic/5795dcb6fb312541492eda8c
