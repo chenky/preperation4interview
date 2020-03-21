@@ -373,7 +373,7 @@ GBK是国家标准GB2312基础上扩容后兼容GB2312的标准。GBK的文字�
 * https://hw1287789687.iteye.com/blog/2427055
 * https://www.jianshu.com/p/01b6ab61f24a
 
-#### 怎么防止提交当价格被篡改
+#### 怎么防止提交当价格被篡改，及防止重放攻击
 * 对参数做数字签名，生产signature，提交服务器回传，服务器密钥参数再hash与signatrue对比即可知道是否被串改
 * https://blog.csdn.net/u014756827/article/details/86631118
 
