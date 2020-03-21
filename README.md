@@ -494,6 +494,7 @@ componentWillUnmount：清理垃圾，比如删除绑定的事件等等内存回
 
 #### ES6
 - const,let,默认参数，箭头函数，尾调用优化，解构对象、数组，for of 展开运算符，set，map，Array.from
+- const 定义一个常量，且必须初始化，不可修改，但如果定义的是对象，对象的属性可以修改，因为对象属性的修改不影响对象（或者说并没有修改对象）
 
 #### 箭头函数和普通函数区别
 - 箭头函数不能new，没有prototype
@@ -686,6 +687,9 @@ $$ 2^{n-1} $$
 - shouldComponentUpdate(nextProps, nextState) 默认返回true表示需要diff更新dom，false不diff更新dom
 - 使用PureComponent组件，无状态组件
 - 动态加载路由
+
+#### 事件循环 event loop
+!['事件循环 event loop'](asset/img/nodejs-event-loop-workflow.png '事件循环 event loop')
 
 #### 二叉树，冒泡排序，快速排序，动态规划，递归算法
 

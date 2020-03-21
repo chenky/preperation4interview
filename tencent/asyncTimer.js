@@ -1,4 +1,6 @@
 /*
+事件循环 event loop
+
 reference: https://juejin.im/post/5c3d8956e51d4511dc72c200
 
 eventloop image: https://cn.bing.com/images/search?view=detailV2&ccid=%2BcEe7v3S&id=F6C18060F178D1904054CB772142A81B467FBC0B&thid=OIP.-cEe7v3SWweFBjboQAfbEQHaF2&mediaurl=http%3A%2F%2Fvoidcanvas.com%2Fwp-content%2Fuploads%2F2018%2F02%2Fnodejs-event-loop-workflow.png&exph=1598&expw=2024&q=nodejs+eventloop&simid=608044279183378251&selectedindex=53&ajaxhist=0&vt=0&sim=11
