@@ -1,7 +1,7 @@
 
+// 发布订阅模式
+
 let sub = {};
-
-
 
 sub.on = function(type, callback){
   sub[type] = sub[type] ? sub[type] : {};
