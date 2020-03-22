@@ -693,5 +693,9 @@ $$ 2^{n-1} $$
 #### 事件循环 event loop
 !['事件循环 event loop'](asset/img/nodejs-event-loop-workflow.png '事件循环 event loop')
 
+#### [tree shoking原理](https://twindy.org/qian-xi-tree-shakinggong-zuo-yuan-li/)
+- tree shaking 不支持动态导入（如CommonJS的require()语法），只支持纯静态的导入（ES6的import/export）
+- webpack中可以在项目package.json文件中，添加一个 “sideEffects” 属性,手动指定由副作用的脚本
+
 #### 二叉树，冒泡排序，快速排序，动态规划，递归算法
 
