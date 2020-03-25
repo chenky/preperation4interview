@@ -1,3 +1,4 @@
+// 数组乱序
 Array.prototype.random = function () {
   var result = [],
     arr = this,
