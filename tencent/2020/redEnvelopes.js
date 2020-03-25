@@ -8,7 +8,7 @@ function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min)) + min; //不含最大值，含最小值
 }
 // 模拟发红包逻辑
-// total：红包总金额，count：红包个数
+// total：红包总金额,单位是分，为了精度，count：红包个数
 function redEnvelopes(total, count){
   let res = [], restTotal = total, restCount = count;
   while (restTotal>0) {
