@@ -38,6 +38,9 @@
               radiusArr[i] = lastRight > i ? Math.min(radiusArr[2 * lastMiddle - i], lastRight - i) : 1;
               // i是移动的中心点，p中存储的是以索引i为中心点的半径数组，只要对称则半径加1
               while (formatStr[i + radiusArr[i]] === formatStr[i - radiusArr[i]]) ++radiusArr[i]; 
+              // 输出所有的对称回文子串
+              let tempSub = str.substr(((i - radiusArr[i]) / 2), radiusArr[i]-1);
+              console.log(tempSub ? tempSub : "empty");
               if (lastRight < i + radiusArr[i]) {
                   lastRight = i + radiusArr[i];
                   lastMiddle = i;
