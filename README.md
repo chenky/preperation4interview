@@ -697,5 +697,14 @@ $$ 2^{n-1} $$
 - tree shaking 不支持动态导入（如CommonJS的require()语法），只支持纯静态的导入（ES6的import/export）
 - webpack中可以在项目package.json文件中，添加一个 “sideEffects” 属性,手动指定由副作用的脚本
 
+
+#### null和undefined区别
+- null表示"没有对象"，即该处不应该有值
+- undefined表示"缺少值"，就是此处应该有一个值，但是还没有定义
+  - （1）变量被声明了，但没有赋值时，就等于undefined。
+（2) 调用函数时，应该提供的参数没有提供，该参数等于undefined。
+（3）对象没有赋值的属性，该属性的值为undefined。
+（4）函数没有返回值时，默认返回undefined。
+
 #### 二叉树，冒泡排序，快速排序，动态规划，递归算法
 
