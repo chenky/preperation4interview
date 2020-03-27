@@ -760,5 +760,16 @@ $$ 2^{n-1} $$
 </tr>
 </tbody></table>
 
+#### nodejs全局异常处理
+- 中间件错误监控
+/* 全局错误抛出 */
+app.use((error, req, res, next) =&gt; {
+  if (error) {
+    res.json({ msg: error.message, code: error.code })
+  }
+});
+- 全局错误监控，任何全局未处理的异常都可以通过监听进程上的“uncaughtException”事件来拦截，如果任何事件发射器引发`error`事件，并且没有为此事件预订事件发射器的监听器，则在进程上也会引发`uncaughtError`事件。
+- exit事件在进程即将退出时发出
+
 #### 二叉树，冒泡排序，快速排序，动态规划，递归算法
 
