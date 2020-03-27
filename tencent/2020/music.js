@@ -16,100 +16,204 @@
 /*
 3. 使用xhr方式提交post请求，a.qq.com提交到b.qq.com，所以需要设置为共同父域
 */
-function createXhr(method, url, params, callback){
+function createXhr(method, url, params, callback) {
   document.cookie.domain = "example.com";
   let xhr = new XMLHttpRequest();
   xhr.open(method, url);
-  xhr.onreadystatechange =function(event){
-      if(xhr.readyState===4|| xhr.readyState===200){
-          callback(xhr.responseText);
-      }
-  }
+  xhr.onreadystatechange = function(event) {
+    if (xhr.readyState === 4 || xhr.readyState === 200) {
+      callback(xhr.responseText);
+    }
+  };
   xhr.send(params);
 }
-
 
 /*
 4. 事件的发布订阅模式
 */
 class EventEmitter {
-  constructor(){
-      this.sub = {};
+  constructor() {
+    this.sub = {};
   }
 
-  on=(eventType, callback)=>{
-      this.sub[eventType] = this.sub[eventType] || {}
-      // let callbackList = this.sub[eventType].list;
-      if(!this.sub[eventType].list){
-          this.sub[eventType].list = [];
-      }
-      this.sub[eventType].list.push(callback);
+  on = (eventType, callback) => {
+    this.sub[eventType] = this.sub[eventType] || {};
+    // let callbackList = this.sub[eventType].list;
+    if (!this.sub[eventType].list) {
+      this.sub[eventType].list = [];
+    }
+    this.sub[eventType].list.push(callback);
+  };
+  one = (eventType, callback) => {
+    let callbackList = this.sub[eventType].list;
+    let index = callbackList.indexOf(callback);
+    typeof callback === "function" ? callback() : "";
+    callbackList.splice(index, 1);
+  };
+  off = (eventType, callback) => {
+    // 遍历删除
+    let callbackList = this.sub[eventType].list;
+    let index = callbackList.indexOf(callback);
+    // 删除指定事件回掉
+    callbackList.splice(index, 1);
+  };
+  emit = (eventType, data) => {
+    let callbackList = this.sub[eventType].list;
+    while (callbackList.length) {
+      let cb = callbackList.shift();
+      typeof cb === "function" ? cb(data) : "";
+    }
+  };
+}
+
+// function getMinInCache(cache){
+//   let min = Number.MAX_SAFE_INTEGER;
+//   let minkey;
+//   for (const key in cache) {
+//       if (cache.hasOwnProperty(key)&& key!=="total") {
+//           const element = cache[key];
+//           const {value, count} = element;
+//           if(min>count){
+//               min = count;
+//               minkey = key;
+//           }
+//       }
+//   }
+//   return minkey;
+// }
+
+// function getID(){
+//   // id:{value, count:使用次数}total: 总字节数
+//   let cache = {};
+//   return function(id){
+//       if(cache[id]){
+//           cache[id].count++;
+//           return cache[id].value;
+//       }
+//       let data = getDataFromServer();
+//       const {key,value} = data;
+//       let dataLen = value.length*2;
+//       if(cache[total]+dataLen<5*1000*1000){
+//           cache[total] += dataLen;
+//           cache[key].count++;
+//           cache[key].value = value;
+//           return cache[key].value
+//       } else{
+//           // 超过5m
+//           // 找到使用次数最少的
+//           while (cache[total]+dataLen>5*1000*1000) {
+//               let minkey = getMinInCache(cache);
+//               delete cache[minkey];
+//           }
+//           cache[key].count++;
+//           cache[total] += dataLen;
+//           return cache[key].value = value;
+//       }
+//   }
+// }
+
+/*
+  先进先出缓存算法，fifo
+  reference: https://zhuanlan.zhihu.com/p/36526740
+*/
+class FIFOCache {
+  constructor(capacity) {
+    this.capacity = capacity;
+    // {key1:val1,key2:val2,...}
+    // 增加一个变量，就不用遍历了
+    this.map = {};
+    this.keys = [];
   }
-  one = (eventType, callback)=>{
-      let callbackList = this.sub[eventType].list;
-      let index = callbackList.indexOf(callback);
-      typeof callback === "function" ? callback() : "";
-      callbackList.splice(index, 1);
+  get(key) {
+    return this.map[key];
   }
-  off = (eventType, callback) =>{
-      // 遍历删除
-      let callbackList = this.sub[eventType].list;
-      let index = callbackList.indexOf(callback);
-      // 删除指定事件回掉
-      callbackList.splice(index,1);
-  }
-  emit=(eventType, data)=>{
-      let callbackList = this.sub[eventType].list;
-      while (callbackList.length) {
-          let cb = callbackList.shift();
-          typeof cb === "function" ? cb(data) : "";
-      }
+  set(key, value) {
+    let capacity = this.capacity;
+    let map = this.map;
+    let keys = this.keys;
+    if (capacity === keys.length) {
+      // 超标了, map,keys need delete
+      delete map[keys.shift()];
+    }
+    keys.push(key);
+    map[key] = value;
   }
 }
 
-
-function getMinInCache(cache){
-  let min = Number.MAX_SAFE_INTEGER;
-  let minkey;
-  for (const key in cache) {
-      if (cache.hasOwnProperty(key)&& key!=="total") {
-          const element = cache[key];
-          const {value, count} = element;
-          if(min>count){
-              min = count;
-              minkey = key;
-          }
-      }
+/*
+  LRU最近最少使用算法
+  LRU（Least recently used，最近最少使用）算法。该算法的观点是，最近被访问的数据那么它将来访问的概率就大，缓存满的时候，优先淘汰最无人问津者
+  reference: https://zhuanlan.zhihu.com/p/36526740
+*/
+class LruCache {
+  constructor(limit) {
+    this.limit = limit || 10;
+    //head 指针指向表头元素，即为最常用的元素
+    this.head = this.tail = undefined;
+    // map是node节点集合{key1:{prev:1,value:val1,next:2},key2:{...}...}
+    this.map = {};
+    this.size = 0;
   }
-  return minkey;
-}
-
-function getID(){
-  // id:{value, count:使用次数}total: 总字节数
-  let cache = {};
-  return function(id){
-      if(cache[id]){
-          cache[id].count++;
-          return cache[id].value;
+  get(key, isReturnNode) {
+    let node = this.map[key];
+    // 如果查找不到含有`key`这个属性的缓存对象
+    if (node === undefined) return undefined;
+    // 如果查找到的缓存对象已经是 head (最近使用过的)
+    if (node === this.head) {
+      // 是的话，皆大欢喜，不用移动元素，直接返回
+      return isReturnNode ? node : node.value;
+    } else {
+      // 不在链表头部，则需要移动
+      let prev = node.prev;
+      let next = node.next;
+      if (node === tail) {
+        // 说明node在队列尾部
+        // 队尾更新节点
+        this.tail = prev;
+        this.tail.next = undefined;
+      } else {
+        // 删除node节点的指向
+        prev.next = next;
+        next.prev = prev;
       }
-      let data = getDataFromServer();
-      const {key,value} = data;
-      let dataLen = value.length*2;
-      if(cache[total]+dataLen<5*1000*1000){
-          cache[total] += dataLen;
-          cache[key].count++;
-          cache[key].value = value;
-          return cache[key].value
-      } else{
-          // 超过5m
-          // 找到使用次数最少的
-          while (cache[total]+dataLen>5*1000*1000) {
-              let minkey = getMinInCache(cache);
-              delete cache[minkey];
-          }
-          cache[key].count++;
-          cache[total] += dataLen;
-          return cache[key].value = value;
-      }
+      // node节点插入到队列首位
+      node.next = head;
+      node.prev = undefined;
+      this.head.prev = node;
+      this.head = node;
+    }
+    return isReturnNode ? node : node.value;
+  }
+  set(key, value) {
+    // 之前的算法可以直接存k-v但是现在要把简单的 k-v 封装成一个满足双链表的节点
+    //1.查看是否已经有了该节点
+    let node = this.get(key, true);
+    //判断缓存是否达到上限
+    //达到了，要删最后一个节点了。
+    if (this.size === this.limit) {
+      this.tail = this.tail.prev;
+      //平滑断链之后，销毁当前节点
+      this.tail.next = undefined;
+      delete this.map[key];
+      //当前缓存内存释放一个槽位
+      this.size--;
+    }
+    // 缓存中有这个节点
+    if (!node) {
+      node = {};
+    }
+    node.value = value;
+    this.map[key] = node;
+    // 插入到队列首位
+    if (this.head) {
+      // head存在
+      this.head.prev = node;
+      node.next = this.head;
+      this.head = node;
+    } else {
+      this.head = node;
+      this.tail = node;
+    }
+    this.size++; //减少一个缓存槽位
   }
 }
