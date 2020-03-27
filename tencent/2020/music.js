@@ -29,7 +29,9 @@ function createXhr(method, url, params, callback){
 }
 
 
-
+/*
+4. 事件的发布订阅模式
+*/
 class EventEmitter {
   constructor(){
       this.sub = {};
