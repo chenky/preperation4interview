@@ -717,5 +717,48 @@ $$ 2^{n-1} $$
   - map，set，weakmap，weakset
   - classes
 
+#### 浏览器内核
+!['浏览器内核'](asset/img/browser-core.jpg '浏览器内核')
+<table>
+<thead>
+<tr>
+  <th>浏览器</th>
+  <th>渲染引擎</th>
+  <th>-</th>
+  <th>JS引擎</th>
+</tr>
+</thead>
+<tbody><tr>
+  <td>IE</td>
+  <td>Trident</td>
+  <td>–</td>
+  <td>Chakra</td>
+</tr>
+<tr>
+  <td>Firefox</td>
+  <td>Gecko</td>
+  <td>–</td>
+  <td>SpiderMonkey</td>
+</tr>
+<tr>
+  <td>Chrome</td>
+  <td>Webkit</td>
+  <td>Webcore</td>
+  <td>V8</td>
+</tr>
+<tr>
+  <td>Safri</td>
+  <td>Webkit</td>
+  <td>Webcore</td>
+  <td>javascriptcore</td>
+</tr>
+<tr>
+  <td>Opera</td>
+  <td>Presto</td>
+  <td>–</td>
+  <td>Carakan</td>
+</tr>
+</tbody></table>
+
 #### 二叉树，冒泡排序，快速排序，动态规划，递归算法
 
