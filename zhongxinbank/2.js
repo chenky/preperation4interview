@@ -28,28 +28,33 @@ function getMax(arr){
 
 console.log(getMax([3,1,5,8]));
 
-
-function isOk(arr){
-  let index = 0; let prevIndex = 0;
-  while (index<arr.length) {
+/*
+给定一个非负整数数组，从数组首位开始前进，元素数值即为当前前进的“最大”步数，实现一个函数判断是否可以走到数组末尾位置
+数组从后往前遍历，如果当前元素大于0，则continue，否则需要的步数+1，如果遍历到第一个元素需要到步数为0则返回true，否则返回false
+*/
+function canGo2ArrEndPos(arr){
+  let needStep = 0;
+  let len = arr.length;
+  for (let index = len-2; index >= 0; index--) {
     const element = arr[index];
-    prevIndex = index;
-    if(element===0 && arr[arr.length-1] !== element){
-      return false;
-    }
-    if(index === arr.length-1){
-      return true;
-    } else{
-      for (let j = element; j > 0; j--) {
-        index += j; 
-        if(index === arr.length-1){
-          return true;
-        }       
+    if(element===0){
+      needStep++;
+    } else {
+      if(element>needStep){
+        needStep = 0;
+        continue;
+      } else {
+        return false;
       }
-      // 如果走不通则需要向前移动一个位置
-      index = prevIndex++;      
     }
   }
-  return true;
+  if(needStep===0){
+    return true;
+  }
+  return false;
 }
-
+console.log(canGo2ArrEndPos([3,2,1,0,4]));
+console.log(canGo2ArrEndPos([2,3,1,1,4]));
+console.log(canGo2ArrEndPos([2,0,2,1,1,1]));
+console.log(canGo2ArrEndPos([2,4,0,0,0,2,1]));
+console.log(canGo2ArrEndPos([2,4,0,1,1,0,1]));
