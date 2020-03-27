@@ -153,7 +153,7 @@ custom element, shodaw dom, template模板（x-tag，polymer），小程序貌�
 * https://www.cnblogs.com/zxin/archive/2013/01/26/2877765.html
 * https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Guide/Regular_Expressions
 
-#### 浏览器输入网址回车后的一系列事情
+#### 浏览器输入网址回车后的一系列事情 输入url回车发生一系列事情
 * dns域名解析获取到ip地址（浏览器缓存->系统缓存->路由器缓存->dns服务器缓存->递归搜索）
 * 基于ip地址建立tcp连接，tcp三次握手，http连接建立
 * 如果是https则还需要进行秘钥交换，随后建立连接
@@ -194,7 +194,7 @@ net.ipv4.tcp_fin_timeout 修改系默认的 TIMEOUT 时间
   - #表示系统同时保持TIME_WAIT套接字的最大数量，如果超过这个数字，TIME_WAIT套接字将立刻被清除并打印警告信息。
   - 默认为180000，改为5000。对于Apache、Nginx等服务器，上几行的参数可以很好地减少TIME_WAIT套接字数量，但是对于 Squid，效果却不大。此项  参数可以控制TIME_WAIT套接字的最大数量，避免Squid服务器被大量的TIME_WAIT套接字拖死。
 
-#### https过程
+#### https建立的整个过程
 - client发送request（包含支持的加密协议及版本）请求到server
 - server下发证书（包含公钥），证书为ca颁发的
 - client到ca验证证书到合法性，生成随机数及数字签名（即对随机数hash）公钥加密发送到server
@@ -220,6 +220,17 @@ net.ipv4.tcp_fin_timeout 修改系默认的 TIMEOUT 时间
 - 请求优先级（0最高，2**31-1最低，客户端设置优先级，服务器响应优先级）
 - 服务器推送
 - 低延迟高吞吐
+- 启用http2注意事项，openssl必须是1.0.2e之后版本，只支持https站点（升级到https注意事项参考“http升级https前后端都要注意什么”，即下一个知识点），nginx必须1.9.5以上版本
+
+#### http升级https前后端都要注意什么？
+- 前端
+  - 资源引用最好的方式是不加协议，用://xxx.xxx.com/
+- 后端
+  - 安装支持https的nginx版本，包括依赖库
+  - 购买ssl证书，放到指定目录
+  - 监听443端口，配置证书位置和私钥位置
+  - 同时监听80端口，return 301 https://$server_name$request_uri
+- https://mp.weixin.qq.com/s/sICGZ55uRgiWAXr-EDGhZw
   
 #### http3
 - http是基于tcp连接，需要三次握手
@@ -234,16 +245,6 @@ net.ipv4.tcp_fin_timeout 修改系默认的 TIMEOUT 时间
 - 投诉，要求放开劫持
 - [缓存设置短一些，切换到其他dns服务商，甚至自己建设dns](https://www.dns.com/supports/675.html)
   - DNS云加速覆盖国内6大主要运营商以及31个省份及地区的10w＋加速节点，模拟普通用户上网请求不间断的向运营商DNS服务器发起主动查询推送请求，从而让运营商的DNS服务器一直拥有准确的域名解析记录，保障国内绝大部分地区的运营商DNS服务器都能响应准确的解析结果，这样当真实的用户进行访问的时候就能获取到真实准确的地址了，能够有效从而降低DNS被劫持的风险。
-
-#### http升级https前后端都要注意什么？
-- 前端
-  - 资源引用最好的方式是不加协议，用://xxx.xxx.com/
-- 后端
-  - 安装支持https的nginx版本，包括依赖库
-  - 购买ssl证书，放到指定目录
-  - 监听443端口，配置证书位置和私钥位置
-  - 同时监听80端口，return 301 https://$server_name$request_uri
-- https://mp.weixin.qq.com/s/sICGZ55uRgiWAXr-EDGhZw
 
 ### 域名收敛
 - PC 时代为了突破浏览器的域名并发限制。有了域名发散，但多了dns解析开销及劫持风险
@@ -705,6 +706,16 @@ $$ 2^{n-1} $$
 （2) 调用函数时，应该提供的参数没有提供，该参数等于undefined。
 （3）对象没有赋值的属性，该属性的值为undefined。
 （4）函数没有返回值时，默认返回undefined。
+
+#### 数据双向绑定方式及优缺点 mvvm
+- 脏检查，Object.defineProperty，proxy，
+- 脏检查性能最差但兼容性最好，每次数据变更都需要遍历拥有ng-bind指令都元素
+- Object.defineProperty性能次之兼容性次之，ie8+，没有脏检查
+- proxy性能最佳，同时支持全语言特性支持，lazy by default（只有数据被用到才会被监听，所以大规模数据性能很好）
+  - 对象属性增加，删除
+  - 数组index，length更改
+  - map，set，weakmap，weakset
+  - classes
 
 #### 二叉树，冒泡排序，快速排序，动态规划，递归算法
 
