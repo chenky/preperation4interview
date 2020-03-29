@@ -12,25 +12,12 @@ function isSymmetric(word){
     return true;
 }
 
+/*
+获取所有对称子字符串
+*/
 function getSub(str){
   let res = [];
   for (let index = 0; index < str.length; index++) {
-    // const element = str[index];
-    // const temp = [];
-    // for (let j = index; j < str.length; j++) {
-    //   const element = str[j];
-    //   if(isSymmetric(element)){
-    //     temp.push(element);
-    //   }
-    // }
-    // let len = 1;
-    // while (len<str.length) {
-    //   const tempWord = str.substr(index, len);
-    //   if(isSymmetric(tempWord)){
-    //     temp.push(tempWord);
-    //   }
-    //   len++;
-    // }
     for (let j = index+1; j <= str.length; j++) {
       const element = str.substring(index, j);
       if(isSymmetric(element)){
