@@ -66,51 +66,6 @@ class EventEmitter {
   };
 }
 
-// function getMinInCache(cache){
-//   let min = Number.MAX_SAFE_INTEGER;
-//   let minkey;
-//   for (const key in cache) {
-//       if (cache.hasOwnProperty(key)&& key!=="total") {
-//           const element = cache[key];
-//           const {value, count} = element;
-//           if(min>count){
-//               min = count;
-//               minkey = key;
-//           }
-//       }
-//   }
-//   return minkey;
-// }
-
-// function getID(){
-//   // id:{value, count:使用次数}total: 总字节数
-//   let cache = {};
-//   return function(id){
-//       if(cache[id]){
-//           cache[id].count++;
-//           return cache[id].value;
-//       }
-//       let data = getDataFromServer();
-//       const {key,value} = data;
-//       let dataLen = value.length*2;
-//       if(cache[total]+dataLen<5*1000*1000){
-//           cache[total] += dataLen;
-//           cache[key].count++;
-//           cache[key].value = value;
-//           return cache[key].value
-//       } else{
-//           // 超过5m
-//           // 找到使用次数最少的
-//           while (cache[total]+dataLen>5*1000*1000) {
-//               let minkey = getMinInCache(cache);
-//               delete cache[minkey];
-//           }
-//           cache[key].count++;
-//           cache[total] += dataLen;
-//           return cache[key].value = value;
-//       }
-//   }
-// }
 
 /*
   先进先出缓存算法，fifo
