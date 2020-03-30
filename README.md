@@ -174,6 +174,16 @@ custom element, shodaw dom, template模板（x-tag，polymer），小程序貌�
   - https://cloud.tencent.com/developer/article/1421145
   - https://blog.csdn.net/weixin_39924293/article/details/97371860
 - [tcp保证可靠性](https://blog.csdn.net/cbjcry/article/details/84925028)
+  - 校验和,计算方式：在数据传输的过程中，将发送的数据段都当做一个16位的整数。将这些整数加起来。并且前面的进位不能丢弃，补在后面，最后取反，得到校验和。 
+    - 发送方：在发送数据之前计算检验和，并进行校验和的填充。
+    - 接收方：收到数据后，对数据以同样的方式进行计算，求出校验和，与发送方的进行比对。
+    - 注意：如果接收方比对校验和与发送方不一致，那么数据一定传输有误。但是如果接收方比对校验和与发送方一致，数据不一定传输成功。
+  - 确认应答与序列号, TCP传输时将每个字节的数据都进行了编号，这就是序列号
+    - TCP传输的过程中，每次接收方收到数据后，都会对传输方进行确认应答。也就是发送ACK报文。这个ACK报文当中带有对应的确认序列号，告诉发送方，接收到了哪些数据，下一次的数据从哪里发。
+    ![](asset/img/tcp-act.png)
+  - 超时重传, 没有收到ack报文原因（接收方没有接收到，发送的ACK报文响应却由于网络原因丢包了）
+  - 流量控制，TCP连接的每一方都有固定大小的缓冲空间，TCP的接收端只允许发送端发送接收端缓冲区能接纳的数据
+  - 拥塞控制，当网络拥塞时，减少数据的发送，发送方有拥塞窗口，发送数据前比对接收方发过来的即使窗口，取小（以接收方窗口数据为准）， 慢启动、拥塞避免、拥塞发送、快速恢复，TCP的接收端会丢弃重复的数据。 
 * https://www.cnblogs.com/zhuqil/archive/2012/07/23/2604572.html
 * https://blog.csdn.net/zhongzh86/article/details/69389967
 * https://segmentfault.com/a/1190000017524542
@@ -770,6 +780,9 @@ app.use((error, req, res, next) =&gt; {
 });
 - 全局错误监控，任何全局未处理的异常都可以通过监听进程上的“uncaughtException”事件来拦截，如果任何事件发射器引发`error`事件，并且没有为此事件预订事件发射器的监听器，则在进程上也会引发`uncaughtError`事件。
 - exit事件在进程即将退出时发出
+
+#### [heap vs stack 堆和栈的优缺点,栈适合递归，历史记录撤销操作，堆完全搜索二叉树，求第k大小的值](https://www.guru99.com/stack-vs-heap.html)
+<table class="table1 table-striped"><thead><tr><th><strong>Parameter</strong> </th><th><strong>Stack</strong> </th><th><strong>Heap</strong> </th></tr></thead><tbody><tr><td>Type of data structures </td><td>A stack is a linear data structure. </td><td>Heap is a hierarchical data structure. </td></tr><tr><td>Access speed </td><td>High-speed access </td><td>Slower compared to stack </td></tr><tr><td>Space management </td><td>Space managed efficiently by OS so memory will never become fragmented. </td><td>Heap Space not used as efficiently. Memory can become fragmented as blocks of memory first allocated and then freed. </td></tr><tr><td>Access </td><td>Local variables only </td><td>It allows you to access variables globally. </td></tr><tr><td>Limit of space size </td><td>Limit on stack size dependent on OS. </td><td>Does not have a specific limit on memory size. </td></tr><tr><td>Resize </td><td>Variables cannot be resized </td><td>Variables can be resized. </td></tr><tr><td>Memory Allocation </td><td>Memory is allocated in a contiguous block. </td><td>Memory is allocated in any random order. </td></tr><tr><td>Allocation and Deallocation </td><td>Automatically done by compiler instructions. </td><td>It is manually done by the programmer. </td></tr><tr><td>Deallocation </td><td>Does not require to de-allocate variables. </td><td>Explicit de-allocation is needed. </td></tr><tr><td>Cost </td><td>Less </td><td>More </td></tr><tr><td>Implementation </td><td>A stack can be implemented in 3 ways simple array based, using dynamic memory, and Linked list based. </td><td>Heap can be implemented using array and trees. </td></tr><tr><td>Main Issue </td><td>Shortage of memory </td><td>Memory fragmentation </td></tr><tr><td>Locality of reference </td><td>Automatic compile time instructions. </td><td>Adequate </td></tr><tr><td>Flexibility </td><td>Fixed size </td><td>Resizing is possible </td></tr><tr><td>Access time </td><td>Faster </td><td>Slower </td></tr></tbody></table>
 
 #### 二叉树，冒泡排序，快速排序，动态规划，递归算法
 
