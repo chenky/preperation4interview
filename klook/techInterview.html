@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      // const compose = function(...fns) {
+      //   fns = fns.map(fn => {
+      //     return promisify(fn, null);
+      //   });
+
+      //   return function(...init) {
+      //     let initVal = init[0];
+      //     let callback = init[1];
+          
+      //     fns.reduceRight(
+      //       (prevPromise, nextPromise) => {
+      //         return prevPromise(initVal, callback).then(res=>{
+      //           initVal = res;
+      //           return nextPromise(res, callback)
+      //         });
+      //       },
+      //       (val)=> Promise.resolve(val) 
+      //     );
+      //     // for (let index = fns.length-1; index>=0; index--) {
+      //     //   const currentPromise = fns[index];
+      //     //   currentPromise(lastRes).then((res)=>{
+      //     //     console.log(res);
+      //     //     lastRes = res;
+      //     //   })
+      //     // }
+
+      //   };
+
+      //   // return function(...initParams){
+      //   //   let initVal = initParams[0];
+
+      //   //   fns[1](initVal).then((res)=>{
+      //   //     console.log("res:"+res);
+      //   //     fns[0](res).then((res1)=>{
+      //   //       console.log("res1:"+res1);
+      //   //     })
+      //   //   });
+      //   // }
+      // };
+
+      /*
+        实现一步compose函数
+      */
+      let promisify = (fn, receiver) => {
+        // 返回callback方式的函数， 最后一个参数是callback函数，除此之外是函数的初始值
+        return (...args) => {
+          // let callback = args.pop();
+          return new Promise((resolve, reject) => {
+            fn.apply(receiver, [
+              ...args,
+              (err, res) => {
+                // return err ? reject(err) : resolve(res);
+                resolve(res);
+              }
+            ]);
+          });
+        };
+      };
+
+      function add1(n, callback) {
+        setTimeout(function() {
+          console.log("called add1 and res is "+(n+1));
+          callback(new Error(10), n + 1);
+        }, 10);
+      }
+
+      function mul3(n, callback) {
+        setTimeout(function() {
+          console.log("called mul3 and res is "+(n*3));
+          callback(null, n * 3);
+        }, 10);
+      }
+
+      function mul5(n, callback) {
+        setTimeout(function() {
+          console.log("called mul5 and res is "+(n*5));
+          callback(null, n * 5);
+        }, 10);
+      }
+
+      // let add1Promisify = promisify(add1, null);
+      // let mul3Promisify = promisify(mul3, null);
+      // add1Promisify(4).then((res) => {
+      //   console.log(res[0], res[1]);
+      //   mul3Promisify(res[1]).then((res)=>{
+      //     console.log(res[0],res[1]);
+      //   })
+      // });
+      
+      // [mul3Promisify,add1Promisify].reduceRight((prevPromise, nextPromise)=>{
+      //   return prevPromise.then(res=>{
+      //     console.log(res);
+      //     return nextPromise(res);
+      //   })
+      // }, Promise.resolve(4));
+
+      function compose(...fns){
+        fns = fns.map(fn=>promisify(fn,null));
+
+        return function composeFn(...params){
+
+          const [initVal, callback] = params;
+
+          fns.reduceRight((prevPromise, nextPromise)=>{
+            return prevPromise.then(res=>{
+              let retNextPromise = nextPromise(res);
+              retNextPromise.then(console.log);
+              return retNextPromise;
+            });
+            // return prevPromise.then(nextPromise);
+          }, Promise.resolve(initVal))
+        }
+      }
+
+      var add1mul3 = compose(mul5, mul3, add1);
+      add1mul3(4, function(err, result) {
+        // result now equals 15
+        console.log(err, result);
+      });
+    </script>
+  </body>
+</html>
