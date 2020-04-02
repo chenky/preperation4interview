@@ -224,14 +224,29 @@
           样例输出
           3
         */
+        // function getWays(m,n){
+        //   if(m===1 || n===1){
+        //     // 终止条件
+        //     return 1;
+        //   } else{
+        //     // 子方程
+        //     return getWays(m-1,n)+getWays(m,n-1);
+        //   }          
+        // }
         function getWays(m,n){
-          if(m===1 || n===1){
-            // 终止条件
-            return 1;
-          } else{
-            // 子方程
-            return getWays(m-1,n)+getWays(m,n-1);
+          let matrix = [];
+          let line = Array.from({length:n},(val,index)=>1);
+          
+          for (let col = 0; col < m; col++) {
+            matrix.push(line);           
+          }
+          
+          for (let i = 1; i < m; i++) {
+            for (let j = 1; j < n; j++) {
+              matrix[i][j] = matrix[i-1][j] + matrix[i][j-1];
+            }         
           }          
+          return matrix[m-1][n-1];
         }
 
         console.log(getWays(3,2))
