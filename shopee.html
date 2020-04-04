@@ -251,6 +251,130 @@
 
         console.log(getWays(3,2))
 
+        /*
+          给定一个数组，求数组中比当前元素小的个数
+          比如[8,1,2,2,3]->[4, 0, 1, 1, 3]
+          最简单的办法是使用两层循环暴力破解，事件复杂度是n^2
+          第二种方式是使用二分搜索树，加一个smaller变量来标记比当前小的所有节点个数
+        */
+        // function countSmaller(arr){
+        //   let res = [];
+        //   let len = arr.length;
+        //   let i=0,j=0;
+        //   while (i<len) {
+        //     let currentNum = arr[i];
+        //     let count=0;
+        //     for (let j = 0; j < arr.length; j++) {
+        //       if(j===i){
+        //         continue;
+        //       } else{
+        //         let num = arr[j];
+        //         if(num<currentNum){
+        //           count++;
+        //         }
+        //       }
+        //     }
+        //     res.push(count);
+        //     i++;
+        //   }
+        //   return res;
+        // }
+
+        /*
+          第二种方式是使用二分搜索树，加一个smaller变量来标记比当前小的所有节点个数
+        */
+        // function BinarySearchTree(){
+        //   function Node(key){
+        //     this.key = key;
+        //     this.smaller = 0;
+        //     this.left = null;
+        //     this.right = null;
+        //   }
+        //   let root = null;
+          
+        //   function insertNode(node, newNode){
+        //     if(node.key>newNode.key){
+        //       if(node.left===null){
+        //         node.left = newNode;
+        //       } else{
+        //         insertNode(node.left, newNode);
+        //       }
+        //     } else{
+        //       if(node.right === null){
+        //         node.right = newNode;
+        //       } else {
+        //         insertNode(node.right, newNode);
+        //       }
+        //     }
+        //   }
+
+        //   this.insert=function(key){
+        //     let newNode = new Node(key);
+        //     if(root === null){
+        //       root = newNode;
+        //     } else {
+        //       insertNode(root, newNode);
+        //     }
+        //     return root;
+        //   }
+        // }
+
+        function countSmaller(arr){
+          function Node(key){
+            this.key = key;
+            this.smaller = 0;
+            this.left = null;
+            this.right = null;
+          }
+          
+
+          let root = null;
+          let nodes = [];
+
+          let insertNode=function(node, newNode){
+            // 小的在左侧子树
+            if(node.key>= newNode.key){              
+              if(node.key>newNode.key){
+                // 只有父节点比子节点大的时候，父节点才需要+1
+                node.smaller++;
+              } 
+              if(node.left===null){
+                node.left = newNode;
+              } else{
+                insertNode(node.left, newNode);
+              }              
+            } else{
+              // 大的放在右侧子树， 因为当前节点大，所以比当前节点小的数是父节点smaller+1
+              newNode.smaller = node.smaller +1;
+              if(node.right === null){
+                node.right = newNode;
+              } else {
+                insertNode(node.right, newNode);
+              }
+            }
+          }
+
+          let insert = function(key){
+            let newNode = new Node(key);
+            if(root === null){
+              root = newNode;
+            } else{
+              insertNode(root, newNode);
+            }
+            return newNode;
+          }
+
+          for (let i = arr.length-1; i >=0; i--) {
+            const key = arr[i];
+            nodes[i] = insert(key);
+          }
+          return nodes.map(node=>node.smaller);
+
+        }
+
+        console.log(countSmaller([8,1,2,2,3]))
+        console.log(countSmaller([5,2,6,1]))
+        console.log(countSmaller([8,5,7,2,3]))
 
     </script>
 </body>
