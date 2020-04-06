@@ -99,6 +99,7 @@ custom element, shodaw dom, template模板（x-tag，polymer），小程序貌�
 * https://zh-hans.reactjs.org/docs/hooks-intro.html
 
 ### react生命周期，对比vue，及vue的核心概念
+!['react生命周期'](asset/img/react-lifecycle.png)
 * https://juejin.im/post/5a062fb551882535cd4a4ce3
 * https://cn.vuejs.org/v2/guide/instance.html#%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E5%9B%BE%E7%A4%BA
 * 相比较vue的mvvm框架，react是组件是开发更多关注view，虚拟dom，单向数据流，函数式编程
@@ -108,6 +109,34 @@ custom element, shodaw dom, template模板（x-tag，polymer），小程序貌�
 * 双向通信：     vue props+event 类比 react props+callback
 * 渲染：		   vue render(h=>h(component)) 类比 react ReactDOM.render(component, container)
 * 全家桶：       vue vuex  Vue-router elmentUI等 类比 react + redux + React router（Browser Router） antdUI等
+
+#### [vue组件通讯，vue组件通信](https://juejin.im/post/5cde0b43f265da03867e78d3)
+- prop/事件，父组件A通过props的方式向子组件B传递，B to A 通过在 B 组件中 $emit, A 组件中 v-on 的方式实现。
+- 事件总线，这种方法通过一个空的Vue实例作为中央事件总线（事件中心），用它来触发事件和监听事件,巧妙而轻量地实现了任何组件间的通信，包括父子、兄弟、跨级。
+- vuex，Vuex实现了一个单向数据流，在全局拥有一个State存放数据，当组件要更改State中的数据时，必须通过Mutation进行，Mutation同时提供了订阅者模式供外部插件调用获取State数据的更新。而当所有异步操作(常见于调用后端接口异步获取更新数据)或批量的同步操作需要走Action，但Action也是无法直接修改State的，还是需要通过Mutation来修改State的数据。最后，根据State的变化，渲染到视图上。
+![](asset/img/vuex.png)
+
+
+#### [vue双向绑定原理](https://juejin.im/post/5d421bcf6fb9a06af23853f1)
+Object.defineProperty+订阅发布模式+解释器compiler解释vue自定义命令
+3.0用了proxy
+- proxy性能最佳，同时支持全语言特性支持，lazy by default（只有数据被用到才会被监听，所以大规模数据性能很好）
+  - 对象属性增加，删除
+  - 数组index，length更改
+  - map，set，weakmap，weakset
+  - classes
+![](asset/img/vue-binding-all.png)
+![](asset/img/vue-binding-mvvm.png)
+
+#### vue生命周期图
+![](asset/img/vue-lifecycle.png)
+
+#### watch和computed的区别
+- 计算属性是基于它们的响应式依赖进行缓存的。只在相关响应式依赖发生改变时它们才会重新求值。
+- 虽然计算属性在大多数情况下更合适，但有时也需要一个自定义的侦听器。这就是为什么 Vue 通过 watch 选项提供了一个更通用的方法，来响应数据的变化。当需要在数据变化时执行异步或开销较大的操作时,使用 watch 选项允许我们执行异步操作 (访问一个 API)，限制我们执行该操作的频率，并在我们得到最终结果前，设置中间状态。这些都是计算属性无法做到的。
+
+#### [script标签中async和defer有什么区别, async,defer区别](https://segmentfault.com/q/1010000000640869)
+![](asset/img/async-defer-diff.jpeg)
 
 ### react受控组件和非受控组件
 * 受控组件数据由react管理，而非受控组件数据存储在dom中
@@ -825,6 +854,7 @@ rollup只处理函数和顶层的import/export变量，不能把没用到的类�
 
 #### Object.prototype.toString.call(obj)==="[object Object]",可以判断几乎所有类型，哪怕跨iframe，但是对自定义类型不友好都返回Object，所以要结合instanceof，typeof对于跨iframe判断有问题
 
+#### JS 中的数组和 C++ 、Java 的数组有什么区别， javascript数组长度动态，而c++，java是固定声明好的长度，javascript中有伪数组，比如参数arguments，可以转化为数组，并使用数组的方法
 
 #### 二叉树，冒泡排序，快速排序，动态规划，递归算法
 

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      function isLower(c) {
+        //判断是否小写
+        return c >= "a" && c <= "z";
+      }
+      function reSortStr2(str) {
+        let letters = str.split("");
+        let i = 0,
+          j = letters.length - 1;
+        while (i <= j) {
+          while (i <= j && isLower(letters[i])) i++;
+          while (i <= j && !isLower(letters[j])) j--;
+          if (i <= j) {
+            [letters[i], letters[j]] = [letters[j], letters[i]];
+          }
+        }
+        return letters.join("");
+      }
+      console.log(reSortStr2("abCDefGhI"));
+
+      /*
+        对象扁平化, 扁平化对象
+      {
+        "A": {
+            "a1": 1,
+            "a2": 2
+        },
+        "B": {
+            "b": 3
+        }
+      }
+      转化后
+      {
+          "A.a1": 1,
+          "A.a2": 2,
+          "B.b": 3
+      }
+      */
+      // function flatObj(obj) {
+      //   let res = {};
+
+      //   function temp(obj, prevKey = "") {
+      //     Object.keys(obj).forEach((key,index) => {
+      //       let val = obj[key];
+      //       const newKey = prevKey ? (prevKey + '.'+key) : key;
+      //       if (Object.prototype.toString.call(val) === "[object Object]") {
+      //         temp(val, newKey);
+      //       } else {
+      //         res[newKey] = val;
+      //       }
+      //     });
+      //   }
+      //   temp(obj);
+
+      //   return res;
+      // }
+
+      // console.log(
+      //   flatObj({
+      //     A: {
+      //       a1: 1,
+      //       a2: 2,
+      //       a3: {
+      //         a31: 33
+      //       }
+      //     },
+      //     B: {
+      //       b: 3,
+      //     },
+      //     C: 4
+      //   })
+      // );
+
+      /*
+        大数相乘, 两个大数相乘，字符串相乘
+      */
+      function add(arr, i, v) {
+        arr[i] = arr[i] ? arr[i] : 0;
+        sum = arr[i] + v;
+        arr[i] = sum % 10;
+        if (sum > 9) {
+          add(arr, i + 1, Math.floor(sum / 10));
+        }
+      }
+      function strMulti(x, y) {
+        var arr1 = x.split("");
+        var arr2 = y.split("");
+        var resultArr = [];
+        for (var i = y.length - 1; i >= 0; i--) {
+          for (var j = x.length - 1; j >= 0; j--) {
+            var tmp = parseInt(x[j]) * parseInt(y[i]); //数字位
+            var index = y.length - i + x.length - j - 2;
+            resultArr[index] = resultArr[index] ? resultArr[index] : 0;
+            var sum = resultArr[index] + tmp; //每个数组位保存一位数字
+            resultArr[index] = sum % 10; //进一位
+            if (tmp > 9) {
+              add(resultArr, index + 1, Math.floor(sum / 10));
+            }
+          }
+        }
+        return resultArr.reverse().join("");
+      }
+      console.log(strMulti("33", "44"));
+      // console.log(strMulti("8956", "3265"));
+    </script>
+  </body>
+</html>
