@@ -811,6 +811,9 @@ app.use((error, req, res, next) =&gt; {
 #### [app扫码登录原理，微信扫描登录，网页扫描登录](https://blog.csdn.net/zl1zl2zl3/article/details/84261398)
 !['网页扫描登录原理'](asset/img/scan_QR_code_principle.jpg '')
 
+#### [instanceof 运算符用于检测构造函数的 prototype 属性是否出现在某个实例对象的原型链上](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/instanceof)
+
+#### [Object.assign() 方法用于将所有可枚举属性的值从一个或多个源对象复制到目标对象。它将返回目标对象。](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Object/assign)
 
 #### 二叉树，冒泡排序，快速排序，动态规划，递归算法
 
