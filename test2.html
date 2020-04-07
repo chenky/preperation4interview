@@ -129,6 +129,47 @@
           return res;
       }
       console.log(trap([0,1,0,2,1,0,1,3,2,1,2,1]));
+
+      /*
+      给定一个数m，求1-m最大奇约数的和
+      首先，先讨论一下数的奇约数，奇数的最大奇约数就是本身，偶数要不断地除以2，直到除以2的结果是奇数，那么这个结果就是其最大奇约数
+            reference: https://www.cnblogs.com/coderls/p/6442537.html
+      https://blog.csdn.net/jnulzl/article/details/52518099
+      */
+      function jiyueshuSum(m){
+        // 奇数最大奇约数是自己，偶数奇约数不断除于2直到结果为奇数就是最大奇约数
+        let sum=0, tmp
+        for (let current = 1; current <= m; current++) {
+          tmp = current;
+          while (0=== tmp%2) { // 是否偶数
+            tmp /=2;
+          }         
+          sum += tmp; 
+        }
+        return sum;
+      }
+      console.log(jiyueshuSum(7))
+      /*
+      首先，先讨论一下数的奇约数，奇数的最大奇约数就是本身，偶数要不断地除以2，直到除以2的结果是奇数，那么这个结果就是其最大奇约数
+在看我们的题目要求，是求出从1到n之间（包括1和n）的每个数的最大奇约数，然后对它们求和。
+1.当n是奇数时，那么在1到n之间共有(n+1)/2个奇数，根据等差数列求和的理论，sn=(首项+末项)*项数/2，这些奇数的和为(n+1)/2*(n+1)/2;
+2.当n是偶数时，那么在1到n之间共有n/2个奇数,这些奇数的和为n/2*n/2,当然在Java中也可以表示为：(n+1)/2*(n+1)/2；
+然后这些只是范围内所有奇数的最大奇约数之和，那么剩余的偶数的奇约数之和怎么求呢，是这样的：
+我们可以让n除以2，然后求出1到n/2范围内的所有奇数的最大奇约数之和，与之前的求和进行累加，如此让n不断地除以2，直到等于0，那么这所有的累加就是要求的数。
+      */
+      function jiyueshuSumOpt(m){
+        if(m===1){
+          return 1;
+        }
+        if(m%2===0){
+          // m为偶数时，等于jiyueshuSumOpt(m/2) + m/2*m/2
+          return jiyueshuSumOpt(m/2) + m*m/4;
+        } else{
+          // 奇数时
+          return jiyueshuSumOpt(m-1) + m;
+        }
+      }
+      console.log(jiyueshuSumOpt(7))
     </script>
   </body>
 </html>
