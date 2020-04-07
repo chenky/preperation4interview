@@ -576,6 +576,8 @@ componentWillUnmount：清理垃圾，比如删除绑定的事件等等内存回
 - cookie大概4kb左右，http请求会携带给服务器
 - 本地存储5m
 
+#### cookie格式以分号隔开，name=value;Expires=time; Max-Age=22;Domain=aa.com;path=/;Secure;HttpOnly;SameSite
+
 #### js数据类型，String, Number, undefined, null, Boolean, Object 
 
 #### 5.15多少度 67.5度
@@ -739,12 +741,39 @@ $$ 2^{n-1} $$
 - 通过监听主进程即process的exit，uncaughtException事件来
 
 #### react性能优化
+- 列表有key值
+- 不要在组件内联箭头函数，而应该先声明传引用
 - 打包使用生产环境的包，mode: 'production'
 - BundleAnalyzerPlugin插件分析脚本大小
 - 虚拟长列表react-window 和 react-virtualized 是热门的虚拟滚动库
 - shouldComponentUpdate(nextProps, nextState) 默认返回true表示需要diff更新dom，false不diff更新dom
 - 使用PureComponent组件，无状态组件
-- 动态加载路由
+- react喜欢稳定对dom结构，所以要减少删除增加渲染，要优化条件渲染，同时使用隐藏显示方式
+- Fragments避免额外标记，层级减少
+- css动画替代javascript动画
+- 使用cdn网络，gzip压缩，web worker处理cpu密集型任务，服务器端渲染
+- 在 Constructor 的早期绑定函数
+- 节流（throttling）和防抖（debouncing）可用来限制在指定时间内调用的事件处理程序的数量
+- 动态加载路由，按需加载，react-loadable组件，或者使用react.lazy,suspense
+- 对于函数式组件可以使用useCallback（防止子组件无意义重渲染）
+- 使用useMemo,memo缓存组件结果，防止重复渲染
+- 使用不可变数据Immutable
+- reselect，在使用Redux过程中，组件的状态数据通常是从state派生出来的，要做很多计算的逻辑，对计算缓存
+- [react新特性，concurrent模式使用时间分片的方式处理，所以每个分片的任务有不同的阶段，React Fiber把更新过程碎片化](https://zhuanlan.zhihu.com/p/26027085)
+  - 优先级高的更新任务会优先处理完，而低优先级更新任务所做的工作则会完全作废，然后等待机会重头再来
+  - 因为一个更新过程可能被打断，所以React Fiber一个更新过程被分为两个阶段(Phase)：第一个阶段Reconciliation Phase和第二阶段Commit Phase。
+  - 在第一阶段Reconciliation Phase，React Fiber会找出需要更新哪些DOM，这个阶段是可以被打断的；但是到了第二阶段Commit Phase，那就一鼓作气把DOM更新完，绝不会被打断。
+  - 以render函数为界，第一阶段可能会调用下面这些生命周期函数，说是“可能会调用”是因为不同生命周期调用的函数不同。
+    componentWillMount
+    componentWillReceiveProps
+    shouldComponentUpdate
+    componentWillUpdate
+    下面这些生命周期函数则会在第二阶段调用。
+    componentDidMount
+    componentDidUpdate
+    componentWillUnmount
+  ![](asset/img/react-fiber-phase.png)
+
 
 #### 事件循环 event loop
 !['事件循环 event loop'](asset/img/nodejs-event-loop-workflow.png '事件循环 event loop')
@@ -857,6 +886,8 @@ rollup只处理函数和顶层的import/export变量，不能把没用到的类�
 #### Object.prototype.toString.call(obj)==="[object Object]",可以判断几乎所有类型，哪怕跨iframe，但是对自定义类型不友好都返回Object，所以要结合instanceof，typeof对于跨iframe判断有问题
 
 #### JS 中的数组和 C++ 、Java 的数组有什么区别， javascript数组长度动态，而c++，java是固定声明好的长度，javascript中有伪数组，比如参数arguments，可以转化为数组，并使用数组的方法
+
+#### bind,call,apply都可以改变this执行，而bind返回一个函数不会立即执行，而call和apply会，bind可以用于curry，
 
 #### 二叉树，冒泡排序，快速排序，动态规划，递归算法
 
