@@ -170,6 +170,26 @@
         }
       }
       console.log(jiyueshuSumOpt(7))
+
+      /*
+        给定一个数组，返回一组相差为k的两个数
+      */
+      function diffInArr(arr, k){
+        let len = arr.length;
+        for (let index = 0; index < len-1; index++) {
+          const val1 = arr[index];
+          for (let j = index+1; j < len; j++) {
+            const val2 = arr[j];
+            if(Math.abs(val1-val2)===k){
+              return [val1, val2];
+            }
+          }
+        }
+        return [];
+      }
+      console.log(diffInArr([2,5,90,1,6,8],3))
+      console.log(diffInArr([2,5,90,1,6,8],5))
+      console.log(diffInArr([2,5,90,1,6,8],30))
     </script>
   </body>
 </html>
