@@ -6,26 +6,6 @@
 ### 笔试
 * https://www.jianshu.com/p/35a027c7e4d9
 
-### 跨域CORS
-* http://www.ruanyifeng.com/blog/2016/04/cors.html
-- Access-Control-Allow-Origin: http://api.bob.com
-Access-Control-Request-Method
-Access-Control-Allow-Credentials: true
-Access-Control-Expose-Headers: FooBar
-- 只要同时满足以下两大条件，就属于简单请求
-  - （1) 请求方法是以下三种方法之一：
-
-    HEAD
-    GET
-    POST
-  （2）HTTP的头信息不超出以下几种字段：
-
-    Accept
-    Accept-Language
-    Content-Language
-    Last-Event-ID
-    Content-Type：只限于三个值application/x-www-form-urlencoded、multipart/form-data、text/plain
-
 ### 前端面试：
 * https://github.com/azl397985856/fe-interview（或者https://lucifer.ren/fe-interview/#/）
 
@@ -245,6 +225,28 @@ net.ipv4.tcp_fin_timeout 修改系默认的 TIMEOUT 时间
 - 因为http是明文传输，所以中间运营商就可以在页面中加人恶意广告代码
 - 投诉中间运营商
 - 升级成https秘文传输，无法加人任何恶意代码
+
+#### 跨域CORS
+* http://www.ruanyifeng.com/blog/2016/04/cors.html
+- Access-Control-Allow-Origin: http://api.bob.com
+Access-Control-Request-Method
+Access-Control-Allow-Credentials: true
+Access-Control-Expose-Headers: FooBar
+- 只要同时满足以下两大条件，就属于简单请求
+  - （1) 请求方法是以下三种方法之一：
+
+    HEAD
+    GET
+    POST
+  （2）HTTP的头信息不超出以下几种字段：
+
+    Accept
+    Accept-Language
+    Content-Language
+    Last-Event-ID
+    Content-Type：只限于三个值application/x-www-form-urlencoded、multipart/form-data、text/plain
+
+#### [http options HTTP 的 OPTIONS 方法 用于获取目的资源所支持的通信选项。客户端可以对特定的 URL 使用 OPTIONS 方法，也可以对整站（通过将 URL 设置为“*”）使用该方法](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Methods/OPTIONS)
 
 #### [http1.1存在的问题](https://www.cnblogs.com/ainyi/p/9723563.html)
 1、TCP 连接数限制
