@@ -871,6 +871,8 @@ app.use((error, req, res, next) =&gt; {
 #### css属性继承
 - font相关属性，color，list-style，text-align，text-indent，line-height，word-spaceing，
 
+#### css中padding，margin百分比相对于父元素宽度进行比较
+
 #### javascript基本数据类型，undefined,null,boolean,number,string,object(array,function,object,regex), es6有Symbol,BigInt
 
 #### [浏览器垃圾回收机制](https://www.cnblogs.com/dolphinX/p/3348468.html)
