@@ -774,6 +774,16 @@ $$ 2^{n-1} $$
     componentWillUnmount
   ![](asset/img/react-fiber-phase.png)
 
+#### react hook优化
+- 使用useMemo,useCallback(防止子组件重复渲染)
+  - 推荐使用 React.useMemo 而不是 React.memo，因为在组件通信时存在 React.useContext 的用法，这种用法会使所有用到的组件重渲染，只有 React.useMemo 能处理这种场景的按需渲染。
+- 依赖一定要写清楚，提前声明
+- useRef 尽量少用，大量 Mutable 的数据会影响代码的可维护性，但对于不需重复初始化的对象推荐使用 useRef 存储，比如 new G2()
+- 局部状态不推荐使用 useReducer ，会导致函数内部状态过于复杂，难以阅读。 useReducer 建议在多组件间通信时，结合 useContext 一起使用。
+- 组件间通讯使用useContext+reducer，复杂的还是使用redux
+- 当输入框频繁输入时，为了保证页面流畅，我们会选择在 onChange 时进行 debounce
+
+
 
 #### 事件循环 event loop
 !['事件循环 event loop'](asset/img/nodejs-event-loop-workflow.png '事件循环 event loop')
