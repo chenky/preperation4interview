@@ -256,6 +256,18 @@
       console.log(countSmaller([6, 5, 8, 1, 2, 2, 3]));
       // console.log(countSmaller([5, 2, 6, 1]));
       // console.log(countSmaller([8, 5, 7, 2, 3]));
+
+      /*
+        数组求和，使用递归方式
+      */
+     function arrSumRecursion(arr, sum=0){
+      if(arr.length<1){
+        return sum;
+      }
+      const [first, ...rest] = arr;
+      return arrSumRecursion(rest, sum+first);
+     }
+     console.log(arrSumRecursion([1,4,2,8]));
     </script>
   </body>
 </html>
