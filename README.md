@@ -42,7 +42,134 @@ custom element, shodaw dom, template模板（x-tag，polymer），小程序貌�
 - 可以发送文本，也可以发送二进制数据。
 - 没有同源限制，客户端可以与任意服务器通信。
 - 协议标识符是ws（如果加密，则为wss），服务器网址就是 URL。
+- [WebSocket加入心跳包防止自动断开连接](https://www.jianshu.com/p/1141dcf6de3e)
+- 心跳设计时间间隔小于防火墙的阀值，比如小于60s，心跳作用主要有两个
+  - 客户端定时给服务端发送点数据，防止连接由于长时间没有通讯而被某些节点的防火墙或路由节点关闭导致连接断开的情况。
+  - 服务端可以通过心跳来判断客户端是否在线，如果客户端在规定时间内没有发来任何数据，就认为客户端下线。这样可以检测到客户端由于极端情况(断电、断网等)下线的事件。
+  ```javascript
+  var userId=$("#userId").val();
+  var lockReconnect = false;  //避免ws重复连接
+  var ws = null;          // 判断当前浏览器是否支持WebSocket
+  var wsUrl = serverConfig.cyberhouse_ws+userId;
+  createWebSocket(wsUrl);   //连接ws
 
+  function createWebSocket(url) {
+      try{
+          if('WebSocket' in window){
+              ws = new WebSocket(url);
+          }else if('MozWebSocket' in window){  
+              ws = new MozWebSocket(url);
+          }else{
+              layui.use(['layer'],function(){
+                var layer = layui.layer;
+                layer.alert("您的浏览器不支持websocket协议,建议使用新版谷歌、火狐等浏览器，请勿使用IE10以下浏览器，360浏览器请使用极速模式，不要使用兼容模式！"); 
+              });
+          }
+          initEventHandle();
+      }catch(e){
+          reconnect(url);
+          console.log(e);
+      }     
+  }
+
+  function initEventHandle() {
+      ws.onclose = function () {
+          reconnect(wsUrl);
+          console.log("llws连接关闭!"+new Date().toUTCString());
+      };
+      ws.onerror = function () {
+          reconnect(wsUrl);
+          console.log("llws连接错误!");
+      };
+      ws.onopen = function () {
+          heartCheck.reset().start();      //心跳检测重置
+          console.log("llws连接成功!"+new Date().toUTCString());
+      };
+      ws.onmessage = function (event) {    //如果获取到消息，心跳检测重置
+          heartCheck.reset().start();      //拿到任何消息都说明当前连接是正常的
+          console.log("llws收到消息啦:" +event.data);
+          if(event.data!='pong'){
+              var obj=eval("("+event.data+")");
+              layui.use(['layim'], function(layim){
+                  if(obj.type=="onlineStatus"){
+                      layim.setFriendStatus(obj.id, obj.content);
+                  }else if(obj.type=="friend" || obj.type=="group"){
+                      layim.getMessage(obj);  
+                  } 
+      };
+  }
+  // 监听窗口关闭事件，当窗口关闭时，主动去关闭websocket连接，防止连接还没断开就关闭窗口，server端会抛异常。
+  window.onbeforeunload = function() {
+      ws.close();
+  }  
+
+  function reconnect(url) {
+      if(lockReconnect) return;
+      lockReconnect = true;
+      setTimeout(function () {     //没连接上会一直重连，设置延迟避免请求过多
+          createWebSocket(url);
+          lockReconnect = false;
+      }, 2000);
+  }
+
+  //心跳检测
+  var heartCheck = {
+      timeout: 540000,        //9分钟发一次心跳
+      timeoutObj: null,
+      serverTimeoutObj: null,
+      reset: function(){
+          clearTimeout(this.timeoutObj);
+          clearTimeout(this.serverTimeoutObj);
+          return this;
+      },
+      start: function(){
+          var self = this;
+          this.timeoutObj = setTimeout(function(){
+              //这里发送一个心跳，后端收到后，返回一个心跳消息，
+              //onmessage拿到返回的心跳就说明连接正常
+              ws.send("ping");
+              console.log("ping!")
+              self.serverTimeoutObj = setTimeout(function(){//如果超过一定时间还没重置，说明后端主动断开了
+                  ws.close();     //如果onclose会执行reconnect，我们执行ws.close()就行了.如果直接执行reconnect 会触发onclose导致重连两次
+              }, self.timeout)
+          }, this.timeout)
+      }
+  }
+  ```
+- WebSocket 对象作为一个构造函数，用于新建 WebSocket 实例，var ws = new WebSocket('ws://localhost:8080');
+- readyState状态码有
+  - CONNECTING：值为0，表示正在连接。
+  - OPEN：值为1，表示连接成功，可以通信了。
+  - CLOSING：值为2，表示连接正在关闭。
+  - CLOSED：值为3，表示连接已经关闭，或者打开连接失败。
+- 事件有
+  ```javascript
+  ws.addEventListener('open', function (event) {
+    ws.send('Hello Server!');
+  });
+  ws.addEventListener("close", function(event) {
+    var code = event.code;
+    var reason = event.reason;
+    var wasClean = event.wasClean;
+    // handle close event
+  });
+  ws.onmessage = function(event){
+    if(typeof event.data === String) {
+      console.log("Received data string");
+    }
+
+    if(event.data instanceof ArrayBuffer){
+      var buffer = event.data;
+      console.log("Received arraybuffer");
+    }
+  }
+  socket.addEventListener("error", function(event) {
+    // handle error event
+  });
+  ```
+- ws.send()用于向服务器发送数据
+![](asset/img/http-websocket-connection-lifecycle.png)
+![](asset/img/https-wss.jpg)
 
 ### serviceWorker：
 * 1.Service worker运行在worker上下文，因此它不能访问DOM。
