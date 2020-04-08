@@ -170,6 +170,8 @@ custom element, shodaw dom, template模板（x-tag，polymer），小程序貌�
 - ws.send()用于向服务器发送数据
 ![](asset/img/http-websocket-connection-lifecycle.png)
 ![](asset/img/https-wss.jpg)
+![](asset/img/http-websocket-tcp-ip.webp)
+![](asset/img/ws-tcp.webp)
 
 ### serviceWorker：
 * 1.Service worker运行在worker上下文，因此它不能访问DOM。
@@ -301,6 +303,11 @@ Object.defineProperty+订阅发布模式+解释器compiler解释vue自定义命�
 
 #### [状态码](https://www.runoob.com/http/http-status-codes.html)
 - 1表示信息类，2表示状态类，3表示重定向301永久，302临时 4请求错误403禁止访问，404找不到 5服务器错误 500服务器错误 503服务不可用
+
+#### [http缓存控制](https://blog.csdn.net/u012375924/article/details/82806617)
+- 在http中，控制缓存开关的字段有两个：Pragma 和 Cache-Control。
+- Pragma有两个字段Pragma和Expires。Pragma的值为no-cache时，表示禁用缓存，Expires的值是一个GMT时间，表示该缓存的有效时间。
+Pragma是旧产物，已经逐步抛弃，有些网站为了向下兼容还保留了这两个字段。如果一个报文中同时出现Pragma和Cache-Control时，以Pragma为准。同时出现Cache-Control和Expires时，以Cache-Control为准。即优先级从高到低是 Pragma -> Cache-Control -> Expires
 
 ### http https，udp，tcp，三次握手，四次挥别
 - tcp面向连接，可靠，正确顺序，三次握手，连接时间长，适合大量数据传输
@@ -551,6 +558,14 @@ GBK是国家标准GB2312基础上扩容后兼容GB2312的标准。GBK的文字�
 * https://www.acunetix.com/blog/articles/chrome-tightens-csrf-protection/ 
 * https://www.jianshu.com/p/66f77b8f1759
 
+#### jsonp缺点
+- 它只支持GET请求而不支持POST等其它类型的HTTP请求
+- 它只支持跨域HTTP请求这种情况，不能解决不同域的两个页面之间如何进行JavaScript调用的问题（此处需要使用html5的postmessage），非通用方案
+- jsonp在调用失败的时候不会返回各种HTTP状态码
+- 缺点是安全性。万一假如提供jsonp的服务存在页面注入漏洞，即它返回的javascript的内容被人控制的。那么结果是什么？所有调用这个 jsonp的网站都会存在漏洞。于是无法把危险控制在一个域名下…所以在使用jsonp的时候必须要保证使用的jsonp服务必须是安全可信的
+
+#### 跨域携带cookie，第一种使用代理，第二种cors，服务器设置Access-Control-Allow-Credentials字段为true，Access-Control-Allow-Origin为白名单域名；同时客户端设置withCredentials: true，crossDomain:true, 设置跨域为true
+
 #### 怎么防止重复提交
 * 多次submit按钮，刷新，回退会造成重复提交，前端和后端分别如何防御
 * https://hw1287789687.iteye.com/blog/2427055
@@ -679,7 +694,12 @@ componentWillUnmount：清理垃圾，比如删除绑定的事件等等内存回
 - const,let,默认参数，箭头函数，尾调用优化，解构对象、数组，for of 展开运算符，set，map，Array.from
 - const 定义一个常量，且必须初始化，不可修改，但如果定义的是对象，对象的属性可以修改，因为对象属性的修改不影响对象（或者说并没有修改对象）
 - [es6 set](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Set)
+  - Set 对象允许你存储任何类型的唯一值，无论是原始值或者是对象引用。
+  - new Set([1, 2, 3, 4, 5]);
 - [es6 map](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Map)
+  - Map 对象保存键值对，并且能够记住键的原始插入顺序。任何值(对象或者原始值) 都可以作为一个键或一个值。
+  - 一个Map对象在迭代时会根据对象中元素的插入顺序来进行, for...of,循环在每次迭代后会返回一个形式为[key，value]的数组
+  - new Map([ [3, 'three'], [2, 'two'], [1, 'eins'] ])
 
 #### 箭头函数和普通函数区别
 - 箭头函数不能new，没有prototype
@@ -732,10 +752,36 @@ componentWillUnmount：清理垃圾，比如删除绑定的事件等等内存回
 - var声明要么全局要么函数作用域
 - let局部作用域，不会声明提升，不能重复声明
 
-### 进程
+### [进程与线程](https://www.jianshu.com/p/a4fa4edbeb8a)
+- 线程是进程中执行运算的最小单位，是进程中的一个实体，是被系统独立调度和分派的基本单位，线程自己不拥有系统资源，只拥有一点在运行中必不可少的资源，但它可与同属一个进程的其它线程共享进程所拥有的全部资源。一个线程可以创建和撤消另一个线程，同一进程中的多个线程之间可以并发执行优点：
+  - 易于调度。
+  - 提高并发性。通过线程可方便有效地实现并发性。进程可创建多个线程来执行同一程序的不同部分。
+  - 开销少。创建线程比创建进程要快，所需开销很少。。
+  - 利于充分发挥多处理器的功能。通过创建多线程进程，每个线程在一个处理器上运行，从而实现应用程序的并发性，使每个处理器都得到充分运行。
 - 进程可以包含多个线程，线不可包含多个进程
+- 资源分配给进程，同一进程的所有线程共享该进程的所有资源。
 - 进程独占内存，线程共享内存
 - 进程上下文切换大于线程切换消耗
+- 进程和线程的区别
+  - 调度：线程作为调度和分配的基本单位，进程作为拥有资源的基本单位
+  - 并发性：不仅进程之间可以并发执行，同一个进程的多个线程之间也可并发执行
+  - 拥有资源：进程是拥有资源的一个独立单位，线程不拥有系统资源，但可以访问隶属于进程的资源.
+  - 系统开销：在创建或撤消进程时，由于系统都要为之分配和回收资源，导致系统的开销明显大于创建或撤消线程时的开销。
+- 进程间通信的方式
+  - 管道（pipe）及有名管道（named pipe）：管道可用于具有亲缘关系的父子进程间的通信，有名管道除了具有管道所具有的功能外，它还允许无亲缘关系进程间的通信。
+  - 信号（signal）：信号是在软件层次上对中断机制的一种模拟，它是比较复杂的通信方式，用于通知进程有某事件发生，一个进程收到一个信号与处理器收到一个中断请求效果上可以说是一致的。
+  - 消息队列（message queue）：消息队列是消息的链接表，它克服了上两种通信方式中信号量有限的缺点，具有写权限得进程可以按照一定得规则向消息队列中添加新信息；对消息队列有读权限得进程则可以从消息队列中读取信息。
+  - 共享内存（shared memory）：可以说这是最有用的进程间通信方式。它使得多个进程可以访问同一块内存空间，不同进程可以及时看到对方进程中对共享内存中数据得更新。这种方式需要依靠某种同步操作，如互斥锁和信号量等。
+  - 信号量（semaphore）：主要作为进程之间及同一种进程的不同线程之间得同步和互斥手段。
+  - 套接字（socket）：这是一种更为一般得进程间通信机制，它可用于网络中不同机器之间的进程间通信，应用非常广泛。
+- 线程通信方式
+  - 多个线程可能更改全局变量，因此全局变量最好声明为volatile
+  - 使用消息实现通信
+  - 使用事件CEvent类实现线程间通信，Event对象有两种状态：有信号和无信号，线程可以监视处于有信号状态的事件，以便在适当的时候执行对事件的操作
+
+#### select, poll, epoll区别
+![](asset/img/select-poll-epoll1.png)
+![](asset/img/select-poll-epoll2.png)
 
 #### 死锁
 - 互斥，请求保持，不可剥夺，循环等待
@@ -800,7 +846,9 @@ componentWillUnmount：清理垃圾，比如删除绑定的事件等等内存回
 
 #### disable readonly区别都不可更改，但readonly会提交数据，input针对输入框，而disable针对所有表单
 
-#### 排序算法复杂度
+#### 数据结构复杂度，排序算法复杂度
+![](asset/img/time-complexity2.png)
+![](asset/img/time-complexity.png)
 ![](asset/img/th.jpeg)
 
 #### [leetCode试题](https://www.cnblogs.com/grandyang/p/4606334.html)
@@ -1117,5 +1165,39 @@ selectFileImage(el){
 ```
 - [另一个前端压缩图片的文章](https://zhuanlan.zhihu.com/p/67260658)
 
-#### 二叉树，冒泡排序，快速排序，动态规划，递归算法
+#### 冒泡排序，快速排序，动态规划，递归算法
 
+#### 二叉树
+- 二叉树的性质
+  - 在二叉树的第 i 层上至多有个结点(i>=1)。
+  - 深度为k的二叉树至多有个结点，(k>=1)。
+  - 对任何一棵二叉树T，如果其终端结点数为n0，度为2的结点数为n2，则n0 = n2 + 1;
+  - 一棵深度为k且有 - 1个结点的二叉树称为满二叉树。
+  - 深度为k的，有n个结点的二叉树，当且仅当其每一个结点都与深度为k的满二叉树中编号从1至n的结点一一对应时，称之为完全二叉树。
+- 完全二叉树的两个特性
+  - 具有n个结点的完全二叉树的深度为Math.floor(log_2 n) + 1;
+  - 如果对一棵有n个结点的完全二叉树（其深度为Math.floor(log_2 n) + 1）的结点按层序编号（从第1层到第Math.floor(log_2 n) + 1，每层从左到右），则对任一结点（1<=i<=n）有：
+    - 如果i=1，则结点i是二叉树的根，无双亲；如果i>1，则其双亲parent(i)是结点Math.floor(i/2)。
+    - 如果2i > n，则结点i无左孩子（结点i为叶子结点）；否则其左孩子LChild(i)是结点2i.
+    - 如果2i + 1 > n，则结点i无右孩子；否则其右孩子RChild(i)是结点2i + 1;
+![](asset/img/binary-tree.webp)
+![](asset/img/binary-tree1.webp)
+- 二叉树有深度遍历和广度遍历， 深度遍历有前序、 中序和后序三种遍历方法（非递归遍历（利用栈：将遍历到的结点都依次存入栈中，拿结果时从栈中访问））
+- 广度遍历：按照层次一层层遍历;广度优先遍历二叉树(层序遍历)是用队列来实现的，广度遍历是从二叉树的根结点开始，自上而下逐层遍历；在同一层中，按照从左到右的顺序对结点逐一访问
+- 二叉树的遍历要使用到栈和队列还有递归等
+![](asset/img/traverse-way.webp)
+- 前序遍历：- + a * b c / d e
+- 中序遍历：a + b * c - d / e
+- 后序遍历：a b c + d e / -
+- 广度遍历：- + / a * d e b c
+
+
+#### [数据库事务特性，以及为什么要用事务(保证数据的一致性和完整性,避免异常和错误等导致的数据信息异常)](https://www.cnblogs.com/fjdingsd/p/5273008.html)
+- 原子性（原子性是指事务包含的所有操作要么全部成功，要么全部失败回滚）
+- 一致性，一致性是指事务必须使数据库从一个一致性状态变换到另一个一致性状态，也就是说一个事务执行之前和执行之后都必须处于一致性状态。拿转账来说，假设用户A和用户B两者的钱加起来一共是5000，那么不管A和B之间如何转账，转几次账，事务结束后两个用户的钱相加起来应该还得是5000，这就是事务的一致性。
+- 隔离性，隔离性是当多个用户并发访问数据库时，比如操作同一张表时，数据库为每一个用户开启的事务，不能被其他事务的操作所干扰，多个并发事务之间要相互隔离
+- 持久性，持久性是指一个事务一旦被提交了，那么对数据库中的数据的改变就是永久性的，即便是在数据库系统遇到故障的情况下也不会丢失提交事务的操作
+
+#### [发布订阅设计模式，观察者模式，两者的区别](https://www.cnblogs.com/lovesong/p/5272752.html)
+![](asset/img/publish-subscribe.png)
+![](asset/img/observer.png)

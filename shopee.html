@@ -5,9 +5,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Document</title>
+    <style>
+      #visibility{
+        visibility: hidden;
+        width: 200px;
+        height: 200px;
+      }
+      #opacity{
+        opacity: 1;
+        width: 200px;
+        height: 200px;
+      }
+    </style>
   </head>
   <body>
+    <div id="visibility"></div>
+    <div id="opacity"></div>
     <script>
+      /* 测试visibility和opacity单击时是否响应， visibility不会响应，而opacity会响应 */
+      document.documentElement.addEventListener("click",function(e){
+        let elemId = e.target.id;
+        if(["visibility","opacity"].indexOf(elemId)!==-1){
+          alert(elemId+" is clicked");
+        }
+      }, false)
+
       // ----↓---------------------↓------------------↓------------------↓--------------------------↓---------------------------
       // symmetric(lastRight对称点) j(i对称点)     lastMiddle              i                       lastRight
       // lastRight<=i, =>没有计算过点数据可以复用，乖乖从半径1开始一个一个计算是否对称
@@ -582,6 +604,29 @@
       return arrSumRecursion(rest, sum+first);
      }
      console.log(arrSumRecursion([1,4,2,8]));
+
+     // 如下代码执行结果是1，3，5，6
+     Promise.resolve()
+        .then(() => {
+          console.log("1");
+          throw "Error";
+        })
+        .then(() => {
+          console.log("2");
+        })
+        .catch(() => {
+          console.log("3");
+          throw "Error";
+        })
+        .then(() => {
+          console.log("4");
+        })
+        .catch(() => {
+          console.log("5");
+        })
+        .then(() => {
+          console.log("6");
+        });
     </script>
   </body>
 </html>

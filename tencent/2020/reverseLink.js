@@ -1,5 +1,5 @@
 /*
-  链表翻转反转
+  链表翻转反转，链表反转
   reference：https://juejin.im/post/5e364ce16fb9a02fe654ba69
 */
 function myReverse (linkedList) {
