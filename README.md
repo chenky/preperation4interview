@@ -875,6 +875,9 @@ $$ 2^{n-1} $$
 - 虚拟长列表react-window 和 react-virtualized 是热门的虚拟滚动库
 - shouldComponentUpdate(nextProps, nextState) 默认返回true表示需要diff更新dom，false不diff更新dom
 - 使用PureComponent组件，无状态组件
+  - React.PureComponent 与 React.Component 很相似。两者的区别在于 React.Component 并未实现 shouldComponentUpdate()，而 React.PureComponent 中以浅层对比 prop 和 state 的方式来实现了该函数。
+  - 仅在你的 props 和 state 较为简单时，才使用 React.PureComponent，或者在深层数据结构发生变化时调用 forceUpdate() 来确保组件被正确地更新。你也可以考虑使用 immutable 对象加速嵌套数据的比较。
+  - 此外，React.PureComponent 中的 shouldComponentUpdate() 将跳过所有子组件树的 prop 更新。因此，请确保所有子组件也都是“纯”的组件。
 - react喜欢稳定对dom结构，所以要减少删除增加渲染，要优化条件渲染，同时使用隐藏显示方式
 - Fragments避免额外标记，层级减少
 - css动画替代javascript动画
@@ -884,6 +887,10 @@ $$ 2^{n-1} $$
 - 动态加载路由，按需加载，react-loadable组件，或者使用react.lazy,suspense
 - 对于函数式组件可以使用useCallback（防止子组件无意义重渲染）
 - 使用useMemo,memo缓存组件结果，防止重复渲染
+  - React.memo 为高阶组件。它与 React.PureComponent 非常相似，但它适用于函数组件，但不适用于 class 组件。
+  - 如果你的函数组件在给定相同 props 的情况下渲染相同的结果，那么你可以通过将其包装在 React.memo 中调用，以此通过记忆组件渲染结果的方式来提高组件的性能表现。这意味着在这种情况下，React 将跳过渲染组件的操作并直接复用最近一次渲染的结果
+  - React.memo(MyComponent, areEqual)
+    - 默认情况下其只会对复杂对象做浅层对比，如果你想要控制对比过程，那么请将自定义的比较函数通过第二个参数传入来实现。
 - 使用不可变数据Immutable
 - reselect，在使用Redux过程中，组件的状态数据通常是从state派生出来的，要做很多计算的逻辑，对计算缓存
 - [react新特性，concurrent模式使用时间分片的方式处理，所以每个分片的任务有不同的阶段，React Fiber把更新过程碎片化](https://zhuanlan.zhihu.com/p/26027085)
@@ -1040,6 +1047,75 @@ rollup只处理函数和顶层的import/export变量，不能把没用到的类�
 - 对于已经上传过的信息，服务器对比hash如果有则不再重复上传，前端只上传未上传完的切片（只要切片没有完全上传完就会重新上传）。
 
 #### [webpack循环引用问题, webpack会先判断缓存中是否有，防止循环引用，installedModules[moduleId]](https://juejin.im/post/5aa245e35188255585072687)
+
+#### [大量dom优化，虚拟列表，无限滚动优化]()
+- [react-virtualized有现成组件](https://bvaughn.github.io/react-virtualized/#/components/List)
+- 总体思路只保留三页数据，下拉到底部时删除前两页，追加后两页，上拉到顶部时同理
+- 滚动需要设置防抖，加一个延时处理
+- 如果要保证滚动条的话就需要设置一个top（react-virtualized是这样做的），或者css3的translateY值，保证位移
+
+#### [前端图片压缩，canvas压缩图片，canvas图片压缩](https://juejin.im/post/5c5568c8518825622243a3a5)
+- 使用 FileReader 对图片文件进行读取，并转化为 Base64 编码的 dataURL
+- 用上一步得到的 Base64 编码的图片转化为一个 Image DOM 对象 (因为 canvas 的 drawImage 方法传入的参数只支持 Canvas​Image​Source)
+- 调用 canvas 接口画出图像并转为压缩后的 dataURL
+```javascript
+ resizeMe(img,type, max_width, max_height) {
+        var canvas = document.createElement('canvas');
+        var width = img.width;
+        var height = img.height;
+        max_width = !isNaN(max_width)?max_width:0;
+        max_height = !isNaN(max_height)?max_height:0;
+        // 在这里图片是等比例缩放的，调用方法时填入图片允许的最大宽度或者是最大的高度
+        //如果最大宽度为0 则按照最大高度固定，宽度自适应的方式来实现
+        //如果是最大高度为0，则按照最大的宽度来实现
+        if(max_width==0){
+            if (height > max_height) {
+                width = Math.round(width *= max_height / height);
+                height = max_height;
+            }
+        }
+        if(max_height==0){
+            if (width > max_width) {
+                height = Math.round(height *= max_width / width);
+                width = max_width;
+            }
+        }
+        canvas.width =width;
+        canvas.height = height;
+        var ctx = canvas.getContext("2d");
+        canvas.width =width;
+        canvas.height = height;
+        ctx.drawImage(img,0,0, width, height);
+        type = type === 'jpg'?"jpeg":type;
+        return canvas.toDataURL("image/"+type, 0.7);//这里的0.7值的是图片的质量
+  }
+selectFileImage(el){
+     var reader = new FileReader();
+    var file = el.target.files[0]
+    var fileName = file.name;
+    var fileType = file.name.split(".")[1];
+        reader.readAsArrayBuffer(file);
+        reader.onload = (ev) => {
+            var blob = new Blob([ev.target['result']]);
+            window['URL'] = window['URL'] || window['webkitURL'];
+            var blobURL = window['URL'].createObjectURL(blob);
+            var image = new Image();
+            image.src = blobURL;
+            image.onload = (e) => {
+                var thumb = this.resizeMe(image,fileType, 400, 0);//获得的路径是将图片转换成了base64
+                axios.post("http://127.0.0.1:3003/useasync/upload",{file:thumb,fileName:fileName}).then(res => {
+                    if (res.data.code == 200) {
+                       console.log(res)
+                    } else {
+                        console.log(res)
+                    }
+                });
+            }
+        }
+    }
+
+```
+- [另一个前端压缩图片的文章](https://zhuanlan.zhihu.com/p/67260658)
 
 #### 二叉树，冒泡排序，快速排序，动态规划，递归算法
 
