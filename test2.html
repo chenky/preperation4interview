@@ -190,6 +190,69 @@
       console.log(diffInArr([2,5,90,1,6,8],3))
       console.log(diffInArr([2,5,90,1,6,8],5))
       console.log(diffInArr([2,5,90,1,6,8],30))
+
+      /*
+        第二种方式是使用二分搜索树，加一个smaller变量来标记比当前小的所有节点个数
+      */
+      function countSmaller(arr) {
+        function Node(key) {
+          this.key = key;
+          // 存储数组中所有比当前节点小的元素的个数
+          this.smaller = 0;
+          // 存储当前节点右边比当前节点小的元素个数
+          this.rightSmaller = 0;
+          this.left = null;
+          this.right = null;
+        }
+
+        let root = null;
+        let nodes = [];
+
+        let insertNode = function (node, newNode) {
+          // 小的在左侧子树
+          if (node.key >= newNode.key) {
+            if (node.key > newNode.key) {
+              // 只有父节点比子节点大的时候，父节点才需要+1，如果这种判断，表示整个数组中比当前节点小的元素个数
+              node.smaller++;
+            }
+            if (node.left === null) {
+              node.left = newNode;
+            } else {
+              insertNode(node.left, newNode);
+            }
+          } else {
+            // 大的放在右侧子树， 因为当前节点大，所以比当前节点小的数是父节点smaller+1，如果这种判断，表示整个数组中比当前节点小的元素个数
+            const temp = node.smaller + 1;
+            newNode.smaller = temp; 
+            newNode.rightSmaller = temp;
+            if (node.right === null) {
+              node.right = newNode;
+            } else {
+              insertNode(node.right, newNode);
+            }
+          }
+        };
+
+        let insert = function (key) {
+          let newNode = new Node(key);
+          if (root === null) {
+            root = newNode;
+          } else {
+            insertNode(root, newNode);
+          }
+          return newNode;
+        };
+
+        for (let i = arr.length - 1; i >= 0; i--) {
+          const key = arr[i];
+          nodes[i] = insert(key);
+        }
+        return nodes.map((node) => node.rightSmaller);
+      }
+
+      console.log(countSmaller([8, 1, 2, 2, 3]));
+      console.log(countSmaller([5, 2, 6, 1]));
+      console.log(countSmaller([8, 5, 7, 2, 3]));
     </script>
   </body>
 </html>
