@@ -912,5 +912,7 @@ rollup只处理函数和顶层的import/export变量，不能把没用到的类�
 - 为了不阻塞，需要使用webworker，通过postMessage得到hash
 - 对于已经上传过的信息，服务器对比hash如果有则不再重复上传，前端只上传未上传完的切片（只要切片没有完全上传完就会重新上传）。
 
+#### [webpack循环引用问题, webpack会先判断缓存中是否有，防止循环引用，installedModules[moduleId]](https://juejin.im/post/5aa245e35188255585072687)
+
 #### 二叉树，冒泡排序，快速排序，动态规划，递归算法
 
