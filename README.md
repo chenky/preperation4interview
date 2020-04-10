@@ -27,6 +27,22 @@ custom element, shodaw dom, template模板（x-tag，polymer），小程序貌�
 * https://juejin.im/post/5afd136551882542682e6ad7
 * https://github.com/Lmagic16/blog/issues/31
 
+#### 小程序优缺点
+- 优点
+  - 无需下载安装，用完即走
+  - 可以访问更多系统功能，GPS定位、录音、拍视频、重力感应等
+  - 附近的小程序功能，按距离搜索到
+  - 可搜索，扫描，分享到群聊，用了就是用户
+  - 开发成本低，开发周期短，更流畅，更多曝光，利于公众号h5变现
+  - 可以用服务提醒，是召回用户的好的方式
+- 缺点
+  - 小程序有大小限制开始1m后来2m
+    - 控制小程序中的图片资源
+    - 及时清理没有使用到的代码和资源
+  - 能力受到平台的严格限制，平台不提供就无法使用
+  - 小程序不能分享链接，不能分享到朋友圈、QQ空间和QQ好友，难引流到其他网站或App
+
+
 ### webRTC:
 * https://developer.mozilla.org/zh-CN/docs/Web/API/WebRTC_API
 
@@ -36,6 +52,7 @@ custom element, shodaw dom, template模板（x-tag，polymer），小程序貌�
 
 ### [websocket](http://www.ruanyifeng.com/blog/2017/05/websocket.html)
 - HTTP 协议有一个缺陷：通信只能由客户端发起,websocket全双工通讯
+- http是无状态协议，请求响应断开方式，状态通过cookie头保存
 - 建立在 TCP 协议之上，服务器端的实现比较容易。
 - 与 HTTP 协议有着良好的兼容性。默认端口也是80和443，并且握手阶段采用 HTTP 协议，因此握手时不容易屏蔽，能通过各种 HTTP 代理服务器。 
 - 数据格式比较轻量，性能开销小，通信高效。
@@ -360,6 +377,30 @@ net.ipv4.tcp_fin_timeout 修改系默认的 TIMEOUT 时间
 - 投诉中间运营商
 - 升级成https秘文传输，无法加人任何恶意代码
 
+#### RESTful
+- 增加一个朋友，uri: generalcode.cn/v1/friends 接口类型：POST
+- 删除一个朋友，uri: generalcode.cn/va/friends 接口类型：DELETE
+- 修改一个朋友，uri: generalcode.cn/va/friends 接口类型：PUT
+- 查找朋友，uri: generalcode.cn/va/friends 接口类型：GET
+
+#### get，post区别
+- GET因为是读取，就可以对GET请求的数据做缓存，没有副作用，幂等
+- post往往有副作用，非幂等
+- get请求参数都在url中明文，浏览器会缓存，有长度限制2048，而post在请求体中没有长度限制
+- post支持Content-Type设置body格式，charset设置字符编码
+
+#### utf8和gbk的区别
+- 中文utf8占用3个字节，存储英文文件都是单字节，gbk一个汉字占用两个字节
+- GBK包含全部中文字符
+- UTF-8则包含全世界所有国家需要用到的字符。
+- UTF-8编码的文字可以在各国各种支持UTF8字符集的浏览器上显示
+- 所以对于英文多的用utf8省空间，英文单字节，中文多且在国内则用gbk，如果需要国外还是需要utf8，因为国外浏览器没有中文包，会乱码
+- GBK、GB2312等与UTF8之间都必须通过Unicode编码才能相互转换，GBK、GB2312－Unicode －UTF8
+- ASCII(ISO-8859-1)是鼻祖，最简单的方式，字节高位为0
+- GB2312、GBK、GB18030，这几个是中文编码方式，并向下兼容。GB2312包含7000多个汉字和字符，GBK包含21000多个，GB18030更厉害，到了27000多个。他们都是用2个字节来表示一个汉字。跟ascii是怎么区分的呢？如果高字节的高位为1（也就是高字节大于127），就表示是汉字，低字节并无明显特征。
+- Unicode是统一编码，它建立了一个全世界统一的码表。世界上的所有文字，在这张码表中都是唯一的
+- 
+
 #### 跨域CORS
 * http://www.ruanyifeng.com/blog/2016/04/cors.html
 - Access-Control-Allow-Origin: http://api.bob.com
@@ -501,8 +542,91 @@ Access-Control-Expose-Headers: FooBar
 
 ### 前端性能优化
 * https://juejin.im/post/59ff2dbe5188254dd935c8ab
-### 测量白屏和首屏加载时间
+### 测量白屏时间和首屏时间
 * https://lz5z.com/Web%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96-%E9%A6%96%E5%B1%8F%E5%92%8C%E7%99%BD%E5%B1%8F%E6%97%B6%E9%97%B4/
+- 白屏时间 = firstPaint - performance.timing.navigationStart || pageStartTime
+  ```html
+  <!DOCTYPE html>
+  <html>
+  <head>
+      <meta charset="utf-8">
+      <title>白屏</title>
+      <script>
+          // 不兼容 performance.timing 的浏览器
+          window.pageStartTime = Date.now()
+      </script>
+          <!-- 页面 CSS 资源 -->
+          <link rel="stylesheet" href="xx.css">
+          <link rel="stylesheet" href="zz.css">
+          <script>
+              // 白屏结束时间
+              window.firstPaint = Date.now()
+              // 白屏时间
+              console.log(firstPaint - performance.timing.navigationStart)
+          </script>
+  </head>
+  <body>
+      <h1>Hello World</h1>
+  </body>
+  </html>
+  ```
+- 首屏模块标签标记法,由于浏览器解析 HTML 是按照顺序解析的，当解析到某个元素的时候，你觉得首屏完成了，就在此元素后面加入 script 计算首屏完成时间。
+  ```html
+  <!DOCTYPE html>
+  <html>
+  <head>
+      <meta charset="utf-8">
+      <title>首屏</title>
+      <script>
+          // 不兼容 performance.timing 的浏览器
+          window.pageStartTime = Date.now()
+      </script>
+  </head>
+  <body>
+      <!-- 首屏可见内容 -->
+      <div class=""></div>
+      <!-- 首屏可见内容 -->
+      <div class=""></div>
+      <script type="text/javascript">
+              // 首屏屏结束时间
+              window.firstPaint = Date.now()
+              // 首屏时间
+              console.log(firstPaint - performance.timing.navigationStart)
+      </script>
+      <!-- 首屏不可见内容 -->
+      <div class=""></div>
+      <!-- 首屏不可见内容 -->
+      <div class=""></div>
+  </body>
+  </html>
+  ```
+- 统计首屏内加载最慢的图片/iframe, 我们只需要监听首屏内所有的图片的 onload 事件，获取图片 onload 时间最大值，并用这个最大值减去 navigationStart 即可获得近似的首屏时间。
+  ```html
+  <!DOCTYPE html>
+  <html>
+  <head>
+      <meta charset="utf-8">
+      <title>首屏</title>
+      <script>
+          // 不兼容 performance.timing 的浏览器
+          window.pageStartTime = Date.now()
+      </script>
+  </head>
+  <body>
+      <img src="https://lz5z.com/assets/img/google_atf.png" alt="img" onload="load()">
+      <img src="https://lz5z.com/assets/img/css3_gpu_speedup.png" alt="img" onload="load()">
+      <script>
+          function load () {
+              window.firstScreen = Date.now()
+          }
+          window.onload = function () {
+              // 首屏时间
+              console.log(window.firstScreen - performance.timing.navigationStart)
+          }
+      </script>
+  </body>
+  </html>
+  ```
 
 ### 兼容IE事件工具函数
 * https://blog.csdn.net/wangcuiling_123/article/details/73085958
@@ -565,6 +689,9 @@ GBK是国家标准GB2312基础上扩容后兼容GB2312的标准。GBK的文字�
 - 缺点是安全性。万一假如提供jsonp的服务存在页面注入漏洞，即它返回的javascript的内容被人控制的。那么结果是什么？所有调用这个 jsonp的网站都会存在漏洞。于是无法把危险控制在一个域名下…所以在使用jsonp的时候必须要保证使用的jsonp服务必须是安全可信的
 
 #### 跨域携带cookie，第一种使用代理，第二种cors，服务器设置Access-Control-Allow-Credentials字段为true，Access-Control-Allow-Origin为白名单域名；同时客户端设置withCredentials: true，crossDomain:true, 设置跨域为true
+- a.com跨域请求到b.com, withCredentials: true则会带上a.com的cookie
+- 但a,b域依然受同源策略限制，a,b不能相互访问设置对方的cookie，即永远不会影响到同源请求
+- 不同域下的XmlHttpRequest 响应，不论其Access-Control- header 设置什么值，都无法为它自身站点设置cookie值，除非它在请求之前将withCredentials 设为true。
 
 #### 怎么防止重复提交
 * 多次submit按钮，刷新，回退会造成重复提交，前端和后端分别如何防御
@@ -581,14 +708,6 @@ GBK是国家标准GB2312基础上扩容后兼容GB2312的标准。GBK的文字�
 #### react中虚拟dom diff算法
 陈屹《深入react技术栈》
 
-#### xss安全问题，比如url中传递一张图片应该做哪些处理，哪些特殊字符需要过滤
-* xss攻击分为存储型和反射性
-* httponly,设置csp浏览器只执行指定域名对script
-* <,>"'&/等字符进行转译
-* url中参数要进行编码转义，decodeURIComponent
-* https://tech.meituan.com/2018/09/27/fe-security.html
-* https://zhuanlan.zhihu.com/p/32237154
-
 #### 跨域cors的http头要设置哪些，以及浏览器如何发送预检请求，整个原理说一说
 * Access-Control-Allow-Origin: http://foo.example
 * Access-Control-Allow-Methods: POST, GET, OPTIONS
@@ -599,6 +718,7 @@ GBK是国家标准GB2312基础上扩容后兼容GB2312的标准。GBK的文字�
 
 
 #### 前端优化描述，除了雅虎军规之外的优化
+- webpack打包优化，动态路由按需加载，长时间缓存，增量更新
 * http2(多路复用，首部压缩，服务器推送，流量控制)，http3基于udp，ttr
 * 域名收敛，dns预解析（<meta http-equiv="x-dns-prefetch-control" content="on" ><link rel="dns-prefetch" href="//cdn.domain.com" >）
 * 通常情况下，我们认为 TCP 网络传输的最大传输单元（Maximum Transmission Unit，MTU）为 1500B，即一个RTT（Round-Trip Time，网络请求往返时间）内可以传输的数据量最大为 1500 字节。因此，在前后端分离的开发模式中，尽量保证页面的 HTML 内容在 1KB 以内，这样整个 HTML 的内容请求就可以在一个 RTT 内请求完成，最大限度地提高 HTML 载入速度。
@@ -713,6 +833,12 @@ componentWillUnmount：清理垃圾，比如删除绑定的事件等等内存回
 - flex,一维布局
 - grid，二维布局
 
+#### [float和display：inline-block；的区别](https://developer.mozilla.org/zh-CN/docs/CSS/float)
+- 由于float意味着使用块布局，它在某些情况下修改display 值的计算值：
+- float会脱离正常文档流，但仍然保持部分流动性，所以可以文字环绕它
+- 使用float需要清理float否则影响父元素尺寸
+- display：inline-block只是单纯的把元素设置为行内块
+
 #### es6中的class
 - 类中的prototype不可以被重写
 - 所有成员不可枚举
@@ -724,8 +850,6 @@ componentWillUnmount：清理垃圾，比如删除绑定的事件等等内存回
 - 本地存储5m
 
 #### cookie格式以分号隔开，name=value;Expires=time; Max-Age=22;Domain=aa.com;path=/;Secure;HttpOnly;SameSite
-
-#### js数据类型，String, Number, undefined, null, Boolean, Object 
 
 #### 5.15多少度 67.5度
 
@@ -826,6 +950,12 @@ componentWillUnmount：清理垃圾，比如删除绑定的事件等等内存回
   - 表单携带token（黑客虽然携带cookie，但是我们可以控制请求参数，此token可以约定算法或者服务器存储【安全系数高】）
   - cookie的SameSite属性， lax（link，form get），strict（其他域都不允许）属性
 - xss攻击，存储型和反射型，对输入和输出都要进行编码，分为html编码，url编码，javascritp编码，css编码，html标签属性编码，json编码，目前框架基本都已经做了编码处理，结合csp（script-src，style-src，img-src）
+  * xss攻击分为存储型和反射性
+  * httponly,设置csp浏览器只执行指定域名对script
+  * <,>"'&/等字符进行转译
+  * url中参数要进行编码转义，decodeURIComponent
+  * https://tech.meituan.com/2018/09/27/fe-security.html
+  * https://zhuanlan.zhihu.com/p/32237154
   - [防御类库](https://github.com/leizongmin/js-xss)
   - [owasp类库，org.owasp.encoder](https://owasp.org/www-project-java-encoder/#tab=Use_the_Java_Encoder_Project)
   - 后端将数据存入数据库之前，先进行转义。
@@ -843,6 +973,11 @@ componentWillUnmount：清理垃圾，比如删除绑定的事件等等内存回
     - 禁止用户自定义css，style等
 - [iframe嵌入三方应用时，sandbox的安全属性限制其行为，默认是最小权限原则，有允许提交表单，弹窗，执行脚步等等](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/iframe)
 - 上传一段js（本来要求用户上传图片的），浏览器强大等容错能力识别是js并执行，防御方式设置X-Content-Type-Options这个HTTP Header明确禁止浏览器去推断响应类型。
+- [sql注入与防御，把用户的输入数据当作sql语句执行](https://www.cnblogs.com/digdeep/p/4715245.html)
+  - 防范使用存储过程，
+  - 采用sql语句预编译和绑定变量，是防御sql注入的最佳方法，使用PreparedStatement把用户输入当成普通字符串，或者使用相应的函数过滤特殊sql字符
+  - 严格检查参数的数据类型，还有可以使用一些安全函数，来方式sql注入。ESAPI.encoder().encodeForSQL(codec, name)编码成普通字符串，而不是sql语句
+  - 一般框架现在默认都是预编译的
 
 #### disable readonly区别都不可更改，但readonly会提交数据，input针对输入框，而disable针对所有表单
 
@@ -1055,7 +1190,7 @@ app.use((error, req, res, next) =&gt; {
 
 #### css中padding，margin百分比相对于父元素宽度进行比较
 
-#### javascript基本数据类型，undefined,null,boolean,number,string,object(array,function,object,regex), es6有Symbol,BigInt
+#### javascript基本数据类型，undefined,null,boolean,number,string,object(array,function,object,regex), es6有Symbol,BigInt, 其中基本数据类型有 undefined,null, boolean,number,string,bigint,symbol
 
 #### [浏览器垃圾回收机制](https://www.cnblogs.com/dolphinX/p/3348468.html)
 - 标记清除，有标记的删除，不在当前环境，垃圾回收器会在运行的时候给存储在内存中的所有变量加上标记，然后去掉环境中的变量以及被环境中变量所引用的变量（闭包），在这些完成之后仍存在标记的就是要删除的变量了，因为环境中的变量已经无法访问到这些变量了，然后垃圾回收器相会这些带有标记的变量机器所占空间
@@ -1201,3 +1336,33 @@ selectFileImage(el){
 #### [发布订阅设计模式，观察者模式，两者的区别](https://www.cnblogs.com/lovesong/p/5272752.html)
 ![](asset/img/publish-subscribe.png)
 ![](asset/img/observer.png)
+
+#### 网站搭建流程
+- 万网域名注册
+- 购买服务器/主机空间
+- 网站域名的备案
+- 使用xftp网站程序的上传
+- 网站域名的解析
+  - 通过域名后台管理，找到域名解析，然后找到解析记录的对应编辑栏。
+- 安装安全证书
+- 查看网站是否可以正常访问
+![](asset/img/publish-website.png)
+
+#### linux修改权限
+- 命令格式：chmod {u|g|o|a}{+|-|=}{r|w|x} filename， 也可以使用八进制数字法
+  - u (user)   表示用户本人。 
+  - g (group)  表示同组用户。 
+  - o (oher)   表示其他用户。 
+  - a (all)    表示所有用户。 
+  - +用于给予指定用户的许可权限。 
+  - -用于取消指定用户的许可权限。 
+  - =将所许可的权限赋给文件。 
+  - r (read)   读许可，表示可以拷贝该文件或目录的内容。 
+  - w (write)  写许可，表示可以修改该文件或目录的内容。 
+  - x (execute)执行许可，表示可以执行该文件或进入目录。
+
+#### html meta viewport原理
+- 移动版的 Safari 浏览器最新引进了 viewport 这个 meta tag，让网页开发者来控制 viewport 的大小和缩放，其他手机浏览器也基本支持
+- layout viewport比可视窗口大，所以pc端的页面也能正常显示，document.documentElement.clientWidth可获取其值
+- visual viewport，ayout viewport的宽度是大于浏览器可视区域的宽度的，所以还需要一个viewport来代表浏览器可视区域的大小，这个viewport叫做 visual viewport。visual viewport的宽度可以通过 document.documentElement.innerWidth来获取。
+- ideal viewport是一个能完美适配移动设备的viewport，ideal viewport并没有一个固定的尺寸，不同的设备有不同的ideal viewport。例如，所有的iphone的ideal viewport宽度都是320px，无论它的屏幕宽度是320还是640。ideal viewport 的意义在于，无论在何种分辨率的屏幕下，针对ideal viewport 而设计的网站，

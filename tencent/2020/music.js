@@ -14,17 +14,40 @@
 */
 
 /*
-3. 使用xhr方式提交post请求，a.qq.com提交到b.qq.com，所以需要设置为共同父域
+https://developer.mozilla.org/en-US/docs/Web/Guide/AJAX/Getting_Started
+3. 使用xhr方式提交post请求，a.qq.com提交到b.qq.com，所以需要设置为共同父域， ajax请求原生代码
 */
 function createXhr(method, url, params, callback) {
-  document.cookie.domain = "example.com";
-  let xhr = new XMLHttpRequest();
-  xhr.open(method, url);
+  // document.cookie.domain = "example.com";
+  let xhr;
+  if (window.XMLHttpRequest) { // Mozilla, Safari, IE7+ ...
+    xhr = new XMLHttpRequest();
+  } else if (window.ActiveXObject) { // IE 6 and older
+    xhr = new ActiveXObject("Microsoft.XMLHTTP");
+  } else {
+    // 不支持ajax请求
+    return null;
+  }  
+  // 如果需要跨域携带cookie
+  xhr.withCredentials = true;
   xhr.onreadystatechange = function(event) {
-    if (xhr.readyState === 4 || xhr.readyState === 200) {
+    if (xhr.readyState === 4 && xhr.status === 200) {
+      /*
+      readyState：
+      0 (uninitialized) or (request not initialized)
+      1 (loading) or (server connection established)
+      2 (loaded) or (request received)
+      3 (interactive) or (processing request)
+      4 (complete) or (request finished and response is ready)
+      xhr.responseText
+      xhr.responseXML
+      */ 
       callback(xhr.responseText);
     }
   };
+  xhr.open(method, url, true); // 第三个参数默认异步的意思
+  // 设置post的数据格式，这是表单格式，也可以multipart/form-data, JSON, XML, and so on.
+  xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
   xhr.send(params);
 }
 
