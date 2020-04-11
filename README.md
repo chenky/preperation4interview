@@ -242,6 +242,10 @@ custom element, shodaw dom, template模板（x-tag，polymer），小程序貌�
 - vuex，Vuex实现了一个单向数据流，在全局拥有一个State存放数据，当组件要更改State中的数据时，必须通过Mutation进行，Mutation同时提供了订阅者模式供外部插件调用获取State数据的更新。而当所有异步操作(常见于调用后端接口异步获取更新数据)或批量的同步操作需要走Action，但Action也是无法直接修改State的，还是需要通过Mutation来修改State的数据。最后，根据State的变化，渲染到视图上。
 ![](asset/img/vuex.png)
 
+### mvvm原理
+* http://www.ruanyifeng.com/blog/2015/02/mvcmvp_mvvm.html
+* https://coding.imooc.com/lesson/129.html#mid=9409
+* https://github.com/DMQ/mvvm
 
 #### [vue双向绑定原理](https://juejin.im/post/5d421bcf6fb9a06af23853f1)
 Object.defineProperty+订阅发布模式+解释器compiler解释vue自定义命令
@@ -253,6 +257,16 @@ Object.defineProperty+订阅发布模式+解释器compiler解释vue自定义命�
   - classes
 ![](asset/img/vue-binding-all.png)
 ![](asset/img/vue-binding-mvvm.png)
+
+#### 数据双向绑定方式及优缺点 mvvm
+- 脏检查，Object.defineProperty，proxy，
+- 脏检查性能最差但兼容性最好，每次数据变更都需要遍历拥有ng-bind指令都元素
+- Object.defineProperty性能次之兼容性次之，ie8+，没有脏检查
+- proxy性能最佳，同时支持全语言特性支持，lazy by default（只有数据被用到才会被监听，所以大规模数据性能很好）
+  - 对象属性增加，删除
+  - 数组index，length更改
+  - map，set，weakmap，weakset
+  - classes
 
 #### vue生命周期图
 ![](asset/img/vue-lifecycle.png)
@@ -290,11 +304,6 @@ Object.defineProperty+订阅发布模式+解释器compiler解释vue自定义命�
 
 ### react setState过程及源码分析
 * https://imweb.io/topic/5b189d04d4c96b9b1b4c4ed6
-
-### mvvm原理
-* http://www.ruanyifeng.com/blog/2015/02/mvcmvp_mvvm.html
-* https://coding.imooc.com/lesson/129.html#mid=9409
-* https://github.com/DMQ/mvvm
 
 ### react如何借用其他类库的组件，比如jquery
 * https://zh-hans.reactjs.org/docs/integrating-with-other-libraries.html
@@ -485,6 +494,9 @@ Access-Control-Expose-Headers: FooBar
 * https://nodejs.org/zh-cn/docs/guides/event-loop-timers-and-nexttick/
 * http://lynnelv.github.io/js-event-loop-nodejs
 
+#### 事件循环 event loop
+!['事件循环 event loop'](asset/img/nodejs-event-loop-workflow.png '事件循环 event loop')
+
 ### 同步，异步，阻塞，非阻塞概念
 - cpu速度比i/o速度快，执行需要等待，就阻塞了，如果同步执行浪费时间
 - 所以在nodejs中往往都有异步方法，通过回调达到非阻塞的目的
@@ -542,6 +554,15 @@ Access-Control-Expose-Headers: FooBar
 
 ### 前端性能优化
 * https://juejin.im/post/59ff2dbe5188254dd935c8ab
+
+#### 前端优化描述，除了雅虎军规之外的优化
+- webpack打包优化，动态路由按需加载，长时间缓存，增量更新
+- cdn，ssr,服务器端渲染
+* pwa，serviceworker
+* http2(多路复用，首部压缩，服务器推送，流量控制)，http3基于udp，ttr
+* 域名收敛，dns预解析（<meta http-equiv="x-dns-prefetch-control" content="on" ><link rel="dns-prefetch" href="//cdn.domain.com" >）
+* 通常情况下，我们认为 TCP 网络传输的最大传输单元（Maximum Transmission Unit，MTU）为 1500B，即一个RTT（Round-Trip Time，网络请求往返时间）内可以传输的数据量最大为 1500 字节。因此，在前后端分离的开发模式中，尽量保证页面的 HTML 内容在 1KB 以内，这样整个 HTML 的内容请求就可以在一个 RTT 内请求完成，最大限度地提高 HTML 载入速度。
+
 ### 测量白屏时间和首屏时间
 * https://lz5z.com/Web%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96-%E9%A6%96%E5%B1%8F%E5%92%8C%E7%99%BD%E5%B1%8F%E6%97%B6%E9%97%B4/
 - 白屏时间 = firstPaint - performance.timing.navigationStart || pageStartTime
@@ -716,15 +737,6 @@ GBK是国家标准GB2312基础上扩容后兼容GB2312的标准。GBK的文字�
 * https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Access_control_CORS
 * http://www.ruanyifeng.com/blog/2016/04/cors.html
 
-
-#### 前端优化描述，除了雅虎军规之外的优化
-- webpack打包优化，动态路由按需加载，长时间缓存，增量更新
-* http2(多路复用，首部压缩，服务器推送，流量控制)，http3基于udp，ttr
-* 域名收敛，dns预解析（<meta http-equiv="x-dns-prefetch-control" content="on" ><link rel="dns-prefetch" href="//cdn.domain.com" >）
-* 通常情况下，我们认为 TCP 网络传输的最大传输单元（Maximum Transmission Unit，MTU）为 1500B，即一个RTT（Round-Trip Time，网络请求往返时间）内可以传输的数据量最大为 1500 字节。因此，在前后端分离的开发模式中，尽量保证页面的 HTML 内容在 1KB 以内，这样整个 HTML 的内容请求就可以在一个 RTT 内请求完成，最大限度地提高 HTML 载入速度。
-* pwa，serviceworker
-* ssr,服务器端渲染
-
 #### 前端埋点监控怎么做（白屏，首屏，onload时间，html5的performance）
 * head开发的地方定义起始时间，body开始处定义白屏结束时间，首屏html片段处定义首屏结束时间
 * 使用html5 performance.timing的api，有各个阶段详细的时间点
@@ -752,12 +764,6 @@ componentWillUnmount：清理垃圾，比如删除绑定的事件等等内存回
 * http://www.ruanyifeng.com/blog/2018/02/node-event-loop.html
 
 * setTimeout无法保证指定时间后执行，那该如何保证指定时间后一定执行
-
-#### mvvm的原理及实现细节
-* 参考前文
-
-#### redux详细说说
-* 参考前文
 
 #### react数据流说说看
 * 推崇简单的自顶向下的单向数据流，双向绑定可以用回调
@@ -1009,7 +1015,8 @@ $$ 2^{n-1} $$
 
 #### [断点续传](https://juejin.im/post/5dff8a26e51d4558105420ed)
 
-#### 异常捕获
+#### 异常捕获，异常监控
+- window.error事件
 - 使用try catch，reject会触发
 - Promise全局异常使用window.addEventListener('unhandledrejection', function browserRejectionHandler(event) {
   event && event.preventDefault()
@@ -1100,11 +1107,6 @@ $$ 2^{n-1} $$
 - 组件间通讯使用useContext+reducer，复杂的还是使用redux
 - 当输入框频繁输入时，为了保证页面流畅，我们会选择在 onChange 时进行 debounce
 
-
-
-#### 事件循环 event loop
-!['事件循环 event loop'](asset/img/nodejs-event-loop-workflow.png '事件循环 event loop')
-
 #### [tree shoking原理](https://twindy.org/qian-xi-tree-shakinggong-zuo-yuan-li/)
 - tree shaking 不支持动态导入（如CommonJS的require()语法），只支持纯静态的导入（ES6的import/export）
 - webpack中可以在项目package.json文件中，添加一个 “sideEffects” 属性,手动指定由副作用的脚本
@@ -1117,16 +1119,6 @@ $$ 2^{n-1} $$
 （2) 调用函数时，应该提供的参数没有提供，该参数等于undefined。
 （3）对象没有赋值的属性，该属性的值为undefined。
 （4）函数没有返回值时，默认返回undefined。
-
-#### 数据双向绑定方式及优缺点 mvvm
-- 脏检查，Object.defineProperty，proxy，
-- 脏检查性能最差但兼容性最好，每次数据变更都需要遍历拥有ng-bind指令都元素
-- Object.defineProperty性能次之兼容性次之，ie8+，没有脏检查
-- proxy性能最佳，同时支持全语言特性支持，lazy by default（只有数据被用到才会被监听，所以大规模数据性能很好）
-  - 对象属性增加，删除
-  - 数组index，length更改
-  - map，set，weakmap，weakset
-  - classes
 
 #### 浏览器内核
 !['浏览器内核'](asset/img/browser-core.jpg '浏览器内核')
@@ -1366,3 +1358,75 @@ selectFileImage(el){
 - layout viewport比可视窗口大，所以pc端的页面也能正常显示，document.documentElement.clientWidth可获取其值
 - visual viewport，ayout viewport的宽度是大于浏览器可视区域的宽度的，所以还需要一个viewport来代表浏览器可视区域的大小，这个viewport叫做 visual viewport。visual viewport的宽度可以通过 document.documentElement.innerWidth来获取。
 - ideal viewport是一个能完美适配移动设备的viewport，ideal viewport并没有一个固定的尺寸，不同的设备有不同的ideal viewport。例如，所有的iphone的ideal viewport宽度都是320px，无论它的屏幕宽度是320还是640。ideal viewport 的意义在于，无论在何种分辨率的屏幕下，针对ideal viewport 而设计的网站，
+
+#### jQuery和react使用场景
+- jquery封装了选择器查找，dom操作，事件操作，ajax操作，动画，css及一些util方法和函数操作
+- 非模块化，不想react等框架是组件式开发
+- react有虚拟dom，通过json对象描述ui，为跨端提供了可能，react-native，而jquery做不到
+- react不需要关注dom操作，数据驱动ui，加上模块化管理，特别适合大型系统
+- 组件化开发，松耦合，高复用，类似webcomponent，jquery经常会出现耦合代码，比如依赖外部变量，或者同时操作一个变量或者dom元素
+
+#### 直播点赞按钮的冒泡功能如何实现
+```html
+<p id = "demo"></p>
+<input type = "button" id = "btn1" value = "点个赞吧" />
+<script>
+  document.ready(function () {
+    $("#btn1").click(function () {
+      // 1. 首先给按钮绑定点击事件。
+      //2. 生成彩色的心，即随机选择图片。
+      // 2.1 生成随机数
+      var num = Math.floor(Math.random() * 3 + 1);
+      //2.2 生成一个img元素，并为其添加src属性
+      var image = $("");
+      //三个图片的名字分别是 1.png\2.png\3.png,所以img的路径和图片名可以进行线面的字符串拼接
+      image.attr("src", "./images/" + num + ".png");
+      //3。将生成的img追加到页面上
+      $("#demo").append(image);
+      //4. 下来就是让心动起来。从点击按钮的地方向上飘。利用jquery的动画函数animate()
+      //生成随机的距离左边的距离，这样就可以使心有种向上飘的感觉
+      var left = Math.random() * 800;
+      image.animate(
+        {
+          bottom: "800px",
+          left: left,
+          opacity: "0",
+        },
+        3000
+      );
+    });
+  });
+</script>
+```
+
+#### js的uglify如何实现
+首先通过parse方法构建语法树，然后通过TreeTransformer遍历语法树，当遇到节点属于UglifyJS.AST_Number类型（所有的AST类型见ast）,这个token具有一个属性 value 保存着数字类型的具体值，我们将其改成16进制表示，然后 return node 就会用新的节点代替原来的节点。
+```javascript
+var UglifyJS = require("uglify-js");
+var code = "var a = 1;";
+var toplevel = UglifyJS.parse(code); //toplevel就是语法树
+var transformer = new UglifyJS.TreeTransformer(function (node) {
+  if (node instanceof UglifyJS.AST_Number) { //查找需要修改的叶子节点
+        node.value = '0x' + Number(node.value).toString(16);
+        return node; //返回一个新的叶子节点 替换原来的叶子节点
+    };
+});
+toplevel.transform(transformer);  //遍历AST树
+var ncode = toplevel.print_to_string(); //从AST还原成字符串
+console.log(ncode); // var a = 0x1;
+```
+![](asset/img/ast-img.jpg)
+
+#### http请求发送到后台之后，后台做了什么
+- 请求方法的判断
+- url路径解析，路由解析
+- url中查询字符串的解析
+- cookie的解析
+- basic认证
+- 表单数据的解析
+- 任意格式文件的上传处理
+- 返回相应的数据或者模版html给页面
+
+#### webpack的loader本身是一个函数，接受源文件作为参数，返回转换的结果，loaders从右向左执行，而plugin是对bundle文件的优化，资源管理和环境变量的注入，作用于整个构建过程，比如构建前清理目录（cleanwebpackplugin），拷贝文件(copywebpackplugin),htmlwebpackplugin(创建首页html)等等，所以写自定义的plugin时，其实插件就是编译器的钩子，plugin可以拿到编译器的上下文，这样plugin就可以自定义的去做一些事情
+
+#### 当客户端向服务器请求一个静态页面或者一张图片时，服务器可以很清楚的知道内容大小，然后通过Content-Length消息首部字段告诉客户端需要接收多少数据。但是如果是动态页面等时，服务器是不可能预先知道内容大小，这时就可以使用Transfer-Encoding：chunk模式来传输数据了。即如果要一边产生数据，一边发给客户端，服务器就需要使用"Transfer-Encoding: chunked"这样的方式来代替Content-Length。chunk格式：[chunk size][\r\n][chunk data][\r\n][chunk size][\r\n][chunk data][\r\n][chunk size = 0][\r\n][\r\n]

@@ -304,18 +304,18 @@ try {
 }
 
 
-// const promise1 = new Promise(function(resolve, reject) {
-//   setTimeout(function() {
-//     resolve('foo');
-//   }, 300);
-// });
+const promise1 = new Promise(function(resolve, reject) {
+  setTimeout(function() {
+    resolve('foo');
+  }, 300);
+});
 
-// promise1.then(function(value) {
-//   console.log(value);
-//   // expected output: "foo"
-// });
+promise1.then(function(value) {
+  console.log(value);
+  // expected output: "foo"
+});
 
-Promise.reject("error reject")
+Promise.reject("error reject").then(value=>console.log(value)).catch(err=>console.log(err))
 
   </script>
 </body>

@@ -72,20 +72,20 @@
       function linkedLength(head) {
         let slow = head,
           fast = head;
-        let head2EntryCount=0;
+        let head2EntryCount = 0;
         while (fast && fast.next) {
           slow = slow.next;
           fast = fast.next.next;
           head2EntryCount++;
           if (slow === fast) break;
         }
-        if (!fast){
+        if (!fast) {
           //没有环，返回NULL值, fast为空则为2的倍数
-          return 2*head2EntryCount;
+          return 2 * head2EntryCount;
         }
-        if(!fast.next){
+        if (!fast.next) {
           //没有环，返回NULL值, fast为空则为2的倍数
-          return 2*head2EntryCount +1;
+          return 2 * head2EntryCount + 1;
         }
         // 环的个数
         let count = 0;
@@ -94,7 +94,7 @@
           count++;
         }
         // 链表长度等于
-        return head2EntryCount+count;
+        return head2EntryCount + count;
       }
 
       /*
@@ -103,6 +103,152 @@
         然后就回到hasCycle，detectCycleEntry
       */
 
+      /*
+      https://www.cnblogs.com/grandyang/p/6854492.html
+      数组三分，如果一个数组能够分成非空的三个部分，每个部分和相等，则返回true      
+      */
+      function sum(arr) {
+        return arr.reduce((total, val) => total + val, 0);
+      }
+      /*
+      暴力破解的方式，时间复杂度是n的平方
+     */
+      function splitArray2ThreePart(arr) {
+        const len = arr.length;
+        if (len < 3) return false;
+        if (len === 3) return arr[0] === arr[1] && arr[1] === arr[2];
+        for (let i = 1; i < len - 1; i++) {
+          const subArr1 = arr.slice(0, i);
+          const subArr1Sum = sum(subArr1);
+          for (let j = i + 1; j < len; j++) {
+            const subArr2 = arr.slice(i, j);
+            const subArr3 = arr.slice(j);
+            const subArr2Sum = sum(subArr2);
+            if (subArr1Sum === subArr2Sum && subArr2Sum === sum(subArr3)) {
+              return true;
+            }
+          }
+        }
+        return false;
+      }
+      console.log(splitArray2ThreePart([2, 1, 1, 2]));
+      console.log(splitArray2ThreePart([2, 1, 2, 2]));
+      /*
+      因为三部分和相等，所以每个和是总和的三分之一, 所以数组遍历一遍，只要和等于三分之一，计数器加1，循环结束看是不是3次即可
+     */
+      function splitArray2ThreePart2(arr) {
+        const len = arr.length;
+        if (len < 3) return false;
+        if (len === 3) return arr[0] === arr[1] && arr[1] === arr[2];
+        let total = 0,
+          subTotal = 0,
+          targetTotal = 0,
+          parts = 3;
+        total = arr.reduce((sum, val) => sum + val, 0);
+        targetTotal = total / 3;
+        for (let i = 0; i < len; i++) {
+          subTotal += arr[i];
+          if (subTotal === targetTotal) {
+            subTotal = 0;
+            parts--;
+          }
+        }
+        if (parts === 0) {
+          return true;
+        } else {
+          return false;
+        }
+      }
+      console.log(splitArray2ThreePart2([2, 1, 1, 2]));
+      console.log(splitArray2ThreePart2([2, 1, 2, 2]));
+
+      /*
+      求二叉树的最大路径和
+      一、求连接二叉树的任意两个结点的路径的最大和
+      分析：对于二叉树上的每一个结点，求出经过它的路径的最大和，并更新这个最大和即可。经过它的最大和路径可能有三种情况：
+      1、其左子结点的最大单路径和大于0，且其右子结点的最大单路径和大于0，那么经过该结点的最大和路径通过该结点跨过左右子树
+      2、其左子结点和右子结点有且仅有一个最大单路径和大于0，那么经过该结点的最大和路径就是它的某一个（大于0）子结点的单路径上加上该结点
+      3、其左右子结点的最大单路径和都不大于0，那么最大和路径就是该结点本身
+     */
+      function maxPathSum(root) {
+        if (!root) return 0;
+        return findPathSum(root);
+      }
+      //计算过当前结点的最大路径和
+      function findPathSum(root, maxSum = 0) {
+        if (!root) return 0;
+        let left = findPathSum(root.left, maxSum); //过当前结点左子结点的最大路径和
+        let right = findPathSum(root.right, maxSum); //过当前结点右子结点的最大路径和
+        const currentSum = root.value;
+
+        //经过root的路径的最大和（根结点+以左子树为终点的路径最大和+以右子树为终点的路径最大和）
+        if (left > 0) currentSum += left; //负数就不要加了。。
+        if (right > 0) currentSum += right;
+        maxSum = Math.max(maxSum, currentSum);
+
+        //计算以root为终点的路径最大和
+        //如果左子树和右子树的最大单路径和都是负的，那么就返回root->val
+        const rootValue = root.value;
+        return Math.max(rootValue, rootValue + left, rootValue + right);
+      }
+
+      /*
+      八个皇后经典问题
+      我们还可以只使用一个一维数组 queenCol 来保存所有皇后的列位置，初始化均为-1， 
+      那么 queenCol[i] 就是表示第i个皇后在 (i, queenCol[i]) 位置，递归函数还是跟上面的解法相同，
+      就是在当前行数等于n的时候，我们要将 queenCol 还原成一个 nxn 大小的矩阵，并存入结果 res 中。
+      这种记录每个皇后的坐标的方法在验证冲突的时候比较简单，只要从第0行遍历到当前行，若跟之前的皇后的列数相同，
+      直接返回false，叼就叼在判断对角线冲突非常简便，因为当两个点在同一条对角线上，
+      那么二者的横坐标差的绝对值等于纵坐标差的绝对值，利用这条性质，可以快速的判断冲突
+      https://www.cnblogs.com/grandyang/p/4377782.html
+     */
+      class Queen {
+        solveNQueens(n) {
+          let res = [];
+          let queenCol = Array.from({ length: n }, () => -1);
+          this.helper(0, queenCol, res);
+          return res;
+        }
+        helper(curRow, queenCol, res) {
+          let n = queenCol.length;
+          if (curRow === n) {
+            const temp = Array.from({length:n},()=>".");    
+            // let out = Array.from({length:n}).fill([...temp]);
+            let out = [];
+            for (let j = 0; j < n; j++) {
+              out.push([...temp]);      
+            }
+            for (let row = 0; row < n; ++row) {
+              out[row][queenCol[row]] = "Q";
+            }
+            res.push(out);
+            return;
+          }
+          for (let col = 0; col < n; ++col) {
+            if (this.isValid(queenCol, curRow, col)) {
+              queenCol[curRow] = col;
+              this.helper(curRow + 1, queenCol, res);
+            }
+          }
+        }
+        isValid(queenCol, row, col) {
+          for (let i = 0; i < row; ++i) {
+            /*
+            这种记录每个皇后的坐标的方法在验证冲突的时候比较简单，只要从第0行遍历到当前行，若跟之前的皇后的列数相同，
+        直接返回false，叼就叼在判断对角线冲突非常简便，因为当两个点在同一条对角线上，
+        那么二者的横坐标差的绝对值等于纵坐标差的绝对值，利用这条性质，可以快速的判断冲突
+            */
+            if (
+              col == queenCol[i] ||
+              Math.abs(row - i) === Math.abs(col - queenCol[i])
+            )
+              return false;
+          }
+          return true;
+        }
+      }
+      let queenRes = new Queen().solveNQueens(8);
+      console.log( queenRes );
     </script>
   </body>
 </html>
