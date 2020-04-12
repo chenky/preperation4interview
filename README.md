@@ -11,7 +11,10 @@
 
 ### ReactNative原理:
 - ui跨端通过虚拟dom（ui描述json文件），不同平台拿到标准描述文件去实现各个平台ui，从而实现跨端
+![](asset/img/react-visualdom2-allplatform.png)
 - 通讯则通过javascriptcore，或jscore.so实现与原生平台通讯
+![](asset/img/native-js-comunication2.webp)
+![](asset/img/native-js-comunication.png)
 * https://www.jianshu.com/p/038975d7f22d
 * https://blog.cnbang.net/tech/2698/
 * [react native三端同构](https://www.ibm.com/developerworks/cn/web/wa-universal-react-native/index.html)
@@ -24,6 +27,7 @@ custom element, shodaw dom, template模板（x-tag，polymer），小程序貌�
 * http://taobaofed.org/blog/2018/10/31/a-tag/
 
 ### 小程序原理：
+![](asset/img/mini-programer.png) ![](asset/img/mini-programer-run.png)
 * https://juejin.im/post/5afd136551882542682e6ad7
 * https://github.com/Lmagic16/blog/issues/31
 
@@ -342,6 +346,7 @@ Pragma是旧产物，已经逐步抛弃，有些网站为了向下兼容还保�
 - TCP三次握手和四次挥手
   - https://cloud.tencent.com/developer/article/1421145
   - https://blog.csdn.net/weixin_39924293/article/details/97371860
+![](asset/img/tcp-handshock-and-close.webp)
 - [tcp保证可靠性](https://blog.csdn.net/cbjcry/article/details/84925028)
   - 校验和,计算方式：在数据传输的过程中，将发送的数据段都当做一个16位的整数。将这些整数加起来。并且前面的进位不能丢弃，补在后面，最后取反，得到校验和。 
     - 发送方：在发送数据之前计算检验和，并进行校验和的填充。
@@ -372,6 +377,11 @@ net.ipv4.tcp_fin_timeout 修改系默认的 TIMEOUT 时间
   - net.ipv4.tcp_max_tw_buckets = 5000 
   - #表示系统同时保持TIME_WAIT套接字的最大数量，如果超过这个数字，TIME_WAIT套接字将立刻被清除并打印警告信息。
   - 默认为180000，改为5000。对于Apache、Nginx等服务器，上几行的参数可以很好地减少TIME_WAIT套接字数量，但是对于 Squid，效果却不大。此项  参数可以控制TIME_WAIT套接字的最大数量，避免Squid服务器被大量的TIME_WAIT套接字拖死。
+
+#### http和websocket报文结构
+![](asset/img/http-message-format.png)
+![](asset/img/http-message-format-demo.jpg)
+![](asset/img/websocket-message.png)
 
 #### https建立的整个过程
 - client发送request（包含支持的加密协议及版本）请求到server
@@ -1428,5 +1438,11 @@ console.log(ncode); // var a = 0x1;
 - 返回相应的数据或者模版html给页面
 
 #### webpack的loader本身是一个函数，接受源文件作为参数，返回转换的结果，loaders从右向左执行，而plugin是对bundle文件的优化，资源管理和环境变量的注入，作用于整个构建过程，比如构建前清理目录（cleanwebpackplugin），拷贝文件(copywebpackplugin),htmlwebpackplugin(创建首页html)等等，所以写自定义的plugin时，其实插件就是编译器的钩子，plugin可以拿到编译器的上下文，这样plugin就可以自定义的去做一些事情
+- 通过配置找到入口模块
+- 读取文件分析模块依赖
+- 针对不同的模块使用相应的loader
+  - 比如es6-》es5会生成抽象语法树ast，修改语法树变成es5
+- 整个时期都可以使用plugin
+- 生成bundle.js文件
 
 #### 当客户端向服务器请求一个静态页面或者一张图片时，服务器可以很清楚的知道内容大小，然后通过Content-Length消息首部字段告诉客户端需要接收多少数据。但是如果是动态页面等时，服务器是不可能预先知道内容大小，这时就可以使用Transfer-Encoding：chunk模式来传输数据了。即如果要一边产生数据，一边发给客户端，服务器就需要使用"Transfer-Encoding: chunked"这样的方式来代替Content-Length。chunk格式：[chunk size][\r\n][chunk data][\r\n][chunk size][\r\n][chunk data][\r\n][chunk size = 0][\r\n][\r\n]

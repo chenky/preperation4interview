@@ -6,6 +6,7 @@
     <title>Document</title>
   </head>
   <body>
+    <div id="test-domEvent-isSync"></div>
     <script>
       /*
       单链表环的问题，可参考：https://www.cnblogs.com/dancingrain/p/3405197.html
@@ -212,11 +213,11 @@
         helper(curRow, queenCol, res) {
           let n = queenCol.length;
           if (curRow === n) {
-            const temp = Array.from({length:n},()=>".");    
+            const temp = Array.from({ length: n }, () => ".");
             // let out = Array.from({length:n}).fill([...temp]);
             let out = [];
             for (let j = 0; j < n; j++) {
-              out.push([...temp]);      
+              out.push([...temp]);
             }
             for (let row = 0; row < n; ++row) {
               out[row][queenCol[row]] = "Q";
@@ -247,8 +248,65 @@
           return true;
         }
       }
-      let queenRes = new Queen().solveNQueens(8);
-      console.log( queenRes );
+      // let queenRes = new Queen().solveNQueens(8);
+      // console.log( queenRes );
+
+      // console.log("本轮任务");
+      // new Promise((resolve, reject) => {
+      //   resolve(3);
+      // }).then(() => {
+      //   console.log("本轮微任务");
+      // });
+
+      // const testDomEventIsSync = document.querySelector(
+      //   "#test-domEvent-isSync"
+      // );
+      // testDomEventIsSync.addEventListener("click", () => {
+      //   console.log("click");
+      // });
+      // // testDomEventIsSync.dispatchEvent(new Event('click'))
+      // testDomEventIsSync.click();
+      // console.log("hello");
+
+      /*
+        找出数组中出现次数超过一半的数
+        方法一：每次取出两个不同的数，剩下的数字中重复出现的数字肯定比其他数字多，将规模缩小化。
+        如果每次删除两个不同的数（不管包括不包括最高频数），那么在剩余的数字里，原最高频数出现的频率一样超过了50%，
+        不断重复这个过程，最后剩下的将全是同样的数字，即最高频数。此算法避免了排序，时间复杂度只有O(n)，空间复杂度为O(1)。
+        方法二：hash法。首先创建一个hash_map，其中key为数组元素值，value为此数出现的次数。
+        遍历一遍数组，用hash_map统计每个数出现的次数，并用两个值存储目前出现次数最多的数和对应出现的次数，
+        此时的时间复杂度为 O(n)，空间复杂度为O(n)，满足题目的要求。
+      */
+      function findMoreThanHalfNum(arr) {
+        let findNum = arr[0]; // 出现次数超过一半的数；
+        let count = 1; // 只要最终count > 0，那么对应的findNum就是出现次数超过一半的数；
+        let maxCount = 0;
+        let maxCountNum = arr[0];
+
+        // 循环过程中，i每增加一次，就相当于把i之前的所有元素（除了满足“findNum == arr[i]”条件的arr[i]，
+        // 这些对应元素用“count++”来标记）都抛弃了，但是之后每当执行一次“ count-- ”时，
+        // 又会从前面这些已保留的且等于findNum的元素中删除一项，直到count == 0，再重选findNum；
+        for (let i = 1; i < arr.length; i++) {
+          if (count === 0) {
+            // count为0时，表示当前的findNum需要重选；
+            findNum = arr[i];
+            count++;
+          } else {
+            if (findNum === arr[i]) count++;
+            else{
+              if(count>maxCount){
+                maxCount = count;
+                maxCountNum = findNum;
+              }
+              count--;
+            } 
+          }
+        }
+
+        return findNum === maxCountNum ? findNum : undefined;
+      }
+      console.log(findMoreThanHalfNum([1,1,2,2,3]))
+      console.log(findMoreThanHalfNum([1,1,2,2,1]))
     </script>
   </body>
 </html>
