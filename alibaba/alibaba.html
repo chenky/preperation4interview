@@ -246,7 +246,7 @@
         function cloneDeep(value) {
 
             // 记录被拷贝的值，避免循环引用的出现
-            let memo = {};
+            // let memo = {};
 
             function baseClone(value) {
                 let res;
@@ -266,12 +266,13 @@
                 Reflect.ownKeys(res).forEach(key => {
                     if (typeof res[key] === "object" && res[key] !== null) {
                         //此处我们用memo来记录已经被拷贝过的引用地址。以此来解决循环引用的问题
-                        if (memo[res[key]]) {
-                            res[key] = memo[res[key]];
-                        } else {
-                            memo[res[key]] = res[key];
-                            res[key] = baseClone(res[key])
-                        }
+                        // if (memo[res[key]]) {
+                        //     res[key] = memo[res[key]];
+                        // } else {
+                        //     memo[res[key]] = res[key];
+                        //     res[key] = baseClone(res[key])
+                        // }
+                        res[key] = baseClone(res[key]);
                     }
                 })
                 return res;

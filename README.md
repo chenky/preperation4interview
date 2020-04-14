@@ -731,6 +731,8 @@ GBK是国家标准GB2312基础上扩容后兼容GB2312的标准。GBK的文字�
 
 #### 怎么防止提交当价格被篡改，及防止重放攻击
 * 对参数做数字签名，生产signature，提交服务器回传，服务器密钥参数再hash与signatrue对比即可知道是否被串改
+- 防止重放攻击必须要保证请求仅一次有效，需要通过在请求体中携带当前请求的唯一标识，并且进行签名防止被篡改。所以防止重放攻击需要建立在防止签名被串改的基础之上。
+- 通过nonce判断请求是否已经处理过，通过timestamp+过期时间可以保证服务器缓存定时清理
 * https://blog.csdn.net/u014756827/article/details/86631118
 
 #### react两个组件中的请求有依赖如何处理
@@ -772,8 +774,9 @@ componentWillUnmount：清理垃圾，比如删除绑定的事件等等内存回
 #### setTimeout和setImmediate区别
 * node中执行顺序不确定，因为setTimeout不能做到0毫秒执行，分别在timer阶段和check阶段，process.tick优先级最高，每个阶段执行完就执行tick
 * http://www.ruanyifeng.com/blog/2018/02/node-event-loop.html
-
 * setTimeout无法保证指定时间后执行，那该如何保证指定时间后一定执行
+![](asset/img/node-eventloop.png)
+![](asset/img/node-eventloop2.jpg)
 
 #### react数据流说说看
 * 推崇简单的自顶向下的单向数据流，双向绑定可以用回调
