@@ -593,6 +593,21 @@
         shopee笔试shopee面试
         https://www.nowcoder.com/discuss/386280?type=post&order=time&pos=&page=1&subType=2
       */
+
+      /*
+        改变this指向，除了call，apply，bind之外的方法
+      */
+     function testThis(){
+      console.log("callTestThis:",this.a);
+     }
+     function callTestThis(context){
+      // testThis.call(context);
+      context.$fn = testThis;
+      let res = context.$fn();
+      delete context.$fn;
+      return res;
+     }
+     callTestThis({a:1});
     </script>
   </body>
 </html>
