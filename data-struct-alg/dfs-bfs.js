@@ -1,5 +1,5 @@
 /*
-js 中二叉树的深度遍历与广度遍历(递归实现与非递归实现)
+js 中二叉树的深度遍历与广度遍历(递归实现与非递归实现) 深度优先遍历DFS dfs，广度优先遍历BFS bfs
 reference: https://www.jianshu.com/p/5e9ea25a1aae
 */
 var tree = {

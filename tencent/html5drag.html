@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    html, body{
+      padding: 0;
+      margin: 0;
+      height: 100%;
+      width: 100%;
+    }
+    #wrapper{
+      margin: auto;
+      height: 700px;
+      width: 800px;
+      background-color: #f5f6f7;
+      border: 1px solid #f0f0f5;
+      position: relative;
+    }
+    #draggable {
+      width: 200px;
+      height: 40px;
+      text-align: center;
+      background: red;
+      position: absolute;
+    }
+
+    .dropzone {
+      width: 400px;
+      height: 80px;
+      background: blueviolet;
+      margin-bottom: 5px;
+      padding: 10px;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="wrapper">
+    <div id="dropzone1" class="dropzone">
+      a
+    </div>
+    <div id="dropzone2" class="dropzone">
+      b
+    </div>
+    <div id="dropzone3" class="dropzone">
+      c
+    </div>
+    <div id="dropzone4" class="dropzone">
+      d
+    </div>
+    <div id="draggable" draggable="true">
+      This div is draggable
+    </div>
+  </div>
+  <script>
+    const wrapperElem = document.getElementById('wrapper')
+    const draggableElem = document.getElementById('draggable')
+
+    const {offsetWidth: wrapperWidth, offsetHeight: wrapperHeight} = wrapperElem
+    const disX = 0
+    const disY = 0
+    draggableElem.addEventListener('ondragstart', function(event){
+      const { pageX, pageY } = event
+      disX = pageX - parseInt(draggableElem.left)
+      disY = pageY - parseInt(draggableElem.top)
+      // event.dataTransfer.setData('text/plain',null)
+    }, false)
+    draggableElem.addEventListener('drag', function(event){
+      // const { pageX, pageY } = event
+      // const { offsetLeft, offsetTop, offsetWidth, offsetHeight } = event.target
+      // console.log(wrapperWidth, wrapperHeight, offsetLeft, offsetTop, offsetWidth, offsetHeight)
+      // if(offsetLeft<0 || (offsetLeft+offsetWidth)>wrapperWidth || offsetTop<0 || (offsetTop+offsetHeight)>wrapperHeight){
+      //   return;
+      // }
+      // // draggableElem.style.top = offsetTop
+      // // draggableElem.style.left = offsetLeft
+      // event.target.style.top = pageY - disY  offsetTop
+      // event.target.style.left = offsetLeft
+    }, false)
+
+    wrapperElem.addEventListener('dragover', function(event){
+      // 阻止默认动作以启用drop
+      event.preventDefault();
+    }, false)
+
+    wrapperElem.addEventListener('drop', function(event){
+      console.log(event.target.id)
+    }, false)
+  </script>
+</body>
+
+</html>

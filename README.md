@@ -796,10 +796,17 @@ componentWillUnmount：清理垃圾，比如删除绑定的事件等等内存回
 - cluster模块(child_process,net组合)
 - 使用child_process模块，提供了child_process.fork()函数实现进程复制，onmessage,send来监听和发送消息
 
-#### 响应式布局
+#### [响应式布局](https://juejin.im/post/6844903814332432397)
 - <meta name="viewport" content="width=device-width, initial-scale=1" />
 - 媒体查询（media queries)
+- 百分比布局
+- rem布局
+- 视口单位
 - rem,vw,淘宝的felxiable库
+- 图片响应式
+  - 使用max-width（图片自适应）
+  - 使用srcset
+  - 使用picture标签
 - srcset解决图片高清问题
 - 尽量用svg或者css3构建一些背景图，替代png
 - 1px问题
@@ -808,6 +815,18 @@ componentWillUnmount：清理垃圾，比如删除绑定的事件等等内存回
   - 伪元素+transform:scale(1,0.5)
   - 图片，每次更新颜色要换背景图片
   - boxshodow
+- 响应式布局的成型方案
+  - 利用上面的方法自己来实现，比如CSS3 Media Query,rem，vw等
+  - Flex弹性布局，兼容性较差
+  - Grid网格布局，兼容性较差
+  - Columns栅格系统，往往需要依赖某个UI库，如Bootstrap
+- 响应式布局的要点
+  - 设置viewport
+  - 媒体查询
+  - 字体的适配（字体单位）
+  - 百分比布局
+  - 图片的适配（图片的响应式）
+  - 结合flex，grid，BFC，栅格系统等已经成型的方案
 
 #### for in和Reflect.ownKeys
 - for in 遍历所有可枚举属性
