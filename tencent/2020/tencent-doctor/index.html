@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title></title>
+</head>
+<body>
+  <script>
+    // 1 最多字母和数字
+    function findStr(str){
+      let tempObj = {}
+      let max = 1
+      // let maxChar = str[0]
+      for (let index = 0; index < str.length; index++) {
+        const char = str[index];
+        if(tempObj[char]){
+          tempObj[char]++
+        } else {
+          tempObj[char] = 1
+        }
+        if(max<tempObj[char]){
+          max = tempObj[char]
+          // maxChar = char
+        }
+      }
+      return Object.keys(tempObj).filter((key)=>{
+        const val = tempObj[key]
+        return val === max
+      })
+    }
+
+    // 2
+    // (function(min, max){
+    //   setInterval(function(){
+    //     for (let i = min; i < max; i++) {
+    //       console.log(i)      
+    //     }
+    //   }, 1000)        
+    // })(1,501)
+
+    // 4
+    function List(...initArgs){
+      this.items = [].concat(initArgs)
+      this.length = this.items.length
+      this.add = function(...args){
+        this.items = this.items.concat(args)
+        this.length = this.items.length
+      }
+      this.all= function(){
+        return this.items
+      }
+    }
+    const ls = new List(1,2,4)
+    ls.add(8,9)
+    console.log(ls.length)
+    console.log(ls.all())
+
+    // 5, fragment 字符串批量出来优化性能，事件委托注册事件
+    function appendHtmlAndAddListener(){
+      const panel = document.querySelector("#list")
+      let allLis = "";
+      for (let index = 0; index < 1000; index++) {
+        allLis += `<li>${index}</li>`      
+      }
+      panel.innerHTML = allLis
+      panel.addEventListener('click', function(e){
+        const {target} = e
+        console.log(target.innerText)
+      }, false)      
+    }
+
+    // 7
+    function sortArrObj(arr, keys){
+      arr.sort((objA, objB)=>{
+        for (let index = 0; index < keys.length; index++) {
+          const key = keys[index];
+          if(objA[key] === objB[key]){
+            continue
+          }
+          if(key === 'age'){
+            return objA[key] > objB[key]
+          } else if(key === 'group'){
+            return objA[key] < objB[key]
+          } else {
+            return objA[key] > objB[key]
+          }
+        }
+      })
+    }
+  
+
+  </script>
+</body>
+</html>
