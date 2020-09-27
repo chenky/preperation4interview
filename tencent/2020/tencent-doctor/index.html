@@ -7,7 +7,7 @@
 </head>
 <body>
   <script>
-    // 1 最多字母和数字
+    // 1 字符串中找到出现次数最多的字符，如果有出现次数相同的字符则都返回
     function findStr(str){
       let tempObj = {}
       let max = 1
@@ -29,8 +29,9 @@
         return val === max
       })
     }
+    console.log(findStr('aaaaabb33'),findStr('23888888bbbcc'), findStr('aaccaacc334339'))
 
-    // 2
+    // 2 使用闭包，每秒输出1-500的数字
     // (function(min, max){
     //   setInterval(function(){
     //     for (let i = min; i < max; i++) {
@@ -38,8 +39,39 @@
     //     }
     //   }, 1000)        
     // })(1,501)
+    // 因为闭包产生问题, 输出的是n个max值，有bug
+    // function testClosure(min, max){      
+    //   for (var index = min; index < max; index++) {
+    //     setInterval(function(){
+    //       console.log(index)
+    //     }, 2000)        
+    //   }
+    // }
+    // testClosure(1,10)
+    // 解决方案1，使用let声明局部变量
+    // function testClosure1(min, max){      
+    //   for (let index = min; index < max; index++) {
+    //     setInterval(function(){
+    //       console.log(index)
+    //     }, 2000)        
+    //   }
+    // }
+    // testClosure1(1,10)
+    // 解决方案2，使用立即执行函数
+    // function testClosure2(min, max){      
+    //   for (var index = min; index < max; index++) {
+    //     setInterval(function(val){
+    //       return function(){
+    //         console.log(val)
+    //       }
+    //     }(index), 2000)        
+    //   }
+    // }
+    // testClosure2(1,10)
 
-    // 4
+    // 3 xss攻击题
+
+    // 4自定义实现一个List类型
     function List(...initArgs){
       this.items = [].concat(initArgs)
       this.length = this.items.length
@@ -70,7 +102,19 @@
       }, false)      
     }
 
-    // 7
+    // 6 nodejs自定义事件注册和触发 事件监听与订阅
+    //引入事件模块
+    // var events = require("events");
+    // //创建事件监听的一个对象
+    // var  emitter = new events.EventEmitter();
+    // //监听事件some_event
+    // emitter.addListener("some_event",function(){
+    //     console.log("事件触发，调用此回调函数");
+    // });
+    // //触发事件some_event
+    // emitter.emit("some_event");
+
+    // 7 数组对象多列排序
     function sortArrObj(arr, keys){
       arr.sort((objA, objB)=>{
         for (let index = 0; index < keys.length; index++) {
@@ -87,7 +131,9 @@
           }
         }
       })
+      return arr
     }
+    console.log( sortArrObj([{age: 1, group: 2}, {age: 2, group: 6}, {age:1, group: 1}], ['age', 'group'] ))
   
 
   </script>
