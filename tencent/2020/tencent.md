@@ -19,6 +19,75 @@
 - 事件订阅
 - redux
 
-#### http报文结构
+#### vuex使用
+- state, getter(对state进行处理，类似redux中的reselector), mutation,action,module
+- mapStates,mapGetters, mapActions
+- import { createNamespacedHelpers } from 'vuex'
+- new Vue({ store, router }) 
+- 表单双向绑定v-model
+```javascript
+computed: {
+  message: {
+    get () {
+      return this.$store.state.obj.message
+    },
+    set (value) {
+      this.$store.commit('updateMessage', value)
+    }
+  }
+}
+```
 
-#### 跨域cors请求头如何设置
+#### vue router使用
+- 嵌套路由<router-view></router-view>
+- 路由跳转，router-link
+- 路由重定向redirect，有别名
+- 路由参数$route.params.id, 配置props解耦，URL /search?q=vue 会将 {query: 'vue'}
+- 导航守卫有一些钩子
+- 路由变化，通过watch获取服务器数据
+- 滚动位置，scrollBehavior 
+- 通过import方式动态加载路由
+```javascript
+const Foo = () => import(/* webpackChunkName: "group-foo" */ './Foo.vue')
+const Bar = () => import(/* webpackChunkName: "group-foo" */ './Bar.vue')
+const Baz = () => import(/* webpackChunkName: "group-foo" */ './Baz.vue')
+```
+```javascript
+const router = new VueRouter({
+  routes: [
+    { path: '/user/:id', component: User, props: true },
+
+    // 对于包含命名视图的路由，你必须分别为每个命名视图添加 `props` 选项：
+    {
+      path: '/user/:id',
+      components: { default: User, sidebar: Sidebar },
+      props: { default: true, sidebar: false }
+    }
+  ]
+})
+```
+- router.push, replace, go
+```javascript
+[
+  { 
+    path: "/user/:id", // params
+    role: "admin",
+    component: user,
+    children: [
+      {
+        path: "childuser/:cid",
+        component: childuser
+      },...
+    ]
+  }  
+]
+
+```
+
+#### [http报文结构图解](https://blog.csdn.net/Joven0/article/details/48093899)
+![](../img/http-request-get.png)
+![](../img/http-request-post.png)
+![](../img/http-response-200.png)
+![](../img/http-response-404.png)
+
+
