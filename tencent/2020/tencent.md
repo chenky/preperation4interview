@@ -1524,3 +1524,89 @@ hr面 30min
 ○有女朋友吗？她怎么看？
 ○还在面哪家公司或其他offer吗，如果字节也面到了怎么选择
 ○你还有什么问题想问我吗？
+
+
+1. Given an array nums, write a function to move all 0's to the end of it while maintaining the relative order of the non-zero elements.
+For example, given nums = [0, 1, 0, 3, 12], after calling your function, nums should be [1, 3, 12, 0, 0].
+
+Note: You must do this in-place without making a copy of the array. Minimize the total number of operations.
+
+2.  实现一个函数countLongest(tree)，输入一棵二叉树，返回二叉树中距离最长的两个叶子节点的距离
+3. 在前端开发中，通常会把多个 js 文件合并成一个文件，以减少网络请求次数，达到优化加载速度的目的，但是当文件之间存在依赖关系时，对 js 合并的顺序，会有一定的要求，比如 A.js 依赖了 B.js，那打包后的文件，B.js 需要排在 A.js 的前面。实现一个函数 `resolve(tree)`，根据 js 的依赖关系树 tree，输出合理的打包顺序的数组（结果可能不唯一，输出其中一种即可）。
+4. 给定一个整数数组 a，实现一个函数 `countMax(a)`，计算出从 a 中选择出多个不相邻元素组成最大的和是多少。
+
+以下代码输出
+var name = "first";
+(function foo() {
+	var name = "second";
+	console.log(this.name);
+})();
+console.log(this.name);
+
+
+var name = "global name";
+var a = {
+	name: "name A",
+	func: function () {
+		console.log(this.name);
+	},
+};
+a.func();
+window.a.func();
+var func = a.func;
+func();
+func = window.a.func;
+func();
+
+
+var foo = { n: 1 };
+(function (foo) {
+	var foo;
+	console.log(foo.n);
+	foo.n = 3;
+	var foo = { n: 2 };
+	console.log(foo.n);
+})(foo);
+console.log(foo.n);
+
+8. 问了一下如何上传文件
+9. drag, drop api怎么使用
+
+
+1、知道animation-fill-mode吗？不知道
+2、跨域的几种解决方案？了解postMessage吗？
+3、游览器的安全问题及解决办法。
+4、如何渲染一个十几万条的大数据显示到页面上。
+5、输入url到页面显示的过程。
+6、项目的构建工具，vue-cli、webpack。
+7、有用到什么项目测试工具，这个了解过，但是没用过，答不了。
+8、call/aaply/bind
+9、原型链
+
+
+
+1.TS有了解？不了解
+2.除了js还有学过哪些语言？比如说一些静态语言？没有
+3. 项目做过那些优化？有做指标吗？做过图片的优化和cdn，没有具体的指标。
+4.做过单元测试吗？没有
+5.原型链继承的原理以及内部实现？说了原理，内部实现是什么鬼？难道是说原型链的proto？
+6.js的错误监控机制有了解吗？没有
+7.http缓存的机制？回答了强缓存和协商缓存的策略
+8.项目有什么亮点吗？回答动态权限管理，感觉不太满意
+9.还有什么问题吗？
+
+
+
+3.HTML跟HTML5的区别（面试官为我解释了本质区别，框架上的区别😅）
+
+4.在前端上未来有什么打算？有没有什么想学的东西？是只想找个工作还是想怎么发展？
+
+5.TCP和UDP区别
+
+6.写代码的时候应用到的数据结构，比如说二叉树、堆栈、队列等，你可以现在去百度然后告诉我（我写项目的时候确实没考虑过这些东西，唉，面试官都让我现场百度了）
+
+（思考上题....长达一分钟沉默😂）
+
+7.Mysql性能问题，数据量大时分表，你常用的mysql安装在哪儿。面对一批数据你怎么进行添加到数据库？
+
+8.你在面试的时候有没有觉得自己原本以为不重要的内容被问到了？或者说，面试你觉得是否是偏基础而不是偏向核心技术。
