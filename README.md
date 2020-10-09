@@ -279,7 +279,7 @@ Object.defineProperty+订阅发布模式+解释器compiler解释vue自定义命�
 - 计算属性是基于它们的响应式依赖进行缓存的。只在相关响应式依赖发生改变时它们才会重新求值。
 - 虽然计算属性在大多数情况下更合适，但有时也需要一个自定义的侦听器。这就是为什么 Vue 通过 watch 选项提供了一个更通用的方法，来响应数据的变化。当需要在数据变化时执行异步或开销较大的操作时,使用 watch 选项允许我们执行异步操作 (访问一个 API)，限制我们执行该操作的频率，并在我们得到最终结果前，设置中间状态。这些都是计算属性无法做到的。
 
-#### [script标签中async和defer有什么区别, async,defer区别](https://segmentfault.com/q/1010000000640869)
+#### [js延迟加载（动态创建script，或者async，defer） script标签中async和defer有什么区别, async,defer区别](https://segmentfault.com/q/1010000000640869)
 ![](asset/img/async-defer-diff.jpeg)
 
 ### react受控组件和非受控组件
@@ -988,6 +988,9 @@ componentWillUnmount：清理垃圾，比如删除绑定的事件等等内存回
   - 表单携带token（黑客虽然携带cookie，但是我们可以控制请求参数，此token可以约定算法或者服务器存储【安全系数高】）
   - cookie的SameSite属性， lax（link，form get），strict（其他域都不允许）属性
 - xss攻击，存储型和反射型，对输入和输出都要进行编码，分为html编码，url编码，javascritp编码，css编码，html标签属性编码，json编码，目前框架基本都已经做了编码处理，结合csp（script-src，style-src，img-src）
+- CSP 的实质就是白名单制度，开发者明确告诉客户端，哪些外部资源可以加载和执行，等同于提供白名单。它的实现和执行全部由浏览器完成，开发者只需提供配置。
+- 两种方法可以启用 CSP。一种是通过 HTTP 头信息的Content-Security-Policy的字段。
+- 另一种是通过meta标签<meta http-equiv="Content-Security-Policy" content="script-src 'self'; object-src 'none'; style-src cdn.example.org third-party.org; child-src https:">
   * xss攻击分为存储型和反射性
   * httponly,设置csp浏览器只执行指定域名对script
   * <,>"'&/等字符进行转译
