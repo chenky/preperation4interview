@@ -107,11 +107,40 @@ const router = new VueRouter({
 #### 如果你入职之后一段时间发现不喜欢这个工作会怎么办。 
 #### 希望能顺利，还是去很想留在深圳的
 
-#### 项目中的登录注册如何实现的
-#### session和cookie机制了解过嘛
+#### [项目中的登录注册如何实现的](https://www.cnblogs.com/fengzheng/p/8416393.html)
+- Cookie-Session 认证
+早期互联网以 web 为主，客户端是浏览器，所以 Cookie-Session 方式最那时候最常用的方式，直到现在，一些 web 网站依然用这种方式做认证。
+
+  - 认证过程大致如下：
+    - 用户输入用户名、密码或者用短信验证码方式登录系统；
+    - 服务端验证后，创建一个 Session 信息，并且将 SessionID 存到 cookie，发送回浏览器；
+    - 下次客户端再发起请求，自动带上 cookie 信息，服务端通过 cookie 获取 Session 信息进行校验；
+  - 弊端
+    - 只能在 web 场景下使用，如果是 APP 中，不能使用 cookie 的情况下就不能用了；
+    - 即使能在 web 场景下使用，也要考虑跨域问题，因为 cookie 不能跨域；
+    - cookie 存在 CSRF（跨站请求伪造）的风险；
+    - 如果是分布式服务，需要考虑 Session 同步问题；
+- Cookie-Session 改造版, 由于传统的 Cookie-Session 认证存在诸多问题，可以把上面的方案改造一下。改动的地方如下：
+  - 不用 cookie 做客户端存储，改用其他方式，web 下使用 local storage，APP 中使用客户端数据库，这样就实现了跨域，并且避免了 CSRF ;
+  - 服务端也不存 Session 了，把 Session 信息拿出来存到 Redis 等内存数据库中，这样即提高了速度，又避免了 Session 同步问题；
+- 经过改造之后变成了如下的认证过程：
+  - 用户输入用户名、密码或者用短信验证码方式登录系统；
+  - 服务端经过验证，将认证信息构造好的数据结构存储到 Redis 中，并将 key 值返回给客户端；
+  - 客户端拿到返回的 key，存储到 local storage 或本地数据库；
+  - 下次客户端再次请求，把 key 值附加到 header 或者 请求体中；
+  - 服务端根据获取的 key，到 Redis 中获取认证信息；
+
+#### [session和cookie机制了解过嘛](https://segmentfault.com/a/1190000017831088)
+- session是服务器存储信息的会话，而sessionid一般存储在cookie中（也可以存储在url中），sessionid标识一个客户端 
 #### js有哪些特性？与node.js的区别
-#### http的报文结构
-#### 为什么http是无连接的
+- javascript是弱类型，单线程异步i/o语言
+- javascript依赖浏览器宿主环境，需要浏览器中javascript解析器，可以反问BOM，DOM等
+- nodejs是基于v8引擎的javascript运行平台
+- nodejs应用于服务器端运行语言，可以反问本地资源
+#### [为什么http是无连接的](http://xieli.leanote.com/post/6.HTTP%E6%98%AF%E5%9F%BA%E4%BA%8ETCP%E7%9A%84%EF%BC%8C%E4%B8%BA%E4%BB%80%E4%B9%88%E6%98%AF%E6%97%A0%E7%8A%B6%E6%80%81%EF%BC%9F)
+- 因为HTTP是短连接，即每次“请求-响应”都是一次TCP连接。比如用户一次请求就是一次TCP连接，服务器响应结束后断开连接。而每次TCP连接是没有关联的，因此HTTP是无状态的。如果想要使得每次TCP连接之间有关联，服务器和浏览器就得存储相关的信息，这个就是Cookie和Session的作用。
+- 虽然HTTP 1.1为了效率，支持了keep-alive，但是这个keep-alive是有时间限制的。这个时间可以通过设置HTTP进程的配置文件来修改，这个时间很短，是以秒来计算的，例如10秒。因此在这10秒内的HTTP请求是使用同一个TCP连接，但是10秒后又重新进行连接。这个时间可以被认为是无状态的。例如那个购物的例子，不可能10s内的HTTP请求无需密码来验证，首先这个时间很短，并且还得记录每次HTTP请求的时间是否在10秒内，这样记录的方式和Session又有什么区别。
+
 #### 如果没有tcp，http请求会是怎样的
 #### 丢包是什么意思
 #### tcp三次握手
