@@ -281,6 +281,8 @@
             return baseClone(value)
         }
 
+        console.log(cloneDeep({a:1,b:[2,4],c:{cc1:[5,6],cc2:{ccc:1}}}))
+
         // 判断两个对象是否相等
         // https://www.jb51.net/article/110768.htm
         function isEqual(a,b){
