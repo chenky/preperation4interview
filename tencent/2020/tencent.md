@@ -173,24 +173,76 @@ const router = new VueRouter({
 
 
 #### 无序数组中求不相邻元素组成的子集的最大和, 比如 1 3 5 7 就是3+7=10
+```javascript
+// 本质 dp[i] = Math.max(dp[i-1], dp[i-2]+arr[i])
+function sumTopN(arr){
+  if(!Array.isArray(arr)){
+    throw new Error('arguments arr is not array')
+  }
+  if(arr.length === 0){
+    return -1
+  }
+  if(arr.length === 1){
+    return arr[0]
+  }
+  if(arr.length === 2){
+    return Math.max(arr[0], arr[1])
+  }
+  // 使用循环解题
+  // let prev2 = arr[0]
+  // let prev1 = Math.max(arr[0], arr[1])
+  // let result = 0;
+  // for (let index = 2; index < arr.length; index++) {
+  //   const element = arr[index];
+  //   result = Math.max(prev1, prev2+element)
+  //   prev2 = prev1
+  //   prev1 = result
+  // }
+  // return result
+
+  // 使用递归
+  return Math.max(sumTopN(arr.slice(0,arr.length-1)), sumTopN(arr.slice(0,arr.length-2))+arr[arr.length-1])
+}
+```
 #### 将从小到大的有序数组循环左移未知次，找到左移后数组最小值, 比如 1234=》 4312，找到1
+```javascript
+    // 将从小到大的有序数组循环左移未知次，找到左移后数组最小值, 比如 1234=》 4312，找到1
+    // 二分法查找
+    function findMin(arr){
+      let left = 0;
+      let right = arr.length-1
+      while (left<right) {
+        let mid = left + Math.ceil((right-left)/2)
+        if(arr[mid]<arr[right]){
+          // 右边升序，则最小值在左边
+          right = mid
+        } else if(arr[mid]>arr[right]){
+          // 左侧升序，则最小值在右侧
+          left = mid + 1
+        } else{
+          // 相等则丢弃最后一个元素
+          right--
+        }
+      }
+      return arr[left]
+    }
+    console.log(findMin([1,3,5]), findMin([4,3,1,2]),findMin([4,5,1,2,3]),findMin([2,2,2,0,1]),findMin([3,3,3,0,2,2,2,3]))
+```
 
 
 #### 介绍一下自己的项目
 #### git的reset和revert有什么区别。
-#### 讲讲在acm中自己做的啥
+- git revert是用一次新的commit来回滚之前的commit，git reset是直接删除指定的commit
 #### vue的底层了解吗
-#### 宏任务和微任务
-#### 网页输入url以后发生什么
-#### 写一个防抖函数
-#### 说说js的继承（我是写了组合寄生式的继承代码）
-#### js的内存回收
 #### 现在有一个宽高未知的父布局，以及一个未知宽高的子布局，实现水平垂直居中
-#### 计组，cache替换算法
-#### https了解多少
-#### https的证书有什么用？
+- 参考middle-center.html, 绝对定位+transform: translate(-50%,-50%)实现， table-cell，flex，grid
 #### hashmap的底层
+- 根据key生成hashcode，来决定值存储的位置，不同的key可能产生相同的hashcode，即发生了碰撞
 #### hashmap发生碰撞怎么解决？
+- 散列表要解决的一个问题就是散列值的冲突问题，通常是两种方法：链表法和开放地址法。
+  - 链表法就是将相同hash值的对象组织成一个链表放在hash值对应的槽位；
+  - 开放地址法是通过一个探测算法，当某个槽位已经被占据的情况下继续查找下一个可以使用的槽位。
+- 
 #### 手写二分
 #### 手写快排
 #### 手写冒泡排序

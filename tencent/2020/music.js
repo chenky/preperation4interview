@@ -156,7 +156,7 @@ class LruCache {
         next.prev = prev;
       }
       // node节点插入到队列首位
-      node.next = head;
+      node.next = this.head;
       node.prev = undefined;
       this.head.prev = node;
       this.head = node;

@@ -17,6 +17,79 @@
       return newStr
     }
     console.log(strResever('abcd'))
+
+    // 无序数组中 不相邻元素 子集 最大和
+    // 无序数组中求不相邻元素组成的子集的最大和
+    // https://blog.csdn.net/abe_abd/article/details/107156771
+    /*
+      一个无序数组找其子序列构成的和最大，要求子序列中的元素在原数组中两两都不相邻:
+      可以用递归或者循环解决，现有数组arr[暂不舍定数量]，最大不相邻数之和=maxsum，思路：
+      1、假如数组只有1 个值，那么maxsum1 = arr[0],
+      2、假如数组有2 个值，那么这个最大和maxsum2 = max(arr[0]，arr[1])，
+      3、假如数组有3 个值，那么最大值肯定要么是arr[0]+arr[2]，要么是arr[1]，也就是maxsum3=max( arr[0]+arr[2] ,arr[1] )，
+      4、假如数组有4 个值，最大值maxsum4 =max( arr[0]+arr[2], arr[1]+arr[3]，arr[0]+arr[3] )=max(  maxsum2+arr[3] ,maxsum3 );
+      这步最关键，理解就懂了，不理解就做不下去了, 其中后两项 arr[1]+arr[3] 和 arr[0]+arr[3]  = maxsum2 +arr[3] ，第一项 arr[0]+arr[2] ,
+      如果maxsum4 取得最大值时arr[0]+arr[2], 那么后面两项肯定就不是了，因为数据相邻了， 假如maxsum4取arr[0]+arr[3],或arr[1]+arr[3]中的任意一项，
+      那么arr[0]+arr[2]就不能在取了，因为又相邻了，所以这里的arr[0]+arr[2] = maxsum3。不同结果因为相邻关系的原因存在一个互斥关系
+      5、假如数组有5个值，最大值maxsum5 =max(maxsum3+arr[4], maxsum4 );//保证不连续
+      6、假如数组有6个值，最大值maxsum6 = max(  maxsum4+arr[5] ,maxsum5  )
+      。。。。
+      发现了么：
+      从5开始有规律了，5中的maxsum5= max( maxsum3+当前数组值，maxsum4 );
+      前n-2项的最大不相邻子序列的和记做a,前n-1项的最大不相邻子序列的和记做b，第n项的数值c，则前n项的最大不相邻子序列的和为max{a+c , b }，以此为循环体进行循环
+    */
+    function sumTopN(arr){
+      if(!Array.isArray(arr)){
+        throw new Error('arguments arr is not array')
+      }
+      if(arr.length === 0){
+        return -1
+      }
+      if(arr.length === 1){
+        return arr[0]
+      }
+      if(arr.length === 2){
+        return Math.max(arr[0], arr[1])
+      }
+      // 使用循环解题
+      // let prev2 = arr[0]
+      // let prev1 = Math.max(arr[0], arr[1])
+      // let result = 0;
+      // for (let index = 2; index < arr.length; index++) {
+      //   const element = arr[index];
+      //   result = Math.max(prev1, prev2+element)
+      //   prev2 = prev1
+      //   prev1 = result
+      // }
+      // return result
+
+      // 使用递归
+      return Math.max(sumTopN(arr.slice(0,arr.length-1)), sumTopN(arr.slice(0,arr.length-2))+arr[arr.length-1])
+    }
+    console.log(sumTopN([1,3,5,7]))
+    console.log(sumTopN([1,3,5,7,9,-1,3]))
+
+    // 将从小到大的有序数组循环左移未知次，找到左移后数组最小值, 比如 1234=》 4312，找到1
+    // 二分法查找
+    function findMin(arr){
+      let left = 0;
+      let right = arr.length-1
+      while (left<right) {
+        let mid = left + Math.ceil((right-left)/2)
+        if(arr[mid]<arr[right]){
+          // 右边升序，则最小值在左边
+          right = mid
+        } else if(arr[mid]>arr[right]){
+          // 左侧升序，则最小值在右侧
+          left = mid + 1
+        } else{
+          // 相等则丢弃最后一个元素
+          right--
+        }
+      }
+      return arr[left]
+    }
+    console.log(findMin([1,3,5]), findMin([4,3,1,2]),findMin([4,5,1,2,3]),findMin([2,2,2,0,1]),findMin([3,3,3,0,2,2,2,3]))
   </script>
 </body>
 </html>
