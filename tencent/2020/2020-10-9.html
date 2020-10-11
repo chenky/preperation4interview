@@ -110,6 +110,57 @@
       return -1
     }
 
+    // 最长递增子序列
+    // https://leetcode-cn.com/problems/longest-increasing-subsequence/solution/zui-chang-shang-sheng-zi-xu-lie-by-leetcode-soluti/
+    /*
+      定义 dp[i]dp[i] 为考虑前 ii 个元素，以第 ii 个数字结尾的最长上升子序列的长度，注意 \textit{nums}[i]nums[i] 必须被选取。
+      我们从小到大计算 dp[]dp[] 数组的值，在计算 dp[i]dp[i] 之前，我们已经计算出 dp[0 \ldots i-1]dp[0…i−1] 的值，则状态转移方程为：
+      dp[i]=max(dp[j])+1,其中0≤j<i且num[j]<num[i]
+      LIS=max(dp[i]),其中0≤i<n
+    */
+   // 纯动态规划解法，时间复杂度是n*n
+    function lengthOfLIS(arr){
+      const len = arr.length
+      if(len===0){
+        return 0
+      }
+      let dp = [1]
+      let max = 1
+      for (let i = 1; i < len; i++) {
+        dp[i] = 1
+        for (let j = 0; j < i; j++) {
+          if(arr[i]>arr[j]){
+            dp[i] = Math.max(dp[i], dp[j]+1)
+          }          
+        }
+        max = Math.max(max, dp[i]) 
+      }
+    }
+    // 动态规划+二分查找
+    function lengthOfLIS2(arr){
+      let tails = Array.from(function(){
+        while (arr.length--) {
+          return 0
+        }
+      })
+      let res = 0
+      for (const item of arr) {
+        // i为tails需要被item替换的下标，j为tails长度
+        let [i,j] = [0,res]
+        while (i<j) {
+          let mid = Math.ceil((i+j)/2)
+          if(tails[mid] < item){
+            i = mid+1
+          } else {
+            j = mid
+          }
+        }
+        tail[i] = item
+        if(j===res) res += 1
+      }
+      return res
+    }
+
   </script>
 </body>
 </html>
