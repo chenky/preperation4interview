@@ -299,7 +299,9 @@ BEM方式防止重复，用层级样式重写它
 - windows有虚拟内存技术，当ram不够或运行慢时，数据从ram-》虚拟内存中（页面文件）
 !['虚拟内存到物理内存'](../img/visual-memory-physical-memory.png)
 
-#### 那么其中token这种方***有什么问题呢？（回答了xss和csrf，其中提到了验证码来解决csrf）
+#### 那么其中token这种方***有什么问题呢？
+- token的优点
+  - 无状态、可扩展，支持移动设备不需要cookie支持，可跨域，无csrf问题
 #### 除了验证码，还有什么好的方式呢？（提到了cookie的same-site属性和refer头）
 #### 这个same-site你确定是有用的吗？
 #### refer是一定有效的吗？有没有可能被篡改？
