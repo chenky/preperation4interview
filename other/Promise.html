@@ -14,6 +14,18 @@
  * https://malcolmyu.github.io/2015/06/12/Promises-A-Plus/#note-4
  */
 
+ // 异步执行函数可以使用如下函数，process.nextTick，setImmediate，setTimeout
+ const asyncFn = (function () {
+  if (typeof process === 'object' && process !== null && 
+      typeof(process.nextTick) === 'function'
+  ) {
+    return process.nextTick;
+  } else if (typeof(setImmediate) === 'function') {
+    return setImmediate;
+  }
+  return setTimeout;
+})();
+
 // promise 三个状态
 const PENDING = "pending";
 const FULFILLED = "fulfilled";

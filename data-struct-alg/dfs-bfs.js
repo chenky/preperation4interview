@@ -30,7 +30,7 @@ var tree = {
   }
 }
 
-// 使用递归的方式
+// 使用递归的方式， 先序遍历，中序遍历，后续遍历
 let result = [];
 let dfsRecursion = function (node) {
     if(node) {
@@ -44,6 +44,7 @@ console.log(result);
 // ["-", "+", "a", "*", "b", "c", "/", "d", "e"]
 
 // 非递归遍历（利用栈：将遍历到的结点都依次存入栈中，拿结果时从栈中访问）
+// 非递归先序遍历，非递归中序遍历，非递归后续遍历
 let dfs = function (nodes) {
   let result = [];
   let stack = [];

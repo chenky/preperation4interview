@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta charset="utf-8">
+    <meta charset="utf-8" />
     <title>面向对象</title>
   </head>
+
   <body>
     <script type="text/javascript">
       /**
@@ -25,30 +26,28 @@
       // function M(){}
       // M.prototype={
       //   a: function(){
-      //     console.log("a");         
+      //     console.log("a");
       //   }
       // };
       // var m1 = new M();
       // m1.a();
       // M.prototype.b = function(){
-      //   console.log("b");        
+      //   console.log("b");
       // }
-      // console.log(m1.__proto__===M.prototype);      
+      // console.log(m1.__proto__===M.prototype);
       // m1.b();
       // M.prototype={
       //   a: function(){
       //     console.log("aa");
-          
+
       //   },
       //   b: function(){
       //     console.log("bb");
-          
+
       //   }
       // };
       // m1.a();
       // m1.b();
-
-
 
       /**
        * 实例化
@@ -56,9 +55,9 @@
       // console.log(new Animal(), new Animal2());
 
       /**
-       * 借助构造函数实现继承
-       无法继承到父类的prototype方法
-       */
+     * 借助构造函数实现继承
+     无法继承到父类的prototype方法
+     */
       // function Parent1 () {
       //     this.name = 'parent1';
       // }
@@ -76,9 +75,9 @@
       // console.log(new Child1());
 
       /**
-       * 借助原型链实现继承
-       所有实例都会共享一个引用对象
-       */
+     * 借助原型链实现继承，原型继承
+     原型继承的缺点： 所有实例都会共享一个引用对象
+     */
       // function Parent2 () {
       //     this.name = 'parent2';
       //     this.play = [1, 2, 3];
@@ -93,18 +92,18 @@
       // var s2 = new Child2();
       // s1.play.push(4);
       // // 所有实例都会共享一个引用对象
-      // console.log(s1.play, s2.play); 
+      // console.log(s1.play, s2.play);
 
       /**
-       * 组合方式
-       constructor指向不对，同事父类构造函数被执行两次
-       */
+     * 组合方式
+     constructor指向不对，同事父类构造函数被执行两次
+     */
       // function Parent3 () {
       //     this.name = 'parent3';
       //     this.play = [1, 2, 3];
       // }
       // Parent3.prototype.say = function(){
-      //   console.log("p say");        
+      //   console.log("p say");
       // }
       // function Child3 () {
       //     Parent3.call(this);
@@ -112,7 +111,7 @@
       // }
       // Child3.prototype = new Parent3();
       // Child3.prototype.c1 = function(){
-      //   console.log("c1");        
+      //   console.log("c1");
       // }
       // var s3 = new Child3();
       // var s4 = new Child3();
@@ -120,14 +119,12 @@
       // console.log(s3.play, s4.play);
       // console.log(s3);
       // console.log(new Parent3());
-      
-      
 
       /**
-       * 组合继承的优化1
-       * @type {String}
-       constructor指向不对，同时修改父类原型则子类原型被修改（反之也会被修改），强耦合
-       */
+     * 组合继承的优化1
+     * @type {String}
+     constructor指向不对，同时修改父类原型则子类原型被修改（反之也会被修改），强耦合
+     */
       // function Parent4 () {
       //     this.name = 'parent4';
       //     this.play = [1, 2, 3];
@@ -149,17 +146,18 @@
       // console.log(new Parent4());
 
       /**
-       * 组合继承的优化2
-       解决方案1：通过for in遍历父类原型方法复制， 二：通过以父类原型为对象创建一个新对象复制给子类原型
-       */
-      function Parent5 () {
-          this.name = 'parent5';
-          this.play = [1, 2, 3];
+     * 组合继承的优化2
+     解决方案1：通过for in遍历父类原型方法复制， 二：通过以父类原型为对象创建一个新对象复制给子类原型
+     */
+      function Parent5() {
+        this.name = "parent5";
+        this.play = [1, 2, 3];
       }
-      function Child5 () {
-          // 修正this关键字指向子类，同时获取父类的特权方法
-          Parent5.call(this);
-          this.type = 'child5';
+
+      function Child5() {
+        // 修正this关键字指向子类，同时获取父类的特权方法
+        Parent5.call(this);
+        this.type = "child5";
       }
       Child5.prototype = Object.create(Parent5.prototype);
       Child5.prototype.constructor = Child5;
@@ -168,6 +166,44 @@
       console.log(instance5 instanceof Child5, instance5 instanceof Parent5);
       console.log(instance5.constructor);
 
+      // ES6中的继承
+      // https://segmentfault.com/a/1190000015565616
+      class Animal {
+        constructor(name, speed) {
+          this.speed = speed;
+          this.name = name;
+        }
+
+        run(speed = 0) {
+          this.speed += speed;
+          alert(`${this.name} runs with speed ${this.speed}.`);
+        }
+
+        static compare(animalA, animalB) {
+          return animalA.speed - animalB.speed;
+        }
+      }
+
+      // Inherit from Animal
+      class Rabbit extends Animal {
+        // 如果不写会默认生成这个，但是如果有自己的构造函数，必须先即第一行调用super(...)来创建this对象   
+        constructor(...args){
+          super(...args)
+        }
+
+        hide() {
+          alert(`${this.name} hides!`);
+        }
+      }
+
+      let rabbits = [
+        new Rabbit("White Rabbit", 10),
+        new Rabbit("Black Rabbit", 5),
+      ];
+      rabbits.sort(Rabbit.compare);
+      console.log('after sort:',rabbits)
+
+      rabbits[0].run(); // Black Rabbit runs with speed 5.
     </script>
   </body>
 </html>

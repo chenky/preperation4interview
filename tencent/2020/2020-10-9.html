@@ -143,7 +143,7 @@
       }
       return max
     }
-    console.log(lengthOfLIS([10,9,2,5,3,7,101]),lengthOfLIS([10,9,2,5,3,7,21,18,6,9,101]))
+    // console.log(lengthOfLIS([10,9,2,5,3,7,101]),lengthOfLIS([10,9,2,5,3,7,21,18,6,9,101]))
     // 动态规划+二分查找
     function lengthOfLIS2(arr){
       let tails = []
@@ -167,7 +167,36 @@
       }
       return res
     }
-    console.log(lengthOfLIS2([10,9,2,5,3,7,101]),lengthOfLIS2([10,9,2,5,3,7,21,18,6,9,101]))
+    // console.log(lengthOfLIS2([10,9,2,5,3,7,101]),lengthOfLIS2([10,9,2,5,3,7,21,18,6,9,101]))
+
+    // 单例模式
+    // https://juejin.im/post/6844903874210299912
+    const CreateSingleTon = (function(){
+      let instance
+      return function(name){
+        if(instance){
+          return instance
+        }
+        this.name = name
+        return instance = this
+      }
+    })()
+
+    const singleTon1 = new CreateSingleTon('a')
+    const singleTon2 = new CreateSingleTon('b')
+    console.log(singleTon1 === singleTon2)
+    // 弹窗单例模式
+    const CreateDialog = function(fn){
+      let instance
+      return function(){
+        return instance || (instance = fn.apply(this, arguments))
+      }
+    }
+    function maskDialog(){
+
+    }
+    const maskDialogInstance = CreateSingleTon(maskDialog)()
+
   </script>
 </body>
 </html>
