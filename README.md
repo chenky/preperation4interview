@@ -28,8 +28,16 @@ custom element, shodaw dom, template模板（x-tag，polymer），小程序貌�
 
 ### 小程序原理：
 ![](asset/img/mini-programer.png) ![](asset/img/mini-programer-run.png)
-* https://juejin.im/post/5afd136551882542682e6ad7
-* https://github.com/Lmagic16/blog/issues/31
+![](./tencent/img/weixin-mini-program.png)
+- 不允许使用iframe、不允许a直接外跳到其他在线网页、不允许开发者触碰DOM、不允许使用某些未知的危险API等
+- 小程序的逻辑层和渲染层是分开的，逻辑层运行在 JSCore 中，并没有一个完整浏览器对象，因而缺少相关的DOM API和BOM API。这一区别导致了前端开发非常熟悉的一些库，例如 jQuery、 Zepto 等，在小程序中是无法运行的。同时 JSCore 的环境同 NodeJS 环境也是不尽相同，所以一些 NPM 的包在小程序中也是无法运行的。
+- 小程序开发者工具	NWJS(逻辑层)	Chrome WebView(渲染层)
+-  WXML 模板和 WXSS 样式工作在渲染层，JS 脚本工作在逻辑层。
+-  一个小程序存在多个界面，所以渲染层存在多个WebView线程，这两个线程的通信会经由微信客户端（下文中也会采用Native来代指微信客户端）做中转，逻辑层发送网络请求也经由Native转发，小程序的通信模型下图所示。
+- 双线程本质就是为了隔离用户的代码，这样更安全可控，沙箱有iframe或webworker，或者jscore创建线程
+- 网络请求全部由native托管
+- https://juejin.im/post/5afd136551882542682e6ad7
+- https://github.com/Lmagic16/blog/issues/31
 
 #### 小程序优缺点
 - 优点
