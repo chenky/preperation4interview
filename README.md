@@ -251,7 +251,7 @@ custom element, shodaw dom, template模板（x-tag，polymer），小程序貌�
 * https://coding.imooc.com/lesson/129.html#mid=9409
 * https://github.com/DMQ/mvvm
 
-#### [vue双向绑定原理](https://juejin.im/post/5d421bcf6fb9a06af23853f1)
+#### [vue双向绑定原理，defineProperty和proxy优缺点](https://juejin.im/post/5d421bcf6fb9a06af23853f1)
 Object.defineProperty+订阅发布模式+解释器compiler解释vue自定义命令
 3.0用了proxy
 - proxy性能最佳，同时支持全语言特性支持，lazy by default（只有数据被用到才会被监听，所以大规模数据性能很好）
@@ -259,8 +259,86 @@ Object.defineProperty+订阅发布模式+解释器compiler解释vue自定义命�
   - 数组index，length更改
   - map，set，weakmap，weakset
   - classes
+  
 ![](asset/img/vue-binding-all.png)
 ![](asset/img/vue-binding-mvvm.png)
+
+
+```javascript
+    function observe(obj){
+      if(Object.prototype.toString.call(obj) !== '[object Object]'){
+        throw new TypeError('type error')
+      }
+      Object.keys(obj).forEach((key)=>{
+        let innerValue = obj[key]
+        Object.defineProperty(obj, key, {
+          get(){            
+            dep.depend()
+            // console.log('call get ', innerValue)
+            return innerValue;
+          },
+          set(value) {            
+            innerValue = value
+            dep.notify();
+            // console.log('call set ', innerValue)
+          }
+        })
+      })
+    }
+
+    let activeUpdate
+
+    class Dep{
+      constructor(){
+        // this.subscribes = new Set()
+        this.subscribes = []
+      }
+      depend(){
+        if(activeUpdate){          
+          // this.subscribes.add(activeUpdate)
+          // console.log('call depend and add subscribe', this.subscribes.size)
+          this.subscribes.push(activeUpdate)
+          console.log('call depend and add subscribe', this.subscribes)
+        }
+      }
+      notify(){
+        this.subscribes.forEach(sub=>{
+          console.log('call notify');
+          sub();
+        })
+      }
+    }
+
+    const dep = new Dep()
+
+    function autorun(update){
+      function wrapUpdate(){
+        activeUpdate = wrapUpdate
+        update();
+        activeUpdate = null
+      }
+      wrapUpdate();
+    }
+
+    const state = {
+      count: 0
+    }
+
+    observe(state)
+
+    autorun(() => {
+      console.log('first autorun',state.count)
+    })
+    autorun(() => {
+      console.log('second autorun',state.count)
+    })
+    // should immediately log "count is: 0"
+
+    state.count++
+    // should log "count is: 1"
+```
+
+
 
 #### 数据双向绑定方式及优缺点 mvvm
 - 脏检查，Object.defineProperty，proxy，
