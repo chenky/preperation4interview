@@ -342,10 +342,50 @@ BEM方式防止重复，用层级样式重写它
 - 首屏加载时间
 - 首页加载时间
 - 整页加载时间
-#### 你知道这种小程序编译框架的原理吗？
 #### 你知道主流框架的区别吗？
-#### 写过ts吗？
-#### 微软的vs有一个叫依赖注入的，对这个怎么理解的？
+- 相似之处
+  - 使用 Virtual DOM
+  - 提供了响应式 (Reactive) 和组件化 (Composable) 的视图组件。
+  - 将注意力集中保持在核心库，而将其他功能如路由和全局状态管理交给相关的库。
+- react
+  - inmutable+jsx
+  - 函数式，数据不可变，单向数据流
+- vue
+  - mutable+template
+  - 双向数据绑定的mvvm框架
+  - 数据劫持&发布-订阅模式的方式
+  - 声明式的指令
+#### [微软的vs有一个叫依赖注入的，对这个怎么理解的？](https://juejin.im/post/6844903699249102861)
+- 依赖注入就是为了解决模块之间的耦合的，被依赖的模块可以动态注入模块
+- 比如requirejs AMD
+```javascript
+const injector = {
+  dependencies: {},
+  register: function(key, val){
+    this.dependencies[key] = val
+  },
+  resolve: function(deps, func, scope){
+    let depArgs = []
+    deps.forEach(dep=>{
+      depArgs.push(this.dependencies[dep])
+    })
+    scope = scope || {}
+    return function(...args){
+      return func.apply(scope, depArgs.concat(args))
+    }
+  }
+}
+
+injector.register('a', function(){ console.log('a') })
+injector.register('b', function(){console.log('b')})
+const doSomething = injector.resolve(['a','b'], function(a,b,others){
+  a();
+  b();
+  console.log(others)
+})
+doSomething('others')
+
+```
 #### es6了解过吗？模块化是怎么实现的？怎么做到变量名之间互不干扰就是模块之间如何保证互不影响，模块化是怎么做到的？
 #### 主技术栈是什么？
 #### 用过react吗

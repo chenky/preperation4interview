@@ -8,38 +8,66 @@
   <body>
     <script>
       // 数组中取size个元素，和为total
+      // 数组中和为某个值的两个数，数组中和为某个值的三个数
       // 给定一个数组，从中取n(size)个数，和为sum(total)
       // https://blog.csdn.net/foren_whb/article/details/86491019 这里的代码有错误，我修改了其中的bug
-      function choose(arr, size, total) {
-        // allResult为数组中所有长度为size和为total的二维数组
-        var allResult = [];
-        // lastArr为存储一组和为total长度为size的数组
-        (function temp(arr, size, lastArr) {
-          var arrLen = arr.length;
-          if (size <= arrLen) {
-            for (var i = 0; i < arrLen; i++) {
-              // 本次的value和上次的
-              var newResult = [].concat(lastArr);
-              newResult.push(arr[i]);
-              if (size == 1) {
-                if (eval(newResult.join("+")) == total) {
-                  // 得到一组长度为size和为total的数组，放到结果集allResult中
-                  allResult.push(newResult);
-                }
-              } else {
-                var newArr = [].concat(arr);
-                // 已经被加过的需要从数组中剔除掉
-                newArr.splice(0, i + 1);
-                temp(newArr, size - 1, newResult);
-              }
-            }
+      // function choose(arr, size, total) {
+      //   // allResult为数组中所有长度为size和为total的二维数组
+      //   let allResult = [];
+      //   // lastArr为存储一组和为total长度为size的数组
+      //   (function temp(arr, size, lastArr) {
+      //     let arrLen = arr.length;
+      //     if (size <= arrLen) {
+      //       for (let i = 0; i < arrLen; i++) {
+      //         // 本次的value和上次的
+      //         let newResult = [].concat(lastArr);
+      //         newResult.push(arr[i]);
+      //         if (size === 1) {
+      //           if (eval(newResult.join("+")) === total) {
+      //             // 得到一组长度为size和为total的数组，放到结果集allResult中
+      //             allResult.push(newResult);
+      //           }
+      //         } else {
+      //           let newArr = [].concat(arr);
+      //           // 已经被加过的需要从数组中剔除掉
+      //           newArr.splice(0, i + 1);
+      //           temp(newArr, size - 1, newResult);
+      //         }
+      //       }
+      //     }
+      //   })(arr, size, []);
+      //   return allResult;
+      // }
+      // console.time('choose')
+      // console.log(choose([1,2,17], 3, 20));
+      // console.log(choose([1,2,3,4,5], 2, 5));
+      // console.log(choose([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20], 3, 20));
+      // console.timeEnd('choose')
+
+      // 两个数相加和为某个值
+      // 对数组使用hash，target-arr[i], 是复杂度降为n
+      function twoSum(arr, target){
+        let res = {};
+        let map = {}
+        for (let index = 0; index < arr.length-1; index++) {
+          const currentNum = arr[index]
+          const nextNum = arr[index+1]
+          map[nextNum] || (map[nextNum] = index+1)
+          const rest = target - currentNum
+          if(map[rest]){
+            const resKey = [index, map[rest]].sort().join('_')
+            res[resKey] || res[]
+            // res[index+'_'+]
+            // res.push({[index.toString()]:currentNum, [map[rest]]:rest})
+            // 去重
+            delete map[currentNum]
           }
-        })(arr, size, []);
-        return allResult;
+        }
+        return res
       }
-      console.log(choose([1,2,17], 3, 20));
-      console.log(choose([1,2,3,4,5], 2, 5));
-      console.log(choose([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20], 3, 20));
+      console.log(twoSum([1,6,2,5,9], 7))
+      console.log(twoSum([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20], 20));
+
     </script>
   </body>
 </html>
