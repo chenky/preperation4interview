@@ -386,7 +386,83 @@ const doSomething = injector.resolve(['a','b'], function(a,b,others){
 doSomething('others')
 
 ```
-#### es6了解过吗？模块化是怎么实现的？怎么做到变量名之间互不干扰就是模块之间如何保证互不影响，模块化是怎么做到的？
+#### [es6模块化介绍](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Guide/Modules)
+- es6模块化是基于文件的，一个文件一个模块
+- 在最高层export，同时无法在全局中范围到，除非你自己绑定到window对象上，但这样有耦合
+- import不仅可以静态导入，也可以作为import函数动态导入
+- 可以通过export将多个模块合并到一个模块再导出
+- 现在浏览器都原生支持import，export，.mjs作为后缀
+- 入口使用 script type="module" 导入，也可以脚步内部导入script type="module" //include script here /script.
+- 可以使用as重命名导出与导入，可以导出变量，函数，类
+-  .mjs 后缀的文件需要以 MIME-type 为 javascript/esm 来加载(或者其他的JavaScript 兼容的 MIME-type ，比如 application/javascript), 否则，你会一个严格的 MIME 类型检查错误，像是这样的 "The server responded with a non-JavaScript MIME type"
+-  如果你尝试用本地文件加载HTML 文件 (i.e. with a file:// URL), 由于JavaScript 模块的安全性要求，你会遇到CORS 错误。你需要通过服务器来做你的测试。GitHub pages is ideal as it also serves .mjs files with the correct MIME type.
+#### [es6了解过吗？模块化是怎么实现的？怎么做到变量名之间互不干扰就是模块之间如何保证互不影响，模块化是怎么做到的？](https://juejin.im/post/6844904159385239566)
+- 所有导出的模块都统一由installedModules对象管理，路径作为key值，对象包括moduleId，isLoaded(是否加载)，exports(需要导出的变量，函数，类等)
+- 通过installedModules[key]判断，防止循环依赖加载
+- import时得到的是installedModules[key].exports
+```javascript
+// 1. 是一个立即执行函数
+(function (modules) {
+  var installedModules = {};
+  // 4. 处理入口文件模块
+  function __webpack_require__(moduleId) {
+    if (installedModules[moduleId]) {
+      return installedModules[moduleId].exports;
+    }
+    // 5. 创建一个模块
+    var module = installedModules[moduleId] = {
+      i: moduleId,
+      l: false,
+      exports: {}
+    };
+    // 6. 执行入口文件模块函数
+    modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+    module.l = true;
+    // 7. 返回
+    return module.exports;
+  }
+  __webpack_require__.d = function (exports, name, getter) {
+    if (!__webpack_require__.o(exports, name)) { // 判断name是不是exports自己的属性
+      Object.defineProperty(exports, name, {enumerable: true, get: getter});
+    }
+  };
+  __webpack_require__.r = function (exports) {
+    if (typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+      // Symbol.toStringTag作为对象的属性，值表示这个对象的自定义类型 [Object Module]
+      // 通常只作为Object.prototype.toString()的返回值
+      Object.defineProperty(exports, Symbol.toStringTag, {value: 'Module'});
+    }
+    Object.defineProperty(exports, '__esModule', {value: true});
+  };
+  __webpack_require__.o = function (object, property) {
+    return Object.prototype.hasOwnProperty.call(object, property);
+  };
+  // 3. 传入入口文件id
+  return __webpack_require__(__webpack_require__.s = "./index.js");
+})({ // 2. 模块对象作为参数传入
+  "./index.js":
+    (function (module, __webpack_exports__, __webpack_require__) {
+      // __webpack_exports__就是module.exports
+      "use strict";
+      // 添加了__esModule和Symbol.toStringTag属性
+      __webpack_require__.r(__webpack_exports__);
+      var _module1__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("./module1.js");
+      console.log(_module1__WEBPACK_IMPORTED_MODULE_0__["m"])
+    }),
+
+  "./module1.js":
+    (function (module, __webpack_exports__, __webpack_require__) {
+      "use strict";
+      __webpack_require__.r(__webpack_exports__);
+      // 把m/n这些变量添加到module.exports中，并设置getter为直接返回值
+      __webpack_require__.d(__webpack_exports__, "m", function () {return m;});
+      __webpack_require__.d(__webpack_exports__, "n", function () {return n;});
+      var m = 1;
+      var n = 2;
+    })
+});
+
+```
 #### 主技术栈是什么？
 #### 用过react吗
 #### react和vue有什么区别

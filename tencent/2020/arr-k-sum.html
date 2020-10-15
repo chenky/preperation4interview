@@ -144,8 +144,10 @@
           console.log(`${res.join('+')} + ${arr[n-1]} = ${sum}`)
         }
         res.push(arr[n-1])
+        // 包括最后一个元素
         tempMultiSum(arr, n-1, innerSum-arr[n-1])
         res.pop()
+        // 不包含最后一个元素
         tempMultiSum(arr, n-1, innerSum)
       }
       tempMultiSum(arr, len, sum)
