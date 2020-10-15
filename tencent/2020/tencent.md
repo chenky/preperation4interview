@@ -463,10 +463,58 @@ doSomething('others')
 });
 
 ```
-#### 主技术栈是什么？
-#### 用过react吗
-#### react和vue有什么区别
 #### react如果更新上级节点，所有子级节点都会更新，要怎么去处理？
+- 使用shouldComponentUpdate，最直接也是最有风险的方式，很容易出现不可预知的bug
+```javascript
+class CounterButton extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {count: 1};
+  }
+  shouldComponentUpdate(nextProps, nextState) {
+    if (this.props.color !== nextProps.color) {
+      return true;
+    }
+    if (this.state.count !== nextState.count) {
+      return true;
+    }
+    return false;
+  }
+
+  render() {
+    return (
+      <button
+        color={this.props.color}
+        onClick={() => this.setState(state => ({count: state.count + 1}))}>
+        Count: {this.state.count}
+      </button>
+    );
+  }
+}
+```
+- 使用PureComponent， React.memo 等效于 PureComponent
+- 使用react.memo缓存，它会对props进行浅比较, 如果需要自定义比较，可以传入第二个函数自己处理
+```javascript
+const Button = React.memo((props) => {
+  // 你的组件
+});
+```
+- 使用useMemo
+```javascript
+const memoizedValue = useMemo(() => computeExpensiveValue(a, b), [a, b]);
+function Parent({ a, b }) {
+  // Only re-rendered if `a` changes:
+  const child1 = useMemo(() => <Child1 a={a} />, [a]);
+  // Only re-rendered if `b` changes:
+  const child2 = useMemo(() => <Child2 b={b} />, [b]);
+  return (
+    <>
+      {child1}
+      {child2}
+    </>
+  )
+}
+```
 #### 对web性能安全有什么了解吗？（主要说了xss和csrf）
 #### 我们如果有一个奖励的系统，有一个用户通过第三方疯狂调用我们的接口我们该怎么做？
 #### 验证码有哪些格式？
