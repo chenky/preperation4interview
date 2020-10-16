@@ -516,6 +516,65 @@ function Parent({ a, b }) {
 }
 ```
 #### 对web性能安全有什么了解吗？（主要说了xss和csrf）
+- 数字签名防止篡改
+- 防止重放攻击
+  - 首先使用数字签名防止数据被篡改
+  - 其次通过timeStamp验证是否在有效期内，比如1分钟，支付请求的参数都是从支付供应商实时获取的，整个流程请求肯定不会超过1分钟吧，不在有效期内直接报错非法请求
+  - 如果在1分钟内，则去验证nonce随机数，比如到radis内存中看看是不是存在，存在则表示是一个重复请求，报错，否则合法请求，然后radis配置策略nonce过期时间时1分钟，防止无限制浪费内存
+
+### 安全
+- 机密性，不可明文传输，秘文
+- 完整性不被篡改（数字签名）
+- 可用性，防止dos，ddos攻击
+- 可审计，不可抵赖
+- 系统设计，服务器配置的时候，只允许做什么，而不是不允许做什么
+- 最小权限原则，开通的权限越小越好
+- 多维度防御，网络防御，防火墙，数据库，后台语言，前端都要做防御
+- 数据和代码分离，xss，sql注入等等
+- 不可预测原则，csrf攻击，加一个token串
+
+### 安全防御措施
+- 前端不操作任何敏感cookie，后台设置cookie为httponly
+- 敏感信息不存储在前端，包括cookie，localstorage，本地数据库
+- [单击劫持设置X-Frame-Options deny sameorigin allow-from uri](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/X-Frame-Options)
+- [csrf防御，黑客只是会传递cookie，但我们自己可以取到cookie放在header或请求体中](https://cloud.tencent.com/developer/article/1494289)
+  - 判断请求来源，referer，origin
+  - 表单携带token（黑客虽然携带cookie，但是我们可以控制请求参数，此token可以约定算法或者服务器存储【安全系数高】）
+  - cookie的SameSite属性， lax（link，form get），strict（其他域都不允许）属性
+- xss攻击，存储型和反射型，对输入和输出都要进行编码，分为html编码，url编码，javascritp编码，css编码，html标签属性编码，json编码，目前框架基本都已经做了编码处理，结合csp（script-src，style-src，img-src）
+- CSP 的实质就是白名单制度，开发者明确告诉客户端，哪些外部资源可以加载和执行，等同于提供白名单。它的实现和执行全部由浏览器完成，开发者只需提供配置。
+- 两种方法可以启用 CSP。一种是通过 HTTP 头信息的Content-Security-Policy的字段。
+- 另一种是通过meta标签<meta http-equiv="Content-Security-Policy" content="script-src 'self'; object-src 'none'; style-src cdn.example.org third-party.org; child-src https:">
+  * xss攻击分为存储型和反射性
+  * httponly,设置csp浏览器只执行指定域名对script
+  * <,>"'&/等字符进行转译
+  * url中参数要进行编码转义，decodeURIComponent
+  * https://tech.meituan.com/2018/09/27/fe-security.html
+  * https://zhuanlan.zhihu.com/p/32237154
+  - [防御类库](https://github.com/leizongmin/js-xss)
+  - [owasp类库，org.owasp.encoder](https://owasp.org/www-project-java-encoder/#tab=Use_the_Java_Encoder_Project)
+  - 后端将数据存入数据库之前，先进行转义。
+  - 后端输出给前端的数据，需要进行统一转义处理。
+  - 前端获取后端的数据后，对数据进行转义处理。
+  - 转义的内容包括，html标签，html标签属性（onerror,href）,css内联样式，script标签js，内联json，跳转链接
+  - DOM 中的内联事件监听器，如 location、onclick、onerror、onload、onmouseover 等，a标签的 href 属性，JavaScript 的 eval()、setTimeout()、setInterval() 等，都能把字符串作为代码运行。如果不可信的数据拼接到字符串中传递给这些 API，很容易产生安全隐患，请务必避免
+  - 输入页面转义的字符有 & < > " ' / 
+  - url中取参数需要过滤javascript，http, https, script等等
+  - json需要转义U+2028 U+2029 <
+  - 在 style 属性和标签中，包含类似 background-image:url("javascript:...") expression(...) 的代码（新版本浏览器已经可以防范）
+  - html标签中危险属性直接过滤调
+  - 富文本编辑器
+    - 事件应该被严格禁止，标签选择应该用白名单，只允许a,img,div
+    - 禁止用户自定义css，style等
+- [iframe嵌入三方应用时，sandbox的安全属性限制其行为，默认是最小权限原则，有允许提交表单，弹窗，执行脚步等等](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/iframe)
+- 上传一段js（本来要求用户上传图片的），浏览器强大等容错能力识别是js并执行，防御方式设置X-Content-Type-Options这个HTTP Header明确禁止浏览器去推断响应类型。
+- [sql注入与防御，把用户的输入数据当作sql语句执行](https://www.cnblogs.com/digdeep/p/4715245.html)
+  - 防范使用存储过程，
+  - 采用sql语句预编译和绑定变量，是防御sql注入的最佳方法，使用PreparedStatement把用户输入当成普通字符串，或者使用相应的函数过滤特殊sql字符
+  - 严格检查参数的数据类型，还有可以使用一些安全函数，来方式sql注入。ESAPI.encoder().encodeForSQL(codec, name)编码成普通字符串，而不是sql语句
+  - 一般框架现在默认都是预编译的
+
+
 #### 我们如果有一个奖励的系统，有一个用户通过第三方疯狂调用我们的接口我们该怎么做？
 #### 验证码有哪些格式？
 #### 还有什么别的方法吗？
