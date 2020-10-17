@@ -169,7 +169,49 @@
     }
     // console.log(lengthOfLIS2([10,9,2,5,3,7,101]),lengthOfLIS2([10,9,2,5,3,7,21,18,6,9,101]))
 
-
+    // 我们进行了一次黑客马拉松大赛，全公司一共分为了N个组，每组一个房间排成一排开始比赛，比赛结束后没有公布成绩，
+    // 但是每个组能够看到自己相邻的两个组里比自己成绩低的组的成绩，比赛结束之后要发奖金，以1w为单位，每个组都至少会发1w的奖金，
+    // 另外，如果一个组发现自己的奖金没有高于比自己成绩低的组发的奖金，就会不满意，作为比赛的组织方，根据成绩计算出至少需要发多少奖金才能让所有的组满意。
+    // 每个房间初始化奖金都是1w元，正向遍历一遍，比前面大的就在前面奖金的基础上加1w，否则不动，然后同样的逻辑再反向遍历一遍
+    function findMinAward(arr){
+      const len = arr.length
+      // const awardArr = Array(len).fill(1)
+      const awardArr = []
+      let minAward = 0
+      // 正向遍历
+      for (let index = 1; index < len; index++) {
+        if(index===1){
+          awardArr[index-1] = 1
+        }
+        const currentScore = arr[index]
+        const prevScore = arr[index-1]
+        if(currentScore>prevScore){
+          // 比前面的大，则在前面奖金基础上+1
+          awardArr[index] = awardArr[index-1] + 1
+          minAward += awardArr[index-1]
+        } else {
+          // 比前面小，则为最低奖金1w
+          awardArr[index] = 1
+          minAward += 1
+        }       
+      }
+      // 反向遍历
+      for (let index = len-2; index >=0; index--) {
+        const currentScore = arr[index]
+        const nextScore = arr[index+1]
+        if(currentScore>nextScore && awardArr[index]<= awardArr[index+1]){
+          // 比后面的大，并且奖金小于等于后面的，则奖金+1
+          awardArr[index] = awardArr[index+1] + 1
+          minAward += awardArr[index+1] + 1
+        }      
+      }
+      let sum = awardArr.reduce((total, val)=>{
+        total += val;
+        return total;
+      }, 0)
+      console.log(`arr length is ${len}, minAward is ${minAward} and awardArr sum is ${sum}, awardArr is ${awardArr}`)
+    }
+    findMinAward([11,10,9,12,6,5,4,3,2,1,20,21,25,26,30,31,32])
   </script>
 </body>
 </html>
