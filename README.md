@@ -273,6 +273,7 @@ Object.defineProperty+订阅发布模式+解释器compiler解释vue自定义命�
 
 
 ```javascript
+  // vue数据双向绑定，使用发布订阅模式，数据劫持，观察者（autorun函数）
     function observe(obj){
       if(Object.prototype.toString.call(obj) !== '[object Object]'){
         throw new TypeError('type error')
@@ -298,8 +299,8 @@ Object.defineProperty+订阅发布模式+解释器compiler解释vue自定义命�
 
     class Dep{
       constructor(){
-        // this.subscribes = new Set()
-        this.subscribes = []
+        this.subscribes = new Set()
+        // this.subscribes = []
       }
       depend(){
         if(activeUpdate){          

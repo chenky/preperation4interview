@@ -591,8 +591,75 @@ function Parent({ a, b }) {
 - 通过采集终端设备的各项参数，在 APP 启动的时候，生成一个唯一的设备指纹，请求时返回服务器，然后风控分析它的可疑度，有效识别模拟器、改串码、群控等设备异常行为，设备信息通过约定的方法生成加密指纹信息，服务器解密得到信息可判断是否同一用户
 - referer校验，ua，origin
 #### 设计模式用过吗？最熟悉的模式是什么？
-#### 说一下单例模式。
-#### 说一下订阅发布模式。
+- 单例模式
+```javascript
+// 单例模式
+// https://juejin.im/post/6844903874210299912
+const CreateSingleTon = (function(){
+  let instance
+  return function(name){
+    if(instance){
+      return instance
+    }
+    this.name = name
+    return instance = this
+  }
+})()
+
+const singleTon1 = new CreateSingleTon('a')
+const singleTon2 = new CreateSingleTon('b')
+console.log(singleTon1 === singleTon2)
+// 弹窗单例模式
+const CreateDialog = function(fn){
+  let instance
+  return function(){
+    return instance || (instance = fn.apply(this, arguments))
+  }
+}
+function maskDialog(){
+
+}
+const maskDialogInstance = CreateSingleTon(maskDialog)()
+```
+- 发布订阅模式
+```javascript
+/*
+4. 事件的发布订阅模式
+*/
+class EventEmitter {
+  constructor() {
+    this.sub = {};
+  }
+  on = (eventType, callback) => {
+    this.sub[eventType] = this.sub[eventType] || {};
+    // let callbackList = this.sub[eventType].list;
+    if (!this.sub[eventType].list) {
+      this.sub[eventType].list = [];
+    }
+    this.sub[eventType].list.push(callback);
+  };
+  one = (eventType, callback) => {
+    let callbackList = this.sub[eventType].list;
+    let index = callbackList.indexOf(callback);
+    typeof callback === "function" ? callback() : "";
+    callbackList.splice(index, 1);
+  };
+  off = (eventType, callback) => {
+    // 遍历删除
+    let callbackList = this.sub[eventType].list;
+    let index = callbackList.indexOf(callback);
+    // 删除指定事件回掉
+    callbackList.splice(index, 1);
+  };
+  emit = (eventType, data) => {
+    let callbackList = this.sub[eventType].list;
+    while (callbackList.length) {
+      let cb = callbackList.shift();
+      typeof cb === "function" ? cb(data) : "";
+    }
+  };
+}
+```
 
 #### 我们进行了一次黑客马拉松大赛，全公司一共分为了N个组，每组一个房间排成一排开始比赛，比赛结束后没有公布成绩，
 但是每个组能够看到自己相邻的两个组里比自己成绩低的组的成绩，比赛结束之后要发奖金，以1w为单位，每个组都至少会发1w的奖金，
