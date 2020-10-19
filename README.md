@@ -651,94 +651,14 @@ Access-Control-Expose-Headers: FooBar
 * 域名收敛，dns预解析（<meta http-equiv="x-dns-prefetch-control" content="on" ><link rel="dns-prefetch" href="//cdn.domain.com" >）
 * 通常情况下，我们认为 TCP 网络传输的最大传输单元（Maximum Transmission Unit，MTU）为 1500B，即一个RTT（Round-Trip Time，网络请求往返时间）内可以传输的数据量最大为 1500 字节。因此，在前后端分离的开发模式中，尽量保证页面的 HTML 内容在 1KB 以内，这样整个 HTML 的内容请求就可以在一个 RTT 内请求完成，最大限度地提高 HTML 载入速度。
 
-### 测量白屏时间和首屏时间
-* https://lz5z.com/Web%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96-%E9%A6%96%E5%B1%8F%E5%92%8C%E7%99%BD%E5%B1%8F%E6%97%B6%E9%97%B4/
-- 白屏时间 = firstPaint - performance.timing.navigationStart || pageStartTime
-  ```html
-  <!DOCTYPE html>
-  <html>
-  <head>
-      <meta charset="utf-8">
-      <title>白屏</title>
-      <script>
-          // 不兼容 performance.timing 的浏览器
-          window.pageStartTime = Date.now()
-      </script>
-          <!-- 页面 CSS 资源 -->
-          <link rel="stylesheet" href="xx.css">
-          <link rel="stylesheet" href="zz.css">
-          <script>
-              // 白屏结束时间
-              window.firstPaint = Date.now()
-              // 白屏时间
-              console.log(firstPaint - performance.timing.navigationStart)
-          </script>
-  </head>
-  <body>
-      <h1>Hello World</h1>
-  </body>
-  </html>
-  ```
-- 首屏模块标签标记法,由于浏览器解析 HTML 是按照顺序解析的，当解析到某个元素的时候，你觉得首屏完成了，就在此元素后面加入 script 计算首屏完成时间。
-  ```html
-  <!DOCTYPE html>
-  <html>
-  <head>
-      <meta charset="utf-8">
-      <title>首屏</title>
-      <script>
-          // 不兼容 performance.timing 的浏览器
-          window.pageStartTime = Date.now()
-      </script>
-  </head>
-  <body>
-      <!-- 首屏可见内容 -->
-      <div class=""></div>
-      <!-- 首屏可见内容 -->
-      <div class=""></div>
-      <script type="text/javascript">
-              // 首屏屏结束时间
-              window.firstPaint = Date.now()
-              // 首屏时间
-              console.log(firstPaint - performance.timing.navigationStart)
-      </script>
-      <!-- 首屏不可见内容 -->
-      <div class=""></div>
-      <!-- 首屏不可见内容 -->
-      <div class=""></div>
-  </body>
-  </html>
-  ```
-- 统计首屏内加载最慢的图片/iframe, 我们只需要监听首屏内所有的图片的 onload 事件，获取图片 onload 时间最大值，并用这个最大值减去 navigationStart 即可获得近似的首屏时间。
-  ```html
-  <!DOCTYPE html>
-  <html>
-  <head>
-      <meta charset="utf-8">
-      <title>首屏</title>
-      <script>
-          // 不兼容 performance.timing 的浏览器
-          window.pageStartTime = Date.now()
-      </script>
-  </head>
-  <body>
-      <img src="https://lz5z.com/assets/img/google_atf.png" alt="img" onload="load()">
-      <img src="https://lz5z.com/assets/img/css3_gpu_speedup.png" alt="img" onload="load()">
-      <script>
-          function load () {
-              window.firstScreen = Date.now()
-          }
-          window.onload = function () {
-              // 首屏时间
-              console.log(window.firstScreen - performance.timing.navigationStart)
-          }
-      </script>
-  </body>
-  </html>
-  ```
-
 ### 兼容IE事件工具函数
 * https://blog.csdn.net/wangcuiling_123/article/details/73085958
+
+### 关系型数据库和非关系型数据库
+- 关系型数据库比非关系型数据库更省硬盘，因为不需要冗余很多数据
+- 关系型数据库比非关系型数据库，更容易追踪数据之间的关系，如果需要追踪复杂的关系需要使用关系型数据库
+- 如果需要数据实时性强（要求数据库强一致性），那么读写可能都会慢一点，则使用关系型数据库
+- 如果要求数据读写快，实时性可以有延迟，则可以使用非关系型数据库
 
 ### h5原生优缺点
 * https://www.jianshu.com/p/daeacf35e72f

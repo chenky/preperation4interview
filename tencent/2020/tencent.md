@@ -336,12 +336,6 @@ BEM方式防止重复，用层级样式重写它
 - 高内聚，内耦合
 - 一个组件最好只做一件事，参数通过props传入
 - 分为容器（逻辑）组件和展示组件，有状态【Stateful】和 无状态【Stateless】，这样扩展性和维护性更好
-#### 提升速度的具体数据是什么？
-- tcp连接，dns域名解析，dom ready
-- 白屏时间
-- 首屏加载时间
-- 首页加载时间
-- 整页加载时间
 #### 你知道主流框架的区别吗？
 - 相似之处
   - 使用 Virtual DOM
@@ -678,11 +672,141 @@ class EventEmitter {
   - 模块化的支持，以及打包工具webpack配置是否简单可行，不复杂，最好有cli集成工具，开箱即用
   - 学习成本，以及现在项目中框架使用情况
   - 框架周边的生态及框架是否有牛人维护，社区的组件库丰富成熟
-你们现在前后端是分离开发的吗？
-了解过无代码编程这个概念吗？如果是你的话会怎么去运用这个？
-看你做的内部产品比较多，c端的性能优化做过什么呢？
-那么要如何去检测线上的用户性能呢？你觉得其中有哪些数据是比较重要的呢？怎么去实现对他们的监测和分析呢？
-其中你提到了window.onError来监测线上的数据，那么是怎么做的呢？比如由于浏览器的同源策略，我们是不能获取到真实的代码位置和数据的。这些应该怎么做呢？
+
+#### 那么要如何去检测线上的用户性能呢？你觉得其中有哪些数据是比较重要的呢？怎么去实现对他们的监测和分析呢？
+- tcp连接，dns域名解析，dom ready
+- 白屏时间
+- 首屏加载时间
+- 首页加载时间
+- 整页加载时间
+### 测量白屏时间和首屏时间
+* https://lz5z.com/Web%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96-%E9%A6%96%E5%B1%8F%E5%92%8C%E7%99%BD%E5%B1%8F%E6%97%B6%E9%97%B4/
+- 白屏时间 = firstPaint - performance.timing.navigationStart || pageStartTime
+  ```html
+  <!DOCTYPE html>
+  <html>
+  <head>
+      <meta charset="utf-8">
+      <title>白屏</title>
+      <script>
+          // 不兼容 performance.timing 的浏览器
+          window.pageStartTime = Date.now()
+      </script>
+          <!-- 页面 CSS 资源 -->
+          <link rel="stylesheet" href="xx.css">
+          <link rel="stylesheet" href="zz.css">
+          <script>
+              // 白屏结束时间
+              window.firstPaint = Date.now()
+              // 白屏时间
+              console.log(firstPaint - performance.timing.navigationStart)
+          </script>
+  </head>
+  <body>
+      <h1>Hello World</h1>
+  </body>
+  </html>
+  ```
+- 首屏模块标签标记法,由于浏览器解析 HTML 是按照顺序解析的，当解析到某个元素的时候，你觉得首屏完成了，就在此元素后面加入 script 计算首屏完成时间。
+  ```html
+  <!DOCTYPE html>
+  <html>
+  <head>
+      <meta charset="utf-8">
+      <title>首屏</title>
+      <script>
+          // 不兼容 performance.timing 的浏览器
+          window.pageStartTime = Date.now()
+      </script>
+  </head>
+  <body>
+      <!-- 首屏可见内容 -->
+      <div class=""></div>
+      <!-- 首屏可见内容 -->
+      <div class=""></div>
+      <script type="text/javascript">
+              // 首屏屏结束时间
+              window.firstPaint = Date.now()
+              // 首屏时间
+              console.log(firstPaint - performance.timing.navigationStart)
+      </script>
+      <!-- 首屏不可见内容 -->
+      <div class=""></div>
+      <!-- 首屏不可见内容 -->
+      <div class=""></div>
+  </body>
+  </html>
+  ```
+- 统计首屏内加载最慢的图片/iframe, 我们只需要监听首屏内所有的图片的 onload 事件，获取图片 onload 时间最大值，并用这个最大值减去 navigationStart 即可获得近似的首屏时间。
+  ```html
+  <!DOCTYPE html>
+  <html>
+  <head>
+      <meta charset="utf-8">
+      <title>首屏</title>
+      <script>
+          // 不兼容 performance.timing 的浏览器
+          window.pageStartTime = Date.now()
+      </script>
+  </head>
+  <body>
+      <img src="https://lz5z.com/assets/img/google_atf.png" alt="img" onload="load()">
+      <img src="https://lz5z.com/assets/img/css3_gpu_speedup.png" alt="img" onload="load()">
+      <script>
+          function load () {
+              window.firstScreen = Date.now()
+          }
+          window.onload = function () {
+              // 首屏时间
+              console.log(window.firstScreen - performance.timing.navigationStart)
+          }
+      </script>
+  </body>
+  </html>
+  ```
+#### 其中你提到了window.onError来监测线上的数据，那么是怎么做的呢？比如由于浏览器的同源策略，我们是不能获取到真实的代码位置和数据的。这些应该怎么做呢？
+- window.onerror，onunhandledrejection 监听promose错误 ，react 的 componentDidCatch，vue有Vue.config.errorHandler，errorCaptured
+- fetch可以创建跨域请求
+- 跨域script error问题，第一种方式，静态js资源配置cors和crossorigin="anonymous"
+```javascript
+app.use(express.static('./public', {
+  setHeaders(res) {
+    res.set('access-control-allow-origin', res.req.get('origin'));
+    res.set('access-control-allow-credentials', 'true');
+  }
+}));
+<script src="http://127.0.0.1:4000/at4000.js" crossorigin="anonymous"></script>
+```
+- [因为try catch对跨域没有限制，catch中会捕获到堆栈信息，所以可以对$(document).ready，addEventListener，$.fn.click，setTimeout or requestAnimationFrame进行wrapper](https://blog.sentry.io/2016/01/04/client-javascript-reporting-window-onerror)
+```javascript
+function wrapErrors(fn) {
+  // don't wrap function more than once
+  if (!fn.__wrapped__) {
+    fn.__wrapped__ = function () {
+      try {
+        return fn.apply(this, arguments);
+      } catch (e) {
+        captureError(e); // report the error
+        throw e; // re-throw the error
+      }
+    };
+  }
+  return fn.__wrapped__;
+}
+var invoke = wrapErrors(function(obj, method, args) {
+  return obj[method].apply(this, args);
+});
+invoke(Math, 'highest', [1, 2]); // no method Math.highest
+$(wrapErrors(function () { // application start
+  doSynchronousStuff1(); // doesn't need to be wrapped
+  setTimeout(wrapErrors(function () {
+    doSynchronousStuff2(); // doesn't need to be wrapped
+  });
+  $('.foo').click(wrapErrors(function () {
+    doSynchronousStuff3(); // doesn't need to be wrapped
+  });
+}));
+```
 你有自己去实现过吗？怎么去定位线上用户的问题在哪里呢？
 说一下小程序为什么比h5更好呢？（然后深挖了很多底层实现）
 
