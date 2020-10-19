@@ -127,8 +127,6 @@ const router = new VueRouter({
 #### [异步任务的两个队列](https://beta.segmentfault.com/a/1190000011198232)
 !['异步任务队列'](../img/task_queue.png)
 #### 10个宏任务，10个微任务，执行顺序是什么
-#### 对称加密算法和非对称加密算法
-- 对称是同一个密钥，速度快，而非对称是公钥私钥，速度慢
 #### 什么是跨域
 - 协议，域名，端口，jsop，cors
 #### 判断一个对象是对象、数组、函数
@@ -342,7 +340,7 @@ BEM方式防止重复，用层级样式重写它
   - 提供了响应式 (Reactive) 和组件化 (Composable) 的视图组件。
   - 将注意力集中保持在核心库，而将其他功能如路由和全局状态管理交给相关的库。
 - react
-  - inmutable+jsx
+  - immutable+jsx
   - 函数式，数据不可变，单向数据流
 - vue
   - mutable+template
@@ -810,33 +808,134 @@ $(wrapErrors(function () { // application start
 你有自己去实现过吗？怎么去定位线上用户的问题在哪里呢？
 说一下小程序为什么比h5更好呢？（然后深挖了很多底层实现）
 
-
-#### http2相对于http1的改进是什么？
 #### 那我们如果要把http1换成http2，我们网站需要做一些什么工作呢？
-#### 说一下https为什么比http更安全？
-#### 为什么要采用非对称加密和对称加密？
-#### 主技术栈是vue，用过别的吗？（用过react）
-#### 那么从你的角度说一下vue和react的区别？
-#### 说一下从底层原理的实现的区别呢？比如你提到了vue的双向绑定，这是怎么实现呢？
-#### http3和http2的区别是什么？
-#### 浏览器缓存在性能优化里也是比较重要的一部分，说一下浏览器缓存吧。
-#### 那么Etag的作用是什么呢？
+- 要求nginx的最低版本是1.10.0，openssl的最低版本是1.0.2, http/2在实现上基本上只支持https
+- 必须升级到https，所以静态资源引用协议使用//不加协议，ng需要配置80端口强制跳转到443（用户http强制跳转到https）
+- 所有静态资源必须升级为https
+#### 说一下https为什么比http更安全？ 为什么要采用非对称加密【RSA，ECC】和对称加密【DES，AES】？
+- 因为所有的通信都是加密的
+- 非对称加密在交互对称加密的秘钥时使用，之后就使用对称加密方式加密，对称是同一个密钥，速度快，而非对称是公钥私钥，速度慢
+#### [http3和http2的区别是什么？](https://blog.fundebug.com/2019/03/07/understand-http2-and-http3/)
+- HTTP/2 使用了多路复用，一般来说同一域名下只需要使用一个 TCP 连接。但当这个连接中出现了丢包的情况，那就会导致 HTTP/2 的表现情况反倒不如 HTTP/1 了。因为在出现丢包的情况下，整个 TCP 都要开始等待重传，也就导致了后面的所有数据都被阻塞了。但是对于 HTTP/1.1 来说，可以开启多个 TCP 连接，出现这种情况反到只会影响其中一个连接，剩余的 TCP 连接还可以正常传输数据。
+- http3基于upd，HTTP2基于tcp
+- http3丢包后无序等待，因为它是基于UDP并自己实现一套QUIC协议的
+- 因为 TCP 是基于 IP 和端口去识别连接的，这种方式在多变的移动端网络环境下是很脆弱的。但是 QUIC 是通过 ID 的方式去识别一个连接，不管你网络环境如何变化，只要 ID 不变，就能迅速重连上。
+- TCP 协议头部没有经过任何加密和认证，但是 QUIC 的 packet 可以说是武装到了牙齿。除了个别报文比如 PUBLIC_RESET 和 CHLO，所有报文头部都是经过认证的，报文 Body 都是经过加密的。
+- 向前纠错 (Forward Error Correction，FEC)，每个数据包除了它本身的内容之外，还包括了部分其他数据包的数据，因此少量的丢包可以通过其他包的冗余数据直接组装而无需重传。向前纠错牺牲了每个数据包可以发送数据的上限，但是减少了因为丢包导致的数据重传，因为数据重传将会消耗更多的时间(包括确认数据包丢失、请求重传、等待新数据包等步骤的时间消耗)
+假如说这次我要发送三个包，那么协议会算出这三个包的异或值并单独发出一个校验包，也就是总共发出了四个包。当出现其中的非校验包丢包的情况时，可以通过另外三个包计算出丢失的数据包的内容。当然这种技术只能使用在丢失一个包的情况下，如果出现丢失多个包就不能使用纠错机制了，只能使用重传的方式了。
 #### 后端是怎么设置Etag的呢？
-#### 做过富文本编辑器吗？
-#### 如果让你来做一个富文本编辑器，你觉得主要用了浏览器的什么功能？
+- ETag设置成资源的hash值
+#### [如果让你来做一个富文本编辑器，你觉得主要用了浏览器的什么功能？](https://juejin.im/post/6844903534798831629)
+- 利用contenteditable属性结合document.execCommand API实现，比如国外的CKEditor、百度的UEditor、优秀的后起之秀wangEditor。
+- 完全自己模拟实现selection、视图渲染等一切。比如Google Doc、有道云笔记、基于electron开发的VS Code。
 #### 用过canvas吗？
+```javascript
+//1.获取canvas和上下文
+var canvas = document.getElementById('canvas');
+var ctx = canvas.getContext('2d');
+//2.监听鼠标的移动
+canvas.onmousedown = function (event){
+    //清屏操作
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    //开启路径
+    ctx.beginPath();
+    //起点
+    ctx.moveTo(event.offsetX, event.offsetY);
+    canvas.onmousemove = function (event){
+        //终点
+        ctx.lineTo(event.offsetX, event.offsetY);
+
+        //设置颜色和线宽
+        ctx.strokeStyle = 'red';
+        ctx.lineWidth = 5;
+        //绘制 描边
+        ctx.stroke();
+    };
+    canvas.onmouseup = function (){
+        canvas.onmousemove = null;
+        canvas.onmouseup = null;
+    };
+};
+```
 #### 如果让你来做动画，嵌入到我们的网站里，你会有什么方法？
+- javascript svg
+- apng 缺点：Chrome 59 之后，只有 IE 不支持
+- dom动画
+- gif，flash
+- video， canvas
+- 简单动画可以使用css3 transition/animation 
+#### [4. 如何做移动端适配？](https://github.com/willson-wang/Blog/issues/84)
+```javascript
+if (!dpr && !scale) {
+    var isAndroid = win.navigator.appVersion.match(/android/gi);
+    var isIPhone = win.navigator.appVersion.match(/iphone/gi);
+    var devicePixelRatio = win.devicePixelRatio;
+    // 如果是iphone，则根据window.devicePixelRatio获取dpr
+    if (isIPhone) {
+        // iOS下，对于2和3的屏，用2倍的方案，其余的用1倍方案
+        if (devicePixelRatio >= 3 && (!dpr || dpr >= 3)) {                
+            dpr = 3;
+        } else if (devicePixelRatio >= 2 && (!dpr || dpr >= 2)){
+            dpr = 2;
+        } else {
+            dpr = 1;
+        }
+    } else {
+        // 其他设备下，仍旧使用1倍的方案
+        dpr = 1;
+    }
+    // 计算缩放比例
+    scale = 1 / dpr;
+}
+
+// 设置data-dpr属性，以便可以通过css属性选择器做一些样式处理
+docEl.setAttribute('data-dpr', dpr);
+
+// 设置meta标签
+if (!metaEl) {
+    metaEl = doc.createElement('meta');
+    metaEl.setAttribute('name', 'viewport');
+    // 设置initial-scale的值
+    metaEl.setAttribute('content', 'initial-scale=' + scale + ', maximum-scale=' + scale + ', minimum-scale=' + scale + ', user-scalable=no');
+    if (docEl.firstElementChild) {
+        docEl.firstElementChild.appendChild(metaEl);
+    } else {
+        var wrap = doc.createElement('div');
+        wrap.appendChild(metaEl);
+        doc.write(wrap.innerHTML);
+    }
+}
+
+function refreshRem(){
+    var width = docEl.getBoundingClientRect().width;
+    if (width / dpr > 540) {
+        width = 540 * dpr;
+    }
+    // 将docuemntElement宽度分成10份，用于等比缩放
+    var rem = width / 10;
+    docEl.style.fontSize = rem + 'px';
+    flexible.rem = win.rem = rem;
+}
+
+// 监听resize事件，如果触发resize事件，重新设置根元素的font-size
+win.addEventListener('resize', function() {
+    clearTimeout(tid);
+    tid = setTimeout(refreshRem, 300);
+}, false);
 
 
-#### 1. 介绍下你的项目 
-#### 2. 项目中遇到哪些难点？ 
-#### 3. 前端安全如何攻击与防御？（XSS CSRF） 
-#### 4. 如何做移动端适配？ 
-#### 5. 小程序编写中遇到过哪些困难，如何解决的？ 
-#### 6. 跨域的方法 
-#### 7. 常见的状态码 
-#### 8. 性能优化怎么做？ 
+win.addEventListener('pageshow', function(e) {
+    if (e.persisted) {
+        clearTimeout(tid);
+        tid = setTimeout(refreshRem, 300);
+    }
+}, false);
+
+refreshRem();
+```
 #### 9. git基本操作会哪些？git merge git rebase？ 
+- git rebase 和 git merge 一样都是用于从一个分支获取并且合并到当前分支
+!['rebase vs merge'](../img/git-merge-rebase.jpeg)
 #### 10. Vue自定义指令是否有用过？如何进行组件封装？ 
 #### 11. 登录鉴权过程 
 
