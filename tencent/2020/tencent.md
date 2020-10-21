@@ -1230,24 +1230,44 @@ arr.concat(value1[, value2[, ...[, valueN]]])
 !['https原理'](../img/https.png)
 - 数字证书认证机构(CA)通过非常严格的审核之后颁发的电子证书 (当然了是要钱的，安全级别越高价格越贵)。颁发证书的同时会产生一个私钥和公钥。私钥由服务端自己保存，不可泄漏。公钥则是附带在证书的信息中，可以公开的。证书本身也附带一个证书电子签名，这个签名用来验证证书的完整性和真实性，可以防止证书被篡改。
 - 客户端解析证书并对其进行验证。如果证书不是可信机构颁布，或者证书中的域名与实际域名不一致，或者证书已经过期，就会向访问者显示一个警告，由其选择是否还要继续通信
-#### 状态码
+- 握手期间所使用的的密钥交换和认证算法 (最常用的是 RSA 算法)
+- 加密算法 (用于握手完成后的对称加密，常用的有 AES、3DES等)
+- 信息摘要算法 (常用的有 SHA-256、SHA-1 和 MD5 等)
 #### options请求
-#### em rem vw vh
-#### css选择器优先级
-#### 重绘重排，如何优化
-#### 事件委托
-#### es5 es6继承及区别
-#### 浏览器缓存
-#### vue 2.x和3.0分别如何处理数组的双向绑定
-#### bfc
-#### promise
-#### js事件循环
+- cors跨域预检请求，检查服务器支持的http方法
+- 触发预检请求的条件（触发一定条件时浏览器会在正式请求之前自动先发起OPTIONS请求，即CORS预检请求，服务器若接受该跨域请求，浏览器才继续发起正式请求。）
+  - 使用了除get，post之外的方法，比如PUT/DELETE/CONNECT/OPTIONS/TRACE/PATCH
+  - 使用了自定义头部（即人为设置了以下集合之外首部字段）Accept/Accept-Language/Content-Language/Content-Type/DPR/Downlink/Save-Data/Viewport-Width/Width
+  -  Content-Type 的值不属于下列之一application/x-www-form-urlencoded、multipart/form-data、text/plain
+-  Access-Control-Max-Age可以缓存options预检请求的结果
+#### em（参考父元素fontsize） rem（参考根元素fontsize） vw（1vw等于视窗宽度的1%） vh（1vh等于视窗高度的1%）
 #### OSI七层模型及原理
-#### 跨域，实现jsonp，本地如何跨域调试
-#### ssl
+- ssl在会话层，在表示层和传输层之间
+!['OSI七层模型及原理'](../img/OSI.png)
 #### margin的百分比是基于谁的
-#### react 中 key的作用
-#### 回调地狱处理
+- 相对于父元素的宽度来计算
+#### react 中 key的作用， react diff算法
+- React diff 算法的 3 个策略
+  - 策略一：Web UI 中 DOM 节点跨层级的移动操作特别少，可以忽略不计。tree diff
+  - 策略二：拥有相同类的两个组件将会生成相似的树形结构，拥有不同类的两个组件将会生成不同的树形结构。 component diff
+  - 策略三：对于同一层级的一组子节点，它们可以通过唯一 id 进行区分 element diff
+- tree diff
+  - React 对树的算法进行了简洁明了的优化，即对树进行分层比较，两棵树只会对同一层次的节点进行比较。如果发现层级变化，则直接删除，重建
+  - !['tree diff'](../img/tree-diff.png)
+- component diff(当组件 D 变为组件 G 时，即使这两个组件结构相似，一旦 React 判断 D 和
+G 是不同类型的组件，就不会比较二者的结构，而是直接删除组件 D，重新创建组件 G 及其子节
+点。虽然当两个组件是不同类型但结构相似时，diff 会影响性能，但正如 React 官方博客所言：
+不同类型的组件很少存在相似 DOM 树的情况，因此这种极端因素很难在实际开发过程中造成重
+大的影响。)
+  - 如果是同一类型的组件，按照原策略继续比较 Virtual DOM 树即可。
+  - 如果不是，则将该组件判断为 dirty component，从而替换整个组件下的所有子节点。
+  - 对于同一类型的组件，有可能其 Virtual DOM 没有任何变化，如果能够确切知道这点，那
+么就可以节省大量的 diff 运算时间。因此，React 允许用户通过 shouldComponentUpdate()
+来判断该组件是否需要进行 diff 算法分析。
+  - !['component diff'](../img/component-diff.png)
+- element diff
+  - !['no key element diff'](../img/element-diff-nokey.png) 
+  - !['has key element diff'](../img/element-diff-haskey.png)
 #### 设计搜索框
 #### 抖音打点设计
 #### 组件设计思想及原则
@@ -1259,35 +1279,83 @@ arr.concat(value1[, value2[, ...[, valueN]]])
 #### 大数相加
 #### 交换整数中两位使得到的结果最大
 
-#### 重排/重绘
-#### http缓存/强缓存/协商缓存
-#### 跨域方式/cors
-#### csrf攻击/用cookie实现csrf攻击场景/怎么防御（具体）
-#### https/如何确认完整性/如何进行加密
-#### SSL属于哪一层/OSI模型中在哪两层之间
-#### 如何减少重排
-#### webpack（没用过。。）
-#### BFC/IFC
+#### 重排重绘，重排和重绘，页面渲染过程，dom渲染过程， 如何减少重排
+- HTML 被 HTML 解析器解析成 DOM 树；
+- CSS  被 CSS 解析器解析成 CSSOM 树；
+- 结合 DOM 树和 CSSOM 树，生成一棵渲染树(Render Tree)，这一过程称为 Attachment；
+- 生成布局(flow)，浏览器在屏幕上“画”出渲染树中的所有节点；
+- 将布局绘制(paint)在屏幕上，显示出整个页面。
+- 第四步和第五步是最耗时的部分，这两步合起来，就是我们通常所说的渲染。
+!['html render'](../img/html-render.png)
+- 重绘：某些元素的外观被改变，例如：元素的填充颜色
+- 重排：重新生成布局，重新排列元素。
+- 重绘不一定导致重排，但重排一定会导致重绘。
+- 减少重排
+  - 减少重排范围
+  - 减少重排次数
+    - 样式集中改变
+    - 分离读写操作
+  - 将 DOM 离线（拼凑好html字符，一次性插入，或者使用fragment）
+  - 使用 absolute 或 fixed 脱离文档流
+  - 优化动画，GPU 加速通常包括以下几个部分：Canvas2D，布局合成, CSS3转换（transitions），CSS3 3D变换（transforms），WebGL和视频(video)。
+#### BFC
+- BFC(Block Formatting Contexts)直译为"块级格式化上下文"。Block Formatting Contexts就是页面上的一个隔离的渲染区域，容器里面的子元素不会在布局上影响到外面的元素，反之也是如此。如何产生BFC？
+float的值不为none。 
+overflow的值不为visible。 
+position的值不为relative和static。
+display的值为table-cell, table-caption, inline-block中的任何一个。 
+那BFC一般有什么用呢？比如常见的多栏布局，结合块级别元素浮动，里面的元素则是在一个相对隔离的环境里运行。
 #### 虚拟DOM
-#### vue双向数据绑定原理
-
+- dom操作很可能会重排重绘，即重新渲染，这个操作是非常昂贵的，所以才有了虚拟dom最小化更新dom操作
+- 虚拟dom是在内存中计算是否更新，所以速度很快
+- 构建一套简易 Virtual DOM 模型并不复杂，它只需要具备一个 DOM 标签所需的基本
+元素即可, 标签名; 节点属性, 包含样式、属性、事件等; 子节点; 标识 id
+- 通过javascript描述UI
+- 服务器端渲染还是拼接字符串速度更快
+```javascript
+{
+// 标签名
+tagName: 'div',
+// 属性
+properties: {
+// 样式
+style: {}
+},
+// 子节点
+children: [],
+// 唯一标识
+key: 1
+}
+```
 #### 实现Array.reduce()
-#### 实现Promise/Promise.all()
-#### 快排
-
-#### ES6
-#### var let const 区别
+```javascript
+Array.prototype.polyfillReduce = function(fn, initValue){
+  let arr = this
+  let base = typeof initValue === 'undefined' ? arr[0] : initValue
+  let startPoint = typeof initValue === 'undefined' ? 1 : 0
+  arr.slice(startPoint).forEach((value, index)=>{
+    base = fn(base, value, startPoint+index, arr)
+  })
+  return base
+}
+```
+#### 使用reduce实现map
+```javascript
+if (!Array.prototype.mapUsingReduce) {
+  Array.prototype.mapUsingReduce = function(callback, thisArg) {
+    return this.reduce(function(mappedArray, currentValue, index, array) {
+      mappedArray[index] = callback.call(thisArg, currentValue, index, array)
+      return mappedArray
+    }, [])
+  }
+}
+```
 #### babel 的原理（ES6 转到 ES6 的过程）
-#### 箭头函数的 this
-#### 界面上有一个 button，监听点击事件，普通函数的 this 指向（说了 window，但现在想好像是 事件本身），箭头函数的指向
-#### setTimeout、promise then 相关代码说输出
-#### webpack
-#### 多入口配置
 #### 怎么将公共的 JS 代码抽离？
-#### Vue
-#### 响应式原理
-#### CSS
+- vue使用mixins
+- 实践中更好的方式是放在单独的文件中，通过import方式导入
 #### 获取相应的 class 的第一个元素，最后一个元素
+- 
 #### JS
 #### 根据 class 获取 元素（querySelector、querySelectorAll、getElementsByClassName）
 #### 闭包, 每隔一秒输出 1-10

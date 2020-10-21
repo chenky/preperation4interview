@@ -259,7 +259,7 @@ custom element, shodaw dom, template模板（x-tag，polymer），小程序貌�
 * https://coding.imooc.com/lesson/129.html#mid=9409
 * https://github.com/DMQ/mvvm
 
-#### [vue双向绑定原理，defineProperty和proxy优缺点](https://juejin.im/post/5d421bcf6fb9a06af23853f1)
+#### [vue2数据双向绑定原理，vue3数据双向绑定原理，vue2和vue3数据双向绑定区别，defineProperty和proxy优缺点](https://juejin.im/post/5d421bcf6fb9a06af23853f1)
 Object.defineProperty+订阅发布模式+解释器compiler解释vue自定义命令
 3.0用了proxy
 - proxy性能最佳，同时支持全语言特性支持，lazy by default（只有数据被用到才会被监听，所以大规模数据性能很好）
@@ -270,10 +270,17 @@ Object.defineProperty+订阅发布模式+解释器compiler解释vue自定义命�
   
 ![](asset/img/vue-binding-all.png)
 ![](asset/img/vue-binding-mvvm.png)
-
+- 脏检查，Object.defineProperty，proxy，
+- 脏检查性能最差但兼容性最好，每次数据变更都需要遍历拥有ng-bind指令都元素
+- Object.defineProperty性能次之兼容性次之，ie8+，没有脏检查
+- proxy性能最佳，同时支持全语言特性支持，lazy by default（只有数据被用到才会被监听，所以大规模数据性能很好）
+  - 对象属性增加，删除
+  - 数组index，length更改
+  - map，set，weakmap，weakset
+  - classes
 
 ```javascript
-  // vue数据双向绑定，使用发布订阅模式，数据劫持，观察者（autorun函数）
+  // vue2数据双向绑定，使用发布订阅模式，数据劫持，观察者（autorun函数）
     function observe(obj){
       if(Object.prototype.toString.call(obj) !== '[object Object]'){
         throw new TypeError('type error')
@@ -347,17 +354,6 @@ Object.defineProperty+订阅发布模式+解释器compiler解释vue自定义命�
     // should log "count is: 1"
 ```
 
-
-
-#### 数据双向绑定方式及优缺点 mvvm
-- 脏检查，Object.defineProperty，proxy，
-- 脏检查性能最差但兼容性最好，每次数据变更都需要遍历拥有ng-bind指令都元素
-- Object.defineProperty性能次之兼容性次之，ie8+，没有脏检查
-- proxy性能最佳，同时支持全语言特性支持，lazy by default（只有数据被用到才会被监听，所以大规模数据性能很好）
-  - 对象属性增加，删除
-  - 数组index，length更改
-  - map，set，weakmap，weakset
-  - classes
 
 #### vue生命周期图
 ![](asset/img/vue-lifecycle.png)
@@ -859,7 +855,7 @@ componentWillUnmount：清理垃圾，比如删除绑定的事件等等内存回
 
 #### 箭头函数和普通函数区别
 - 箭头函数不能new，没有prototype
-- this指向定义时父函数（如果父也是箭头函数则往上再找）所指的this
+- this指向定义时父函数（如果父也是箭头函数则往上再找）所指的this，而不是运行时所指向的this对象
 - 没有arguments绑定，使用rest替代
 - call和apply不会改变this指向
 

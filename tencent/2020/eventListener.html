@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>event</title>
+</head>
+<body>
+  <div id='test_this'>测试this,this指向当前元素</div>
+  <div id='test_this1'>测试this箭头函数,this指向window</div>
+  <div id='test_this2'>测试this箭头函数onclick,this指向window</div>
+  <script type="text/javascript">
+    const testThisElemnt = document.querySelector("#test_this")
+    testThisElemnt.addEventListener('click',function(){
+      console.log(this)
+    }, false)
+    const testThisElemnt1 = document.querySelector("#test_this1")
+    testThisElemnt1.addEventListener('click',()=>{
+      console.log(this)
+    }, false)
+    const testThisElemnt2 = document.querySelector("#test_this2")
+    testThisElemnt2.onclick = () => {
+      console.log(this, 'onclick')
+    }
+  </script>
+</body>
+</html>

@@ -214,6 +214,29 @@
       console.log(awardArr)
     }
     findMinAward([8,7,6,9,6,5,4,3,2,1,2,3,4,5,6,7,8])
+
+    // 实现reduce, Array.reduce
+    Array.prototype.polyfillReduce = function(fn, initValue){
+      let arr = this
+      let base = typeof initValue === 'undefined' ? arr[0] : initValue
+      let startPoint = typeof initValue === 'undefined' ? 1 : 0
+      arr.slice(startPoint).forEach((value, index)=>{
+        base = fn(base, value, startPoint+index, arr)
+      })
+      return base
+    }
+    var arr = [1, 2, 3, 4]
+    const res = arr.polyfillReduce((total, currentValue, currentIndex, arr) => {
+        console.log(total, currentValue, currentIndex, arr)
+        return total + currentValue
+    }, 10)
+    console.log(res)    
+    var arr1 = [1, 2, 3, 4]
+    const res1 = arr1.polyfillReduce((total, currentValue, currentIndex, arr) => {
+        console.log(total, currentValue, currentIndex, arr)
+        return total + currentValue
+    })
+    console.log(res1)   
   </script>
 </body>
 </html>

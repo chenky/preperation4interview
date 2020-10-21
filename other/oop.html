@@ -146,7 +146,7 @@
       // console.log(new Parent4());
 
       /**
-     * 组合继承的优化2
+     * 寄生组合继承
      解决方案1：通过for in遍历父类原型方法复制， 二：通过以父类原型为对象创建一个新对象复制给子类原型
      */
       function Parent5() {
@@ -165,6 +165,23 @@
       let instance5 = new Child5();
       console.log(instance5 instanceof Child5, instance5 instanceof Parent5);
       console.log(instance5.constructor);
+
+      // 同寄生组合继承
+      function A() {
+        this.a = 'hello';
+      }
+
+      function B() {
+        A.call(this);
+        this.b = 'world';
+      }
+
+      B.prototype = Object.create(A.prototype, {
+        constructor: { value: B, writable: true, configurable: true }
+      });
+
+      let b = new B();
+
 
       // ES6中的继承
       // https://segmentfault.com/a/1190000015565616
@@ -204,6 +221,25 @@
       console.log('after sort:',rabbits)
 
       rabbits[0].run(); // Black Rabbit runs with speed 5.
+
+      // es5和es6继承区别，
+      // 构造函数 B 的实例继承构造函数 A 的实例属性是通过 A.call(this) 来实现的，
+      // 在 ES6 中，类 B 的实例继承类 A 的实例属性，是通过 super() 实现的。
+      /*
+      ES5 中 A.call(this) 中的 this 是构造函数 B 的实例，也就是在实现实例属性继承上，ES5 是先创造构造函数 B 的实例，
+      然后在让这个实例通过 A.call(this) 实现实例属性继承，在 ES6 中，是先新建父类的实例对象this，
+      然后再用子类的构造函数修饰 this，使得父类的所有行为都可以继承。
+
+      new.target属性允许你检测函数或构造方法是否通过是通过new运算符被调用的,
+      在通过new运算符被初始化的函数或构造方法中，new.target返回一个指向构造方法或函数的引用。
+      在普通的函数调用中，new.target 的值是undefined。
+
+      class 的所有方法（包括静态方法和实例方法）都是不可枚举的。
+
+      class 的所有方法（包括静态方法和实例方法）都没有原型对象 prototype，所以也没有[[construct]]，不能使用 new 来调用。
+
+      必须使用 new 调用 class, 否则无法新建实例对象this
+      */
     </script>
   </body>
 </html>
