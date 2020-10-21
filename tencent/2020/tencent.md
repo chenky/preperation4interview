@@ -1351,16 +1351,18 @@ if (!Array.prototype.mapUsingReduce) {
 }
 ```
 #### babel 的原理（ES6 转到 ES6 的过程）
+- 使用babylon这个解析器，它会根据输入的javascript代码字符串根据ESTree规范生成AST（抽象语法树）。
+- 使用babel-generator将修改后的AST转换成普通代码。
 #### 怎么将公共的 JS 代码抽离？
 - vue使用mixins
 - 实践中更好的方式是放在单独的文件中，通过import方式导入
 #### 获取相应的 class 的第一个元素，最后一个元素
-- 
-#### JS
+- :nth-child(an+b) 这个 CSS 伪类首先找到所有当前元素的兄弟元素，然后按照位置先后顺序从1开始排序，选择的结果为CSS伪类:nth-child括号中表达式（an+b）匹配到的元素集合（n=0，1，2，3...）
+- :nth-of-type() 这个 CSS 伪类是针对具有一组兄弟节点的标签, 用 n 来筛选出在一组兄弟节点的位置。
+- :first-child，:last-child
+- CSS 伪类 :first-of-type表示一组兄弟元素中其类型的第一个元素。
+- :last-of-type CSS 伪类 表示了在（它父元素的）子元素列表中，最后一个给定类型的元素。当代码类似Parent tagName:last-of-type的作用区域包含父元素的所有子元素中的最后一个选定元素，也包括子元素的最后一个子元素并以此类推。
 #### 根据 class 获取 元素（querySelector、querySelectorAll、getElementsByClassName）
-#### 闭包, 每隔一秒输出 1-10
-#### 输入一个 URL 到页面显示的详细过程
-#### 说完后，问了浏览器缓存, 加载很慢，怎么优化
 
 
 
@@ -1575,32 +1577,32 @@ js的类型？基础类型和引用类型的区别？哪个在堆哪个在栈？
 
 
 
-3. 跨域 
-4. 二叉树 
-5. cookie和session 
-6. 详细讲一下什么时候会发生跨域，或者说跨域的几种情况都有什么 
-7.  讲一讲jsonp   详细 
-8.  讲一讲localstorage 
-9.  几道代码题  说结果   不难  有this指向，同步异步＋微宏队列输出结果  ，  原型链等 
-10.  this问题展开讲   怎么改变this    讲讲bind 
-11.  vue的一些问题 
+1. 跨域 
+2. 二叉树 
+3. cookie和session 
+4. 详细讲一下什么时候会发生跨域，或者说跨域的几种情况都有什么 
+5.  讲一讲jsonp   详细 
+6.  讲一讲localstorage 
+7.  几道代码题  说结果   不难  有this指向，同步异步＋微宏队列输出结果  ，  原型链等 
+8.   this问题展开讲   怎么改变this    讲讲bind 
+9.   vue的一些问题 
 
 
 
-2. xss是啥
-3. xss怎么防范
-4. sql注入怎么防范
-5. csrf是啥，怎么防范
-6. restful api是啥，有啥用
-7. mvc框架怎么理解
-8. express怎么写一个中间件
-9. 了不了解跨域
-10. 跨域怎么解决
-11. cookie、localstorage和globalstorage的区别
-12. csrf token为什么安全
-13. 设置http only有什么不好的
-14. node.js的优缺点
-15. 了不了解回流和重绘
+10. xss是啥
+11. xss怎么防范
+12. sql注入怎么防范
+13. csrf是啥，怎么防范
+14. restful api是啥，有啥用
+15. mvc框架怎么理解
+16. express怎么写一个中间件
+17. 了不了解跨域
+18. 跨域怎么解决
+19. cookie、localstorage和globalstorage的区别
+20. csrf token为什么安全
+21. 设置http only有什么不好的
+22. node.js的优缺点
+23. 了不了解回流和重绘
 
 
 
