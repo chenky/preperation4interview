@@ -15,6 +15,7 @@
 
 /*
 https://developer.mozilla.org/en-US/docs/Web/Guide/AJAX/Getting_Started
+ajax: 实现原理就是通过XMLHttpRequest与服务器异步交互，ajax实现代码
 3. 使用xhr方式提交post请求，a.qq.com提交到b.qq.com，所以需要设置为共同父域， ajax请求原生代码
 */
 function createXhr(method, url, params, callback) {

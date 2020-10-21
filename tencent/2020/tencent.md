@@ -6,9 +6,11 @@
 - 单线程会阻塞等待，I/O和cpu速度差异大
 - javascript单线程异步I/O, 避免锁和状态同步问题，同时不阻塞
 
-#### [react，vue优缺点](https://www.jianshu.com/p/2781cb61d2d0)
+#### [react，vue优缺点, vue和react区别](https://www.jianshu.com/p/2781cb61d2d0)
 - [vue3特性](https://naotu.baidu.com/file/9506ac745baf842d4bd035ccf367ab22)
 - [function component react](https://naotu.baidu.com/file/6fbeceb3ca8df372642f45ab1455b5d4)
+- vue3新特性
+  - 
 
 #### 单向数据流动优点
 - 可以把逻辑和展示UI分离开，更利于组件化管理，复用性更强，写出更健壮的，维护性，扩展性更强的代码
@@ -232,17 +234,6 @@ function sumTopN(arr){
 - null 的字面意思是：空值  。这个值的语义是，希望表示 一个对象被人为的重置为空对象，而非一个变量最原始的状态 。 在内存里的表示就是，栈中的变量没有指向堆中的内存对象，null则内存会被回收
 - 虽然 undefined 和 null 的语义和场景不同，但总而言之，它们都表示的是一个无效的值。
 
-#### 5、vue的defineProperty和Proxy
-- proxy优点
-  - 对属性的添加、删除动作的监测
-  - 对数组基于下标的修改、对于 .length 修改的监测
-  - 对 Map、Set、WeakMap 和 WeakSet 的支持
-  - 公开的用于创建 observable (即响应式对象——译注) 的 API。这为小型到中型的应用提供了一种轻量级的、极其简单的跨组件状态管理解决方案。（译注：在这之前我们可以通过另外 new Vue({data : {…}}) 来创建这里所谓的 observable；另外，其实 vuex 内部也是用这种方式来实现的）
-  - 默认为惰性监测（Lazy Observation）。在 2.x 版本中，任何响应式数据，不管它的大小如何，都会在启动的时候被监测。如果你的数据量很大的话，在应用启动的时候，这就可能造成可观的性能消耗。而在 3.x 版本中，只有应用的初始可见部分所用到的数据会被监测，更不用说这种监测方案本身其实也是更加快的。
-  - 更精准的变动通知。举个例子：在 2.x 系列中，通过 Vue.set 强制添加一个新的属性，将导致所有依赖于这个对象的 watch 函数都会被执行一次；而在 3.x 中，只有依赖于这个具体属性的 watch 函数会被通知到。
-  - 不可变监测对象（Immutable observable）：我们可以创建一个对象的“不可变”版本，以此来阻止对他的修改——包括他的嵌套属性，除非系统内部临时解除了这个限制。这种机制可以用来冻结传递到组件属性上的对象和处在 mutation 范围外的 Vuex 状态树。
-  - 更良好的可调试能力：通过使用新增的 renderTracked 和 renderTriggered 钩子，我们可以精确地追踪到一个组件发生重渲染的触发时机和完成时机，及其原因。
-- 更加全面、精准、高效；更具可调试性的响应跟踪；以及可用来创建响应式对象的 API。使速度加倍，并节省了一半的内存开销。
 #### [7、哪些方式有利于SEO](https://juejin.im/post/6844903824428105735)
 - 搜索引擎的工作原理就是搜集关键字，所以优化的关键就是要让这些搜索引擎理解你这个网页
 - 对网站的标题、关键字、描述精心设置，反映网站的定位，让搜索引擎明白网站是做什么的title、meta description和meta keywords
@@ -334,7 +325,7 @@ BEM方式防止重复，用层级样式重写它
 - 高内聚，内耦合
 - 一个组件最好只做一件事，参数通过props传入
 - 分为容器（逻辑）组件和展示组件，有状态【Stateful】和 无状态【Stateless】，这样扩展性和维护性更好
-#### 你知道主流框架的区别吗？
+#### 你知道主流框架的区别吗？vue和react区别
 - 相似之处
   - 使用 Virtual DOM
   - 提供了响应式 (Reactive) 和组件化 (Composable) 的视图组件。
@@ -937,10 +928,41 @@ refreshRem();
 - git rebase 和 git merge 一样都是用于从一个分支获取并且合并到当前分支
 !['rebase vs merge'](../img/git-merge-rebase.jpeg)
 #### 10. Vue自定义指令是否有用过？如何进行组件封装？ 
-#### 11. 登录鉴权过程 
+```javascript
+// 组件内封装
+directives: {
+  drag: {
+    /*
+    el：指令所绑定的元素，可以用来直接操作 DOM。
+    binding：一个对象，包含以下 property：
+      name：指令名，不包括 v- 前缀。
+      value：指令的绑定值，例如：v-my-directive="1 + 1" 中，绑定值为 2。
+      oldValue：指令绑定的前一个值，仅在 update 和 componentUpdated 钩子中可用。无论值是否改变都可用。
+      expression：字符串形式的指令表达式。例如 v-my-directive="1 + 1" 中，表达式为 "1 + 1"。
+      arg：传给指令的参数，可选。例如 v-my-directive:foo 中，参数为 "foo"。
+      modifiers：一个包含修饰符的对象。例如：v-my-directive.foo.bar 中，修饰符对象为 { foo: true, bar: true }。
+    vnode：Vue 编译生成的虚拟节点。移步 VNode API 来了解更多详情。
+    oldVnode：上一个虚拟节点，仅在 update 和 componentUpdated 钩子中可用。
+    */
+    bind: function(el, binding, vnode, oldnode){
 
-#### 1. 写一个正则表达式，能够识别qq.com的所有子域名 
-#### 2. 实现防抖函数 
+    },
+    // 指令的定义
+    inserted: function (el) {
+      el.focus()
+    }
+  }
+}
+// 全局绑定
+Vue.directive('pin', {
+  bind: function (el, binding, vnode) {
+    el.style.position = 'fixed'
+    var s = (binding.arg == 'left' ? 'left' : 'top')
+    el.style[s] = binding.value + 'px'
+  }
+})
+```
+
 #### 3. 括号生成（代码也作为福利送给大家好了，不过不是我的原版） 
 ```javascript
 // 输入：n = 3
@@ -972,34 +994,242 @@ var generateParenthesis = function(n) {
 ```
 
 
-#### 前端浏览器加载原理
-#### 浏览器加载服务端文件原理
-#### https 具体原理
-#### 浏览器性能优化
-#### ajax原理
+#### [前端浏览器加载原理](https://github.com/amandakelake/blog/issues/55)
 #### axios和ajax区别
+- ajax
+  - 1.本身是针对MVC的编程,不符合现在前端MVVM的浪潮
+  - 2.基于原生的XHR开发，XHR本身的架构不清晰。
+  - 3.JQuery整个项目太大，单纯使用ajax却要引入整个JQuery非常的不合理（采取个性化打包的方案又不能享受CDN服务）
+  - 4.不符合关注分离（Separation of Concerns）的原则
+  - 5.配置和调用方式非常混乱，而且基于事件的异步模型不友好。
+- axios
+  - 1.从浏览器中创建 XMLHttpRequest
+  - 2.支持 Promise API
+  - 3.客户端支持防止CSRF
+  - 4.提供了一些并发请求的接口（重要，方便了很多的操作）
+  - 5.从 node.js 创建 http 请求
+  - 6.拦截请求和响应
+  - 7.转换请求和响应数据
+  - 8.取消请求
+  - 9.自动转换JSON数据
 #### params具体请求原理
-#### 如何跨越
-#### 回调函数理解
-#### 闭包
-#### 浏览器性能优化
+- get请求放在url中key=value形式
+- post放在请求体中
 #### webpack打包优化
-#### localstorage区别
+```javascript
+module.exports = {
+  entry: {
+    app: './index.js',
+  },
+  output: {
+    path: path.resolve(__dirname, '..', 'dist'),
+  },
+  resolve: {
+    extensions: ['.js', '.jsx', '.json'],
+    alias: {
+      '@src': path.resolve(__dirname, '../src'),
+    },
+  },
+  module: {
+    rules: [
+      {
+        test: /\.jsx?$/,
+        exclude: /(node_modules)/,
+        use: [
+          {
+            loader: `happypack/loader?id=${JS_LOADER_ID}`,
+          }
+        ],
+      },
+      {
+        test: /\.(less|css)/,
+        exclude: /\.modules\.(less|css)$/,
+        use: [
+          {
+            loader: `happypack/loader?id=${cssLoaderId}`,
+          },
+        ],
+      },
+      {
+        test: /\.less$/,
+        include: CSS_MODULE_PATH,
+        use: [ `happypack/loader?id=${cssModuleLoaderId}` ],
+      },
+      {
+        test: /\.(eot|woff2?|ttf|svg)$/,
+        use: [
+          {
+            loader: 'url-loader',
+            options: {
+              name: '[name]-[hash:5].min.[ext]',
+              limit: 5000, // fonts file size <= 5KB, use 'base64'; else, output svg file
+              publicPath: 'fonts/',
+              outputPath: 'fonts/',
+            },
+          },
+        ],
+      },
+      {
+        test: /\.(png|jpg|jpeg|gif)$/,
+        use: [
+          {
+            loader: 'url-loader',
+            options: {
+              name: '[name]-[hash:5].min.[ext]',
+              limit: 0, // size <= 10KB
+              outputPath: 'images/',
+            },
+          },
+        ],
+      },
+    ],
+  },
+  plugins: [
+    // new BundleAnalyzerPlugin(),
+    // dll替代方案，提升编译速度
+    new HardSourceWebpackPlugin(),
+    // 开发环境和生产环境二者均需要的插件
+    new HtmlWebpackPlugin({
+      title: '标注系统',
+      filename: 'index.html',
+      template: path.resolve(__dirname, '..', 'index.html'),
+      chunksSortMode: 'none',
+      minify: {
+        collapseWhitespace: true,
+      },
+    }),
+    new CleanWebpackPlugin(),
+    new HappyPack({
+      // 用唯一的标识符 id 来代表当前的 HappyPack 是用来处理一类特定的文件
+      id: JS_LOADER_ID,
+      // 如何处理 .js 文件，用法和 Loader 配置中一样
+      loaders: ['babel-loader?cacheDirectory'],
+      threadPool: happyThreadPool,
+    }),
+    new HappyPack({
+      // 用唯一的标识符 id 来代表当前的 HappyPack 是用来处理一类特定的文件
+      id: cssLoaderId,
+      // 如何处理 .css 文件，用法和 Loader 配置中一样
+      loaders: ['style-loader', 'css-loader'],
+      threadPool: happyThreadPool,
+    }),
+    new HappyPack({
+      // 用唯一的标识符 id 来代表当前的 HappyPack 是用来处理一类特定的文件
+      id: cssModuleLoaderId,
+      // 如何处理 .css 文件，用法和 Loader 配置中一样
+      loaders: [
+        'style-loader',
+        {
+          loader: 'css-loader',
+          options: {
+            importLoaders: 1,
+            modules: true,
+            localIdentName: "[name]__[local]___[hash:base64:5]",  
+          },
+        },
+        'less-loader', // 使用 less-loader 将 less 转为 css
+      ],
+      threadPool: happyThreadPool,
+    }),
+  ],
+};
+```
 #### vueX四个用法
-#### vue 组件通讯
-#### jqery和vue区别（老员工提问的，把我问的一蒙）
-#### jqery和js区别
+```javascript
+// vuex分模块, vuex本质上还是事件总线的方式通信
+import Vuex from 'vuex'
+import getters from './getters'
+import home from './modules/home.js'
+import approval from './modules/approval'
+import process from './modules/process'
+import workbench from './modules/workbench'
+import personalData from './modules/personalData'
+import personalApproval from './modules/personalApproval'
+Vue.use(Vuex)
+export default new Vuex.Store({
+  modules: {
+    home,
+    approval,
+    process,
+    workbench,
+    personalData,
+    personalApproval
+  },
+  getters
+})
+// 在项目根目录下导入vuex，比如main.js
+import store from './store'
+new Vue({
+  router,
+  store,
+  render: h => h(App)
+}).$mount('#app')
 
-#### 基本数据类型和引用数据类型
-#### es6常用方法，然后会具体问es6新特性的对应知识点
+// 然后再在具体页面导入mapState,mapGetter,mapActions
+import { createNamespacedHelpers } from 'vuex'
+const { mapActions } = createNamespacedHelpers('process')
+const { mapState } = createNamespacedHelpers('process')
+```
 #### 数组常用方法，以及每个方法入参和返回值
-#### vue双向绑定原理
+```javascript
+arr.forEach((item, index, array)={})
+arr.push(...args)
+arr.unshift(...args)
+arr.pop()
+arr.shift()
+arr.indexOf()
+// index:添加/删除元素索引 
+// howmany：可选。规定应该删除多少元素。必须是数字，但可以是 "0"。如果未规定此参数，则删除从 index 开始到原数组结尾的所有元素。
+// ...itemX: 需要添加的项
+arr.splice(index,howmany,item1,.....,itemX)
+arr.slice()
+arr.concat(value1[, value2[, ...[, valueN]]])
+```
 #### vue3.0新特性
-#### vue和react区别
-#### 组件传参、状态管理
-#### 性能优化指标，如何监测、如何优化
-#### 浏览器渲染过程
-#### ssl握手过程，ca证书校验过程，校验ca证书是否会发请求，https加密方式
+- Composition API
+  - 整个函数就是一个功能
+  - 函数包含创建新文件夹所依赖的数据和逻辑
+  - 函数完全独立，功能可以复用
+  - 不知道代码引用来源
+  - 与引入的组件属性或方法命名冲突
+  - HOC和slot需要额外的有状态的组件实例，从而使得性能有所损耗。
+  ```javascript
+  /*
+  *所有的数据来源都非常清晰
+  可以通过解构重命名，不存在命名冲突
+  不再需要仅为逻辑复用而创建的组件实例
+  */
+  import { useMousePosition } from './mouse'
+  export default {
+    setup() {
+      const { x, y } = useMousePosition()
+      // 其他逻辑...
+      return { x, y }
+    },
+  }
+  ```
+- Vue2.x使用Object.defineProperty拦截数据实现响应式系统，到了Vue3.0，响应式系统的核心api使用了Proxy, 从此告别$set
+- defineProperty和Proxy区别
+  - Object.defineProperty针对对象上特定属性(不能拦截新增属性)，Proxy针对handler对象(不论你是否为新增属性)
+  - Proxy除了get、set外还有其他多种操作符
+  - Proxy不兼容IE 11，相当于IE家族不能使用Vue3.0的应用了(也许未来Vue或社区有优雅降级的方案)
+  - proxy优点
+  - 对属性的添加、删除动作的监测
+  - 对数组基于下标的修改、对于 .length 修改的监测
+  - 对 Map、Set、WeakMap 和 WeakSet 的支持
+  - 公开的用于创建 observable (即响应式对象——译注) 的 API。这为小型到中型的应用提供了一种轻量级的、极其简单的跨组件状态管理解决方案。（译注：在这之前我们可以通过另外 new Vue({data : {…}}) 来创建这里所谓的 observable；另外，其实 vuex 内部也是用这种方式来实现的）
+  - 默认为惰性监测（Lazy Observation）。在 2.x 版本中，任何响应式数据，不管它的大小如何，都会在启动的时候被监测。如果你的数据量很大的话，在应用启动的时候，这就可能造成可观的性能消耗。而在 3.x 版本中，只有应用的初始可见部分所用到的数据会被监测，更不用说这种监测方案本身其实也是更加快的。
+  - 更精准的变动通知。举个例子：在 2.x 系列中，通过 Vue.set 强制添加一个新的属性，将导致所有依赖于这个对象的 watch 函数都会被执行一次；而在 3.x 中，只有依赖于这个具体属性的 watch 函数会被通知到。
+  - 不可变监测对象（Immutable observable）：我们可以创建一个对象的“不可变”版本，以此来阻止对他的修改——包括他的嵌套属性，除非系统内部临时解除了这个限制。这种机制可以用来冻结传递到组件属性上的对象和处在 mutation 范围外的 Vuex 状态树。
+  - 更良好的可调试能力：通过使用新增的 renderTracked 和 renderTriggered 钩子，我们可以精确地追踪到一个组件发生重渲染的触发时机和完成时机，及其原因。
+  - 更加全面、精准、高效；更具可调试性的响应跟踪；以及可用来创建响应式对象的 API。使速度加倍，并节省了一半的内存开销。
+- VDom的性能优化，对于静态节点将不进行diff，添加事件缓存  
+- Vue3.0做到了按需引入，更好支持tree shaking，有时候并不需要Vue全部的功能，打包时可以将无用的代码剪掉
+- Vue3.0支持模板添加多个根节点，意味着render函数也可以返回数组了
+#### ssl握手过程,ssl原理，ca证书校验过程，校验ca证书是否会发请求，https加密方式,https原理
+!['https原理'](../img/https.png)
+- 数字证书认证机构(CA)通过非常严格的审核之后颁发的电子证书 (当然了是要钱的，安全级别越高价格越贵)。颁发证书的同时会产生一个私钥和公钥。私钥由服务端自己保存，不可泄漏。公钥则是附带在证书的信息中，可以公开的。证书本身也附带一个证书电子签名，这个签名用来验证证书的完整性和真实性，可以防止证书被篡改。
+- 客户端解析证书并对其进行验证。如果证书不是可信机构颁布，或者证书中的域名与实际域名不一致，或者证书已经过期，就会向访问者显示一个警告，由其选择是否还要继续通信
 #### 状态码
 #### options请求
 #### em rem vw vh
