@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Link List</title>
+</head>
+
+<body>
+  <script>
+    /*
+  链表翻转反转，链表反转
+  reference：https://juejin.im/post/5e364ce16fb9a02fe654ba69
+*/
+    // function myReverse (linkedList) {
+    //   // 1 拿到传参链表的head
+    //   var head = linkedList.head
+
+    //   // 2 边界判断 如果头结点是空 或者只有一个结点 那还反转个啥
+    //   if(head === null || head.next === null) return linkedList
+
+    //   // 3 用三个指针
+    //   var current = head
+    //   var pre = null 
+    //   var next = null
+    //   while(current != null) {
+    //       next = current.next           //获取到当前节点的下一个节点
+    //       current.next = pre          //当前节点的前一个指向上一个节点
+    //       pre = current               //上一个节点赋值为当前节点
+    //       current = next              //当前节点赋值为下一个节点
+    //   }         
+    //   linkedList.head = pre
+    // }
+
+    function MyLinkList() {
+      function Node(element) {
+        this.element = element
+        this.next = null
+      }
+      this.head = null
+      this.length = 0
+      this.append = function (element) {
+        let node = new Node(element)
+        let current
+        if (this.head === null) {
+          this.head = node
+        } else {
+          current = this.head
+          while (current.next) {
+            current = current.next
+          }
+          current.next = node
+        }
+        this.length++
+      }
+      this.removeAt = function (position) {
+        let realPosition = position < 0 ? (length + position - 1) : position
+        if (realPosition >= 0 && realPosition < length) {
+          let current = this.head, prev, index = 0
+
+          if (realPosition === 0) {
+            this.head = this.head.next
+          } else {
+
+            while (index++ < realPosition) {
+              prev = current
+              current = current.next
+            }
+            prev.next = current.next
+          }
+          this.length--
+          return current.element
+        }
+      }
+      this.print = function () {
+        let current = this.head
+        let str = ''
+        while (current) {
+          str += current.element
+          current = current.next
+        }
+        console.log(str)
+      }
+      // 链表翻转，反转链表，链表反转
+      // 链表翻转前n个, 翻转链表前n个节点，链表反转前n个, 反转链表前n个节点
+      this.reverse = function (n) {
+        if (this.head === null) return null
+        let prev = null, current = this.head, next = null, position = 0;
+        while (current) {
+          // 不传n则全部反转，否则前n个反转
+          if (!n || (position++ < n)) {
+            next = current.next
+            current.next = prev
+            prev = current
+            current = next
+          } 
+        }
+
+        return this.head = prev
+      }
+    }
+
+    let myLinkList1 = new MyLinkList()
+    myLinkList1.append(1)
+    myLinkList1.append(2)
+    myLinkList1.append(3)
+    myLinkList1.append(4)
+    myLinkList1.append(5)
+    myLinkList1.print()
+    myLinkList1.reverse()
+    myLinkList1.print()
+    myLinkList1.reverse(3)
+    myLinkList1.print()
+
+  </script>
+</body>
+
+</html>

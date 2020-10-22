@@ -7,16 +7,16 @@
 </head>
 <body>
   <script>
-    // 字符串反转
-    function strResever(str){
-      let newStr=''
-      for (let index = str.length-1; index >=0; index--) {
-        const char = str[index];
-        newStr+=char
+    // 字符串反转, 从后往前遍历
+    // 字符串反转，字符串翻转，使用双指针
+    function strReverse(str){
+      let len = str.length, start=-1, end=len;
+      while (++start<--end) {
+        [str[start], str[end]] = [str[end], str[start]]
       }
-      return newStr
+      return str
     }
-    console.log(strResever('abcd'))
+    console.log(strReverse(['a','b','c', 'd']), strReverse(['a','b','c', 'd','e']))
 
     // 无序数组中 不相邻元素 子集 最大和
     // 无序数组中求不相邻元素组成的子集的最大和

@@ -321,8 +321,13 @@ BEM方式防止重复，用层级样式重写它
 - Object.prototype.toString.call(a|b)都返回[object String]
 - 字面量上执行操作，比如获取长度，访问属性，会隐式转换成String对象
 
-#### 组件封装
-- 高内聚，内耦合
+#### 组件封装，组件设计原则
+- 高内聚，内耦合，可复用，组合，职责划分清晰
+- 列出组件的层次结构，props，state，method等，清楚整个架构，便于职责划分，清晰整个组件的关系
+- 扁平的，面向数据的 state/props，尽量不要嵌套数据结构（省得不断使用展开运算符）
+- 辅助代码分离，提炼公共代码，比如配置，假数据，utils函数（ajax，本地存储方法等等）
+- 公共部分分成很多小模块，然后组合使用
+- 集中/统一的状态管理
 - 一个组件最好只做一件事，参数通过props传入
 - 分为容器（逻辑）组件和展示组件，有状态【Stateful】和 无状态【Stateless】，这样扩展性和维护性更好
 #### 你知道主流框架的区别吗？vue和react区别
@@ -1270,8 +1275,6 @@ G 是不同类型的组件，就不会比较二者的结构，而是直接删除
   - !['has key element diff'](../img/element-diff-haskey.png)
 #### 设计搜索框
 #### 抖音打点设计
-#### 组件设计思想及原则
-#### 手写promise.all
 #### 每隔k个反转链表
 #### 合并有序链表
 #### 炒股问题最难那两个
@@ -1351,8 +1354,23 @@ if (!Array.prototype.mapUsingReduce) {
 }
 ```
 #### babel 的原理（ES6 转到 ES6 的过程）
-- 使用babylon这个解析器，它会根据输入的javascript代码字符串根据ESTree规范生成AST（抽象语法树）。
-- 使用babel-generator将修改后的AST转换成普通代码。
+!['babel原理'](../img/babel-transform.png)
+- ES6代码输入 ==》 babylon进行解析 ==》 得到AST
+==》 plugin用babel-traverse对AST树进行遍历转译 ==》 得到新的AST树
+==》 用babel-generator通过AST树生成ES5代码
+- babel-core：babel转译器本身，提供了babel的转译API，如babel.transform等，用于对代码进行转译。像webpack的babel-loader就是调用这些API来完成转译过程的。
+- babylon：js的词法解析器
+- babel-traverse：用于对AST（抽象语法树，想了解的请自行查询编译原理）的遍历，主要给plugin用
+- babel-generator：根据AST生成代码
+- 功能包
+  - babel-types：用于检验、构建和改变AST树的节点
+  - babel-template：辅助函数，用于从字符串形式的代码来构建AST树节点
+  - babel-helpers：一系列预制的babel-template函数，用于提供给一些plugins使用
+  - babel-code-frames：用于生成错误信息，打印出错误点源代码帧以及指出出错位置
+  - babel-plugin-xxx：babel转译过程中使用到的插件，其中babel-plugin-transform-xxx是transform步骤使用的
+  - babel-preset-xxx：transform阶段使用到的一系列的plugin
+  - babel-polyfill：JS标准新增的原生对象和API的shim，实现上仅仅是core-js和regenerator-runtime两个包的封装
+  - babel-runtime：功能类似babel-polyfill，一般用于library或plugin中，因为它不会污染全局作用域
 #### 怎么将公共的 JS 代码抽离？
 - vue使用mixins
 - 实践中更好的方式是放在单独的文件中，通过import方式导入
