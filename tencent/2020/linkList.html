@@ -73,8 +73,8 @@
           return current.element
         }
       }
-      this.print = function () {
-        let current = this.head
+      this.print = function (head = this.head) {
+        let current = head
         let str = ''
         while (current) {
           str += current.element
@@ -84,9 +84,9 @@
       }
       // 链表翻转，反转链表，链表反转
       // 链表翻转前n个, 翻转链表前n个节点，链表反转前n个, 反转链表前n个节点
-      this.reverse = function (n) {
-        if (this.head === null) return null
-        let prev = null, current = this.head, next = null, position = 0;
+      this.reverse = function (head = this.head, n) {
+        if (head === null) return null
+        let prev = null, current = head, next = null, position = 0;
         while (current) {
           // 不传n则全部反转，否则前n个反转
           if (!n || (position++ < n)) {
@@ -94,10 +94,49 @@
             current.next = prev
             prev = current
             current = next
-          } 
+          } else {
+            // 反转后的尾部节点(此时的尾部节点就是head)要指向当前节点
+            head.next = current
+            break
+          }
         }
+        this.head = prev
+        return [prev, head]
+      }
 
-        return this.head = prev
+      // k个一组反转链表，k个一组翻转链表
+      this.reversePerK = function (currentStart = this.head, k) {
+        /* 
+        hair: 反转后新链表的head
+        lastLeft: 每段链表的前一个节点，即上一段链表最后一个节点（没有反转前）
+        lastRight ：每段链表的后一个节点, 即上一段链表第一个节点（没有反转前）
+        currentStart ：每一段链表的第一个节点
+        currentEnd ：每一段链表的最后一个节点
+        */
+        const hair = new Node(-1);
+        hair.next = currentStart;
+        let lastLeft = hair;
+
+        while (currentStart) {
+          // 因为下面i是从0开始，所以不是left.next, 而是上一段链表的前一个节点
+          let currentEnd = lastLeft;
+          // 查看剩余部分长度是否大于等于 k
+          for (let i = 0; i < k; ++i) {
+            currentEnd = currentEnd.next;
+            // 说明不够k个，则可直接返回hair.next
+            if (!currentEnd) {
+              return hair.next;
+            }
+          }
+          const lastRight = currentEnd.next;
+          [currentStart, currentEnd] = this.reverse(currentStart, k);
+          // 把子链表重新接回原链表
+          lastLeft.next = currentStart;
+          currentEnd.next = lastRight;
+          lastLeft = currentEnd;
+          currentStart = currentEnd.next;
+        }
+        return hair.next;
       }
     }
 
@@ -108,10 +147,12 @@
     myLinkList1.append(4)
     myLinkList1.append(5)
     myLinkList1.print()
-    myLinkList1.reverse()
-    myLinkList1.print()
-    myLinkList1.reverse(3)
-    myLinkList1.print()
+    let [head, tail] = myLinkList1.reverse()
+    myLinkList1.print(head)
+    let [head2, tail2] = myLinkList1.reverse(head,3)
+    myLinkList1.print(head2)
+    let head3 = myLinkList1.reversePerK(myLinkList1.head, 2)
+    myLinkList1.print(head3)
 
   </script>
 </body>
