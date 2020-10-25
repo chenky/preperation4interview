@@ -1383,24 +1383,11 @@ if (!Array.prototype.mapUsingReduce) {
 #### 根据 class 获取 元素（querySelector、querySelectorAll、getElementsByClassName）
 
 
-
-手写三列布局
-css浮动，浮动清除，引导BFC
-Flex布局 各种属性
-HTTP Header
-cookie/localstorage
-登录逻辑
-JS念log 然后各种变形 考察的作用域链和原型链
-css
-优化
-手写算法
 求两个数组中公共数字组成的数组
 
 
 Proxy
 Iframe
-性能优化
-还有个特别偏的知识点 想不起了
 2.设计 一个a 能使a === 1 && a===2 && a===3 === true
 3.n杯水中有一杯有毒，找出这杯毒水最少需要多少个试剂
 
@@ -1410,16 +1397,8 @@ UDP、TCP
 React框架 优势 性能 对比
 项目，typescript
 数据结构 数组和链表
-HTTP还是啥 忘了 反正还有个网络的
 最短路径和
 
-聊项目
-HTTP
-浏览器 DOM CSS DOM
-渲染流程
-浏览器安全
-React
-部署和测试工具
 
 小Q定义了一种数列称为翻转数列:
 给定整数n和m, 满足n能被2m整除。对于一串连续递增整数数列1, 2, 3, 4..., 每隔m个符号翻转一次, 最初符号为'-';。
@@ -1427,48 +1406,15 @@ React
 而n = 4, m = 1, 数列就是: -1, +2, -3, + 4.
 小Q现在希望你能帮他算算前n项和为多少。
 
-1.自我介绍
-2.目前实习的情况（利用scss构建类库，标准化页面规范，对项目进行迭代）
-3.行内和块级元素分别有哪些，有什么区别？行内元素的margin和padding会生效吗？
-答：行内元素不独占一行，不能定义宽高，块级元素独占一行，可以定义宽高，行内元素的margin-top，margin-bottom和padding-top，padding-bottom定义是无效的，但是margin-right、margin-left、padding-left、padding-right是有效的。 img是一个特例，它虽然是行内元素，但也是置换元素，所以它的性质不同于行内元素。对于img设置padding和margin都是有效的。 
-4.介绍一下标准盒模型？IE盒模型
-IE5.5及更早的版本使用的是IE盒模型。IE6及其以上的版本在标准兼容模式下使用的是W3C的盒模型标准。
-5.水平垂直居中 
-行内元素
-flex布局
-postion + top(left) + transform
-grid布局
-6.flex布局的属性
-https://juejin.im/post/6866914148387651592
-7.css选择符有哪些？选择符的优先级
-id选择器，类选择器，标签选择器，相邻选择器，子选择器，后代选择器，通配符选择器，属性选择器、伪类选择器 
+
 8.数组有哪些方法
 concat 、 every、 filter、 forEach 、indexOf 、 lastIndexOf、 join 、 map 、pop 、push  、reduce 、 reverse 、 slice、splice、shift、 some、sort、 toLocaleSTring、 toString 、 unshift、shift 
-9.节流和防抖的原理和应用
-节流：规定在一定时间内只执行一次函数，如果在规定时间内再触发不执行，知道时间过后再执行。常用：scroll滚动时间，每隔特定描述执行回调函数。input输入框，每隔特定时间发送请求或或展开下拉列表。 节流重在加锁 「flag = false」
-防抖：在时间触发后n秒后再执行对应函数，如果这期间再触发，则重新计时。常用：浏览器窗口大小resize避免次数过于频繁。登录，发短信等按钮自避免发送多次请求。文本编辑器实时保存。 防抖重在清零 「clearTimeout(timer)」 
-10.对性能优化的了解
 11.首屏优化
 （CSS containment: content-visibility:auto 可以告诉浏览器暂时跳过不可见元素的布局和渲染工作，知道这个元素滚动到当前视口，从而加快整个页面的初始渲染，缩短用户和页面可交互需要花费的时间、contain-intrinsic-size） 
 12.vue怎么做到按需加载
 13.vue中的diff算法
-14.localStorage、sessionStorage和cookie的概念和区别
-15.介绍ES6的变量、箭头函数，对比ES5的区别
-16.改变this的指向，call、apply、bind的区别
-17.前端安全方面的了解(好吧，不了解)
-18.跨域问题，多源跨域问题
 
 
-目前做了哪些项目，技术栈是哪些（这一块说的挺长时间的，说了几个项目，也聊了实习经历）
-盒子居中的实现方式（我说了三种方法）
-三列布局，中间宽度自适应（display：flex实现）
-跨域问题，解决方法，方法如何实现的（jsonp ，cors，Nginx反向代理，websocket）
-接着上面的问题，了解postMessage是怎么实现跨域的么（html5的方法，我用的不多）
-浏览器输入url到页面渲染整个过程详细说（Dns映射的ip，tcp三次握手，tcp链接成功后发http request包，服务器回response包，浏览器解析response中body的html数据，构建dom树，结合css样式生成render tree，页面第一次的回流和重绘。）
-上个问题的引申，http状态码有哪些（100 200 301 302 304 400 404 502 503）
-浏览器缓存（上题提到了304，就问了强缓存和协商缓存）
-tcp三次握手
-csrf和xss是什么，如何防御？
 页面加载js，css执行顺序
 vue/react 用的哪个？为什么选择他？（我学的是vue，说vue优点即可）
 vue的diff算法原理（层级比较Vnode，patch打补丁）
