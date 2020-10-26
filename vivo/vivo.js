@@ -9,6 +9,7 @@
 输入：(((0)))
 输出：3
 获取最少成对字符，最少成对括号
+括号匹配，括号配对
 */
 // function getMinMatchStr(str){
 //   let stack = [];

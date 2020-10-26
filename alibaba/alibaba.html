@@ -11,7 +11,10 @@
 <body>
 
     <div id="test">
-        test
+      <div id="inner_test">
+        inner test
+      </div>
+      outer test
     </div>
     <ul id="ul">
         <li>1</li>
@@ -126,14 +129,23 @@
         // a = 66;
 
         let testElm = document.getElementById("test");
+        let innerTest = document.getElementById("inner_test")
+        // 事件执行时机，事件执行顺序
         // 在目标元素上注册事件的话，事件直接触发在目标阶段，不分捕获和冒泡，只和注册的先后顺序有关
         // 触发的顺序看那个先注册，先注册捕获阶段事件就先触发捕获事件，先注册冒泡阶段事件就先触发冒泡事件。
         testElm.addEventListener("click",function(e){
-            alert("i am capture")
+            alert("i am capture in outer element")
         },true);
         testElm.addEventListener("click",function(e){
-            alert("i am propogation");
+            alert("i am propogation in outer element");
         }, false);
+        innerTest.addEventListener("click",function(e){
+            alert("i am propogation in inner test");
+        }, false);
+        innerTest.addEventListener("click",function(e){
+            alert("i am capture in inner test")
+        },true);
+
 
         // let reg = /^\s+|\s+$/g;
         // " abc ".replace(reg,"");

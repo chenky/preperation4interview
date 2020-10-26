@@ -138,8 +138,7 @@ const router = new VueRouter({
 #### url是什么格式的
 - 协议: //域名：端口/路径？参数#hash
 #### 原型和原型链之间的关系
-#### instanceof的原理
-- instanceof 运算符用于检测构造函数的 prototype 属性是否出现在某个实例对象的原型链上
+
 
 #### 数组的join方法，不传参数是什么
 - 默认是逗号隔开
@@ -1425,9 +1424,11 @@ console.log(a===1 && a===2 && a===3) // true
 前n项的和为 (n/2m)*mm
 
 
-看一段代码，题目大概是两个div包裹着，分别绑定addEventListener的单机事件，第三个参数分别设置true和false，一共四个事件，分别alert 1,2,3,4，点击子div问1234输出顺序（考察事件流的事件捕获，事件冒泡执行顺序）
-算法题：求数组中连续元素最大和（剑指原题）
-算法题：一串都是由大中小正反括号组成的字符串，判断该字符串是否符合括号嵌套标准（思路：用一个数组顺序遍历存放这些字符串正括号，出现反括号就看此时数组中最后一个元素是不是与之对应的正括号，是的则从数组移除，不是则不符合嵌套标准，最后这个数组长度为0说明括号是一对一的匹配的，才是对的）
+#### 看一段代码，题目大概是两个div包裹着，分别绑定addEventListener的单机事件，第三个参数分别设置true和false，一共四个事件，分别alert 1,2,3,4，点击子div问1234输出顺序（考察事件流的事件捕获，事件冒泡执行顺序）
+- 在同一层级上按注册先后顺序触发事件，父子层级则先捕获后冒泡，参考alibaba.html（事件执行顺序）
+
+#### 算法题：一串都是由大中小正反括号组成的字符串，判断该字符串是否符合括号嵌套标准, 括号匹配，括号配对
+- 使用栈，参考vivo.js(getMinMatchStr)
 
 
 8.29腾讯pcgHR面 20min 电话面试
@@ -1444,23 +1445,41 @@ console.log(a===1 && a===2 && a===3) // true
 平时有什么爱好
 目前还在面试哪些公司
 
+#### 如何用函数的方式给对象添加属性 
+- 写一个extend函数动态添加属性
+- Object.defineProperty(obj, prop, descriptor)
 
-js基本数据类型 
-如何实现一个instanceof 函数 
-如何用函数的方式给对象添加属性 
-
-代码题 
-n阶楼梯，每次一级或两级，多少种方式?使用递归的如何优化？动归。
-
-数据结构知道哪些，链表知道哪几种
-
-js执行上下文，和上下文中有哪些对象，知道的都说一下
-
-
-
-- 1.判断数组中是否有重复数
-- 2.排序链表去重
+#### 判断数组中是否有重复数
+- 使用hash判断即可，O(n), 或者正则
+#### 排序链表去重
+```javascript
+// 这是一个简单的问题，仅测试你操作列表的结点指针的能力。由于输入的列表已排序，因此我们可以通过将结点的值与它之后的结点进行比较来确定它是否为重
+// 复结点。如果它是重复的，我们更改当前结点的 next 指针，以便它跳过下一个结点并直接指向下一个结点之后的结点。
+function deleteDuplicates(ListNode head) {
+    ListNode current = head;
+    while (current != null && current.next != null) {
+        if (current.next.val == current.val) {
+            current.next = current.next.next;
+        } else {
+            current = current.next;
+        }
+    }
+    return head;
+}
+```
 - 3. 翻转二叉树
+```javascript
+var invertTree = function(root) {
+    if (root === null) {
+        return null;
+    }
+    const left = invertTree(root.left);
+    const right = invertTree(root.right);
+    root.left = right;
+    root.right = left;
+    return root;
+};
+```
 - 4. 分割链表。leetcode86
 - 5. 解压展开。 输入ab[2|cd]e， 输出 abcdcde。与leetcode394类似 
 
@@ -1469,11 +1488,11 @@ js执行上下文，和上下文中有哪些对象，知道的都说一下
 9.js的错误捕获机制？trycatch有什么缺点？还有什么错误捕获方式？（这个。。）
 10.前端的垃圾回收机制？
 
-12. sql注入怎么防范
-14. restful api是啥，有啥用
-15. mvc框架怎么理解
-16. express怎么写一个中间件
-21. 设置http only有什么不好的
+1.  sql注入怎么防范
+2.  restful api是啥，有啥用
+3.  mvc框架怎么理解
+4.  express怎么写一个中间件
+5.  设置http only有什么不好的
 
 3、jsonp方法中，怎么捕获异常
 4、try catch中可以捕获try中的异步异常吗-不能

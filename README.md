@@ -1180,6 +1180,22 @@ app.use((error, req, res, next) =&gt; {
 !['网页扫描登录原理'](asset/img/scan_QR_code_principle.jpg '')
 
 #### [instanceof 运算符用于检测构造函数的 prototype 属性是否出现在某个实例对象的原型链上](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/instanceof)
+- instanceof 运算符用于检测构造函数的 prototype 属性是否出现在某个实例对象的原型链上
+```javascript
+function new_instance_of(leftVaule, rightVaule) { 
+    let rightProto = rightVaule.prototype; // 取右表达式的 prototype 值
+    leftVaule = leftVaule.__proto__; // 取左表达式的__proto__值
+    while (true) {
+    	if (leftVaule === null) {
+            return false;	
+        }
+        if (leftVaule === rightProto) {
+            return true;	
+        } 
+        leftVaule = leftVaule.__proto__ 
+    }
+}
+```
 
 #### [Object.assign() 方法用于将所有可枚举属性的值从一个或多个源对象复制到目标对象。它将返回目标对象。](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Object/assign)
 

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>编程题</title>
+</head>
+
+<body>
+  <script>
+    // 数组中连续元素最大和，最大子序和
+    // f(i)=max{f(i−1)+ai,ai}
+    // O(n), O(1)
+    var maxSubArray = function (nums) {
+      let pre = 0, maxAns = nums[0];
+      nums.forEach((x) => {
+        pre = Math.max(pre + x, x);
+        maxAns = Math.max(maxAns, pre);
+      });
+      return maxAns;
+    };
+
+  </script>
+</body>
+
+</html>
