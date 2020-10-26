@@ -9,6 +9,12 @@
   <script>
 
 /**
+这个模型简单易懂，这里最关键的点就是在 then 中新创建的 Promise，
+它的状态变为 fulfilled 的节点是在上一个 Promise的回调执行完毕的时候。
+也就是说当一个 Promise 的状态被 fulfilled 之后，会执行其回调函数，
+而回调函数返回的结果会被当作 value，返回给下一个 Promise(也就是then 中产生的 Promise)，
+同时下一个 Promise的状态也会被改变(执行 resolve 或 reject)，
+然后再去执行其回调,以此类推下去...链式调用的效应就出来了。
  * Promise 实现 遵循promise/A+规范
  * Promise/A+规范译文:
  * https://malcolmyu.github.io/2015/06/12/Promises-A-Plus/#note-4

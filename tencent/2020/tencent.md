@@ -761,6 +761,11 @@ class EventEmitter {
   ```
 #### 其中你提到了window.onError来监测线上的数据，那么是怎么做的呢？比如由于浏览器的同源策略，我们是不能获取到真实的代码位置和数据的。这些应该怎么做呢？
 - window.onerror，onunhandledrejection 监听promose错误 ，react 的 componentDidCatch，vue有Vue.config.errorHandler，errorCaptured
+- try-catch 只能捕获到同步的运行时错误，对语法和异步错误却无能为力，捕获不到。
+- window.onerror无法捕获不论是静态资源异常，或者接口异常，错误都无法捕获到。还有无法捕获语法错误。
+- Promise最好有catch捕获异常，为了防止有漏掉的 Promise 异常，建议在全局增加一个对 unhandledrejection 的监听，用来全局监听Uncaught Promise Error。
+- 利用 window 对象的 load 和 beforeunload 事件实现了网页崩溃的监控。
+- Service Worker 有自己独立的工作线程，与网页区分开，网页崩溃了，Service Worker 一般情况下不会崩溃；
 - fetch可以创建跨域请求
 - 跨域script error问题，第一种方式，静态js资源配置cors和crossorigin="anonymous"
 ```javascript
@@ -1481,43 +1486,136 @@ var invertTree = function(root) {
 };
 ```
 - 4. 分割链表。leetcode86
-- 5. 解压展开。 输入ab[2|cd]e， 输出 abcdcde。与leetcode394类似 
+```javascript
+// 创建两个链表，一个放小于x的，一个放大于x的，然后再合并
+function partition(head, x) {
 
+    // before and after are the two pointers used to create the two list
+    // before_head and after_head are used to save the heads of the two lists.
+    // All of these are initialized with the dummy nodes created.
+    let before_head = { val: -1, next:null };
+    let before = before_head;
+    let after_head = { val: -1, next:null };
+    let after = after_head;
 
-8.load和DomContentLoaded的区别？没猜对。。问我理解的白屏时间首屏时间，以及了解渲染性能的参数吗？（不了解）
-9.js的错误捕获机制？trycatch有什么缺点？还有什么错误捕获方式？（这个。。）
-10.前端的垃圾回收机制？
+    while (head != null) {
 
-1.  sql注入怎么防范
-2.  restful api是啥，有啥用
-3.  mvc框架怎么理解
-4.  express怎么写一个中间件
-5.  设置http only有什么不好的
+        // If the original list node is lesser than the given x,
+        // assign it to the before list.
+        if (head.val < x) {
+            before.next = head;
+            before = before.next;
+        } else {
+            // If the original list node is greater or equal to the given x,
+            // assign it to the after list.
+            after.next = head;
+            after = after.next;
+        }
 
-3、jsonp方法中，怎么捕获异常
-4、try catch中可以捕获try中的异步异常吗-不能
-5、跨域解决方法中cors怎么设置只允许a.com,b.com的域名访问
-6、promise的原理
-7、promise的catch可以捕获构造函数中的异步中的异常吗
-8、对原型链的了解
-9、怎么继承
-10、函数提升，给个console输出啥
-11、获取的token存在哪比较安全，新开同一个tab，怎么获取token,这种一般存哪安全
+        // move ahead in the original list
+        head = head.next;
+    }
 
-事件循环机制
-页面中引入两个js文件，其中一个里面有报错的话，另一个还会继续执行吗？
-js中typeof和instanceof的区别以及原理
-typeof null返回什么？为什么？
-前端路由
-hash和history的区别、onhashchange事件
-三个算法题：
-闭包输出循环中正确的值
-青蛙跳  https://www.nowcoder.com/practice/8c82a5b80378478f9484d87d1c5f12a4?tpId=117&&tqId=23261
-循环移动数组 (https://www.nowcoder.com/practice/e19927a8fd5d477794dac67096862042?tpId=117&&tqId=1024689)
-智力题：100个乒乓球、甲乙一次可以拿一到五个、甲先拿的话怎么能最后一个拿完
-git撤销操作
-git reset
-git revert
+    // Last node of "after" list would also be ending node of the reformed list
+    after.next = null;
+
+    // Once all the nodes are correctly assigned to the two lists,
+    // combine them to form a single list which would be returned.
+    before.next = after_head.next;
+
+    return before_head.next;
+}
+```
+- 5. 解压展开。 输入ab[2|cd]e， 输出 abcdcde。与leetcode394类似
+```javascript
+//https://www.cnblogs.com/grandyang/p/5849037.html
+function decodeString(s) {
+    let t = "";
+    let s_num=[];
+    let s_str=[];
+    let cnt = 0;
+    for (let i = 0; i < s.length; ++i) {
+        if (s[i] >= '0' && s[i] <= '9') {
+            cnt = 10 * cnt + s[i] - '0';
+        } else if (s[i] == '[') {
+            s_num.push(cnt);
+            s_str.push(t);
+            cnt = 0; t.clear();
+        } else if (s[i] == ']') {
+            let k = s_num.top(); s_num.pop();
+            for (let j = 0; j < k; ++j) s_str.top() += t;
+            t = s_str.top(); s_str.pop();
+        } else {
+            t += s[i];
+        }
+    }
+    return s_str.empty() ? t : s_str.top();
+}
+```
+
+#### sql注入怎么防范
+- sql注入本质就是拼sql参数的时候把用户的数据当sql语句执行
+- 采用sql语句预编译和绑定变量，是防御sql注入的最佳方法。
+- 预先编译好，也就是SQL引擎会预先进行语法分析，产生语法树，生成执行计划，也就是说，后面你输入的参数，无论你输入的是什么，都不会影响该sql语句的 语法结构了，因为语法分析已经完成了，而语法分析主要是分析sql命令，比如 select ,from ,where ,and, or ,order by 等等。所以即使你后面输入了这些sql命令，也不会被当成sql命令来执行了，因为这些sql命令的执行， 必须先的通过语法分析，生成执行计划，既然语法分析已经完成，已经预编译过了，那么后面输入的参数，是绝对不可能作为sql命令来执行的，只会被当做字符串字面值参数。所以sql语句预编译可以防御sql注入。
+- 对参数严格白名单式过滤，在接收到用户输入的参数时，我们就严格检查 id，只能是int型。复杂情况可以使用正则表达式来判断。这样也是可以防止sql注入的。
+- 使用安全函数，ESAPI.encoder().encodeForSQL(codec, name)
+- 实际项目中，一般我们都是采用各种的框架，比如ibatis, hibernate,mybatis等等。他们一般也默认就是sql预编译的。对于ibatis/mybatis，如果使用的是 #{name}形式的，那么就是sql预编译，使用 ${name} 就不是sql预编译的。
+#### 设置http only有什么不好的
+本质就是不允许访问cookie了，那比如追踪用户，维护用户UI选项可能会受到影响
+
+#### jsonp方法中，怎么捕获异常
+其实有点投机取巧，就是采用 timeout 属性，因为当资源只要没有正确返回，就会计算在 timeout 时间消耗内。
+
+#### 跨域解决方法中cors怎么设置只允许a.com,b.com的域名访问
+程序动态控制Access-Control-Allow-Origin的值
+
+#### promise的catch可以捕获构造函数中的异步中的异常吗
+- 当前promise由当前catch捕获，所以如果构造函数中的异步没有链接给外面的promise则不会捕获
+
+#### 页面中引入两个js文件，其中一个里面有报错的话，另一个还会继续执行吗？
+会影响同一个js中后面的代码执行，但是不会影响另一个文件的js执行
+
+#### 前端路由原理，路由变更映射组件变化从而UI变化
+- hash onhashchange事件
+- history则可以监听popstate
+#### 循环移动数组
+```javascript
+// 1、逆序排列abcd：abcd1234--->dcba1234；
+// 2、逆序排列1234：dcba1234--->dcba4321；
+// 3、全部逆序：dcba4321--->1234abcd。
+Reverse(int *arr, int b, int e)      //逆序排列
+{
+	for( ; b < e; b++, e--)    //从数组的前、后一起遍历
+	{
+		int temp = arr[e];
+		arr[e] = arr[b];
+		arr[b] = temp;
+	}
+}
+ 
+RightShift(int *arr, int N, int K)
+{
+	K = K % N ;
+	Reverse(arr, 0, N-K-1);     //前面N-K部分逆序
+	Reverse(arr, N-K, N-1);     //后面K部分逆序
+	Reverse(arr, 0, N-1);       //全部逆序
+}
+```
+
+#### 智力题：100个乒乓球、甲乙一次可以拿一到五个、甲先拿的话怎么能最后一个拿完
+意思是每个人每次可以拿1-5个.
+假设此时剩下6个球,轮到乙拿,
+不管乙拿1-5中任意数量,甲都能保证自己一次拿空.
+假设剩下12个球,轮到乙拿,
+如果乙拿1,甲拿5；
+如果乙拿2,甲拿4……
+又会成为上面那种剩下6个球的情况.
+因此甲的必胜策略是一开始拿掉4个球,剩下96个（可以整除6）
+这时候剩下96个归乙拿,
+乙取x个,甲取6-x就行了,
+甲只要保证自己拿完后剩余的球仍然是6的倍数
+就能确保自己拿到最后一把
+
 
 
 在线文档有什么难点、应该怎么解决
@@ -1817,9 +1915,14 @@ post()和get()的本质区别
 3、你认为蓝信为什么要有支付功能？
 
 四面
-3、对MVC MVP MVVM的了解？
-4、对SEO的了解？
-
+#### [对MVC MVP MVVM的了解？](https://www.ruanyifeng.com/blog/2015/02/mvcmvp_mvvm.html)
+!['mvc'](../img/mvc.png)
+!['mvp'](../img/mvp.png)
+- 各部分之间的通信，都是双向的。
+- View 与 Model 不发生联系，都通过 Presenter 传递。
+- View 非常薄，不部署任何业务逻辑，称为"被动视图"（Passive View），即没有任何主动性，而 Presenter非常厚，所有逻辑都部署在那里。
+!['mvvm'](../img/mvvm.png)
+- 和mvp唯一的区别是，它采用双向绑定（data-binding）：View的变动，自动反映在 ViewModel，反之亦然。
 
 五面
 
