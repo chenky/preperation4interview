@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>炒股问题</title>
+</head>
+
+<body>
+  <script>
+    //     题意：用一个数组表示股票每天的价格，数组的第i个数表示股票在第i天的价格。 如果只允许进行一次交易，也就是说只允许买一支股票并卖掉，求最大的收益。
+
+    // 分析：动态规划法。从前向后遍历数组，记录当前出现过的最低价格，作为买入价格，并计算以当天价格出售的收益，作为可能的最大收益，整个遍历过程中，出现过的最大收益就是所求。
+
+    // 代码：O(n)时间，O(1)空间。
+    function maxProfit(arr) {
+      const len = arr.length
+      if (len < 2) return 0
+      let min = arr[0]
+      let tempMaxProfit = 0
+      for (let index = 1; index < len; index++) {
+        const element = arr[index];
+        min = Math.min(min, element)
+        tempMaxProfit = Math.max(tempMaxProfit, element - min)
+      }
+      return tempMaxProfit;
+    }
+    // 题目：用一个数组表示股票每天的价格，数组的第i个数表示股票在第i天的价格。交易次数不限，但一次只能交易一支股票，也就是说手上最多只能持有一支股票，求最大收益。
+
+    // 分析：贪心法。从前向后遍历数组，只要当天的价格高于前一天的价格，就算入收益。
+
+    // 代码：时间O(n)，空间O(1)。
+    function maxProfit2(arr) {
+      const len = arr.length
+      if (len < 2) return 0
+      let tempMaxProfit = 0
+      for (let index = 0; index < len - 1; index++) {
+        const current = arr[index];
+        const next = arr[index + 1]
+        const diff = next - current
+        if (diff > 0) {
+          tempMaxProfit += diff;
+        }
+      }
+      return tempMaxProfit;
+    }
+    // 题意：用一个数组表示股票每天的价格，数组的第i个数表示股票在第i天的价格。最多交易两次，手上最多只能持有一支股票，求最大收益。
+
+    // 分析：动态规划法。以第i天为分界线，计算第i天之前进行一次交易的最大收益preProfit[i]，和第i天之后进行一次交易的最大收益postProfit[i]，
+    // 最后遍历一遍，max{preProfit[i] + postProfit[i]} (0≤i≤n-1)就是最大收益。第i天之前和第i天之后进行一次的最大收益求法同
+    // Best Time to Buy and Sell Stock I。
+    // 代码：时间O(n)，空间O(n)。
+
+    function maxProfit3(prices) {
+      if (prices.length < 2) return 0;
+
+      let n = prices.length;
+      let preProfit = [];
+      let postProfit = [];
+
+      let curMin = prices[0];
+      for (let i = 1; i < n; i++) {
+        curMin = Math.min(curMin, prices[i]);
+        preProfit[i] = Math.max(preProfit[i - 1], prices[i] - curMin);//第i天卖出
+      }
+
+      let curMax = prices[n - 1];
+      for (let i = n - 2; i >= 0; i--) {//从后往前遍历
+        curMax = Math.max(curMax, prices[i]);
+        postProfit[i] = Math.max(postProfit[i + 1], curMax - prices[i]);//第i天买入
+      }
+
+      let maxProfit = 0;
+      for (let i = 0; i < n; i++) {
+        maxProfit = Math.max(maxProfit, preProfit[i] + postProfit[i]);
+      }
+
+      return maxProfit;
+    }
+    //     题意：用一个数组表示股票每天的价格，数组的第i个数表示股票在第i天的价格。最多交易k次，手上最多只能持有一支股票，求最大收益。
+
+    // 分析：特殊动态规划法。传统的动态规划我们会这样想，到第i天时进行j次交易的最大收益，要么等于到第i-1天时进行j次交易的最大收益（第i天价格低于第i-1天的价格），要么等于到第i-1天时进行j-1次交易，然后第i天进行一次交易（第i天价格高于第i-1天价格时）。于是得到动规方程如下（其中diff = prices[i] – prices[i – 1]）：
+
+    // profit[i][j] = max(profit[i – 1][j], profit[i – 1][j – 1] + diff)
+
+    // 看起来很有道理，但其实不对，为什么不对呢？因为diff是第i天和第i-1天的差额收益，如果第i-1天当天本身也有交易呢（也就是说第i-1天刚卖出了股票，然后又买入等到第i天再卖出），那么这两次交易就可以合为一次交易，这样profit[i – 1][j – 1] + diff实际上只进行了j-1次交易，而不是最多可以的j次，这样得到的最大收益就小了。
+
+    // 那么怎样计算第i天进行交易的情况的最大收益，才会避免少计算一次交易呢？我们用一个局部最优解和全局最有解表示到第i天进行j次的收益，这就是该动态规划的特殊之处。
+
+    // 我们定义local[i][j]为在到达第i天时最多可进行j次交易并且最后一次交易在最后一天卖出的最大利润，此为局部最优。然后我们定义global[i][j]为在到达第i天时最多可进行j次交易的最大利润，此为全局最优。它们的递推式为（其中diff = prices[i] – prices[i – 1]）：
+    // local[i][j] = max(global[i - 1][j - 1] + max(diff, 0), local[i - 1][j] + diff)
+    // global[i][j] = max(local[i][j], global[i - 1][j])，
+    // 其中局部最优值是比较前一天并少交易一次的全局最优加上大于0的差值，和前一天的局部最优加上差值后相比，两者之中取较大值，而全局最优比较局部最优和前一天的全局最优。
+
+    // local[i][j]和global[i][j]的区别是：local[i][j]意味着在第i天一定有交易（卖出）发生，当第i天的价格高于第i-1天（即diff > 0）时，那么可以把这次交易（第i-1天买入第i天卖出）跟第i-1天的交易（卖出）合并为一次交易，即local[i][j]=local[i-1][j]+diff；当第i天的价格不高于第i-1天（即diff<=0）时，那么local[i][j]=global[i-1][j-1]+diff，而由于diff<=0，所以可写成local[i][j]=global[i-1][j-1]。global[i][j]就是我们所求的前i天最多进行k次交易的最大收益，可分为两种情况：如果第i天没有交易（卖出），那么global[i][j]=global[i-1][j]；如果第i天有交易（卖出），那么global[i][j]=local[i][j]。
+
+    // 参考：http://www.cnblogs.com/grandyang/p/4295761.html
+
+    // 代码：时间O(nk)，空间O(nk)。
+    function maxProfit4(k, prices) {
+      if (prices.length < 2) return 0;
+
+      let days = prices.length;
+      if (k >= days) return maxProfit2(prices);
+
+      let local;
+      let global;
+
+      for (let i = 1; i < days; i++) {
+        let diff = prices[i] - prices[i - 1];
+
+        for (let j = 1; j <= k; j++) {
+          local[i][j] = Math.max(global[i - 1][j - 1], local[i - 1][j] + diff);
+          global[i][j] = Math.max(global[i - 1][j], local[i][j]);
+        }
+      }
+
+      return global[days - 1][k];
+    }
+
+    //     在第二题（次数不限）的基础上，卖完股票的转天不能买。求最大收益。
+
+    // 分析：http://www.cnblogs.com/grandyang/p/4997417.html
+
+    // 维护三个一维数组buy, sell，和rest。其中：
+    // buy[i]表示在第i天之前最后一个操作是买，此时的最大收益。
+    // sell[i]表示在第i天之前最后一个操作是卖，此时的最大收益。
+    // rest[i]表示在第i天之前最后一个操作是冷冻期，此时的最大收益。
+    // 我们写出递推式为：
+    // buy[i]  = max(rest[i-1] - price, buy[i-1]) 
+    // sell[i] = max(buy[i-1] + price, sell[i-1])
+    // rest[i] = max(sell[i-1], buy[i-1], rest[i-1])
+    // 上述递推式很好的表示了在买之前有冷冻期，买之前要卖掉之前的股票。一个小技巧是如何保证[buy, rest, buy]的情况不会出现，这是由于buy[i] <= rest[i]， 即rest[i] = max(sell[i-1], rest[i-1])，这保证了[buy, rest, buy]不会出现。 
+    // 另外，由于冷冻期的存在，我们可以得出rest[i] = sell[i-1]，这样，我们可以将上面三个递推式精简到两个： 
+    // buy[i]  = max(sell[i-2] - price, buy[i-1]) 
+    // sell[i] = max(buy[i-1] + price, sell[i-1])
+    // 由于i只依赖于i-1和i-2，所以我们可以在O(1)的空间复杂度完成算法:
+    // pre_buy = buy;【因为buy是上一轮的，此句含义：pre_buy = buy[i-1]】
+    // buy = max(pre_buy, pre_sell - prices[i]);【此句含义：buy[i]即buy  =  max（buy[i-1]即pre_buy，sell[i-2]【尚未更新的即上一轮的pre_sell】 - prices[i]）】
+    // pre_sell = sell;【因为sell是上一轮的，此句含义：sell[i-1] = sell】
+    // sell = max(pre_sell, pre_buy + prices[i]);【此句含义：sell[i]即sell   =   max（sell[i-1]即pre_sell，buy[i-1]【已更新为pre_buy了】 + prices[i]）】
+
+
+    function maxProfit(prices) {
+      let n = prices.length;
+      if (n == 0) return 0;
+
+      let buy = 0x80000000, sell = 0, pre_buy = 0, pre_sell = 0;
+      for (let i = 0; i < n; ++i) {//把buy初值设为-prices[0]，for循环从i = 1开始，也对！
+        pre_buy = buy;
+        buy = max(pre_buy, pre_sell - prices[i]);
+        pre_sell = sell;
+        sell = max(pre_sell, pre_buy + prices[i]);
+      }
+      return sell;
+    }
+
+  </script>
+</body>
+
+</html>

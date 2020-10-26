@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>交换数字得最大整数</title>
+</head>
+
+<body>
+  <script>
+    // 整数交互两个数字，得到最大整数
+    //     首先以例子分析要交换的特性，我们会发现，当整数中的所有数字均按照非递增的顺序排序，那么这个整数就是最大整数，不需要进行交换；
+    // 所以根据上面的分析，我们需要寻找整数中数字出现不符合非递增规则的分裂点，记录违规的分裂点；
+    // 在分裂点的后半部分寻找最大的数字，并且位置越靠后的数字相对前面与其相等的前面的数字交换的意义更大，也就是我们要求寻找digits[j] >= max，注意这里是>=；
+    // 在分裂点的前半部分从后向前寻找小于上一步找到的max的最大值；
+    // 将找到的两个位置数字进行交换，即可得到交换最大整数。
+    // 注意，为了进行操作，需先将整数转化为char数组，并在交换后转换回整数。
+    function maximumSwap(num) {
+      let digits = num.toString()
+
+      if (digits.length == 1) return num;
+
+      // 寻找不符合非递增顺序的分界线
+      let split = 0;
+      for (let i = 0; i < digits.length - 1; i++) {
+        if (digits[i] < digits[i + 1]) {
+          split = i + 1;
+          break;
+        }
+      }
+
+      // 在分界线后面的部分寻找最大的值max
+      let max = digits[split];
+      let index1 = split;
+      for (let j = split + 1; j < digits.length; j++) {
+        if (digits[j] >= max) {
+          max = digits[j];
+          index1 = j;
+        }
+      }
+
+      // 在分界线前面的部分向前寻找小于max的最大值
+      let index2 = split;
+      for (let i = split - 1; i >= 0; i--) {
+        if (digits[i] >= max) {
+          break;
+        }
+        index2--;
+      }
+
+      //交换两位找到的char
+      let temp = digits[index1];
+      digits[index1] = digits[index2];
+      digits[index2] = temp;
+
+      return Number(digits);
+    }
+  </script>
+</body>
+
+</html>

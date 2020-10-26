@@ -140,6 +140,43 @@
       }
     }
 
+    // 合并两个有序链表, 合并有序链表，解决方案1：使用递归，时间：O(m+n) 空间O(m+n)因为使用了栈
+    function  mergeTwoLinkListRecursion(linkList1, linkList2){
+      if(!linkList1){
+        return linkList2
+      }
+      if(!listList2){
+        return linkList1
+      }
+      if(linkList1.element<linkList2.element){
+        linkList1.next = mergeTwoLinkListRecursion(linkList1.next, linkList2)
+        return linkList1
+      } else {
+        linkList2.next = mergeTwoLinkListRecursion(linkList1, linkList2.next)
+        return linkList2
+      }
+    }
+
+    // 合并两个有序链表, 合并有序链表，解决方案2：使用循环，时间：O(m+n) 空间O(1)
+    function  mergeTwoLinkListLoop(linkList1, linkList2){
+      let dumpy = { element: null, next: null }
+      let prev = dumpy
+      while (linkList1 !== null && linkList2 !== null) {
+        if(linkList1.element < linkList2.element){
+          dumpy.next = linkList1
+          linkList1 = linkList1.next
+        } else {
+          dumpy.next = linkList2
+          linkList2 = linkList2.next
+        }
+        prev = prev.next
+      }
+      // 合并后 l1 和 l2 最多只有一个还未被合并完，我们直接将链表末尾指向未合并完的链表即可
+      prev.next = l1 === null ? l2 : l1;
+      return dumpy.next
+    }
+
+
     let myLinkList1 = new MyLinkList()
     myLinkList1.append(1)
     myLinkList1.append(2)
