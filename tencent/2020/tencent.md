@@ -39,6 +39,27 @@ computed: {
   }
 }
 ```
+#### vuex原理
+```javascript
+$options即new store时候的{state, getters, actions}
+//混入
+Vue.mixin({
+    beforeCreate() {    //表示在组件创建之前自动调用，每个组件都有这个钩子
+        // console.log(this.$options.name) //this表示每个组件,测试，可以打印出mian.js和App.vue中的name main和app
+        
+        //保证每一个组件都能得到仓库
+        //判断如果是main.js的话，就把$store挂到上面
+        if(this.$options && this.$options.store){
+            this.$store = this.$options.store
+        }else{
+            //如果不是根组件的话，也把$store挂到上面,因为是树状组件，所以用这种方式
+            this.$store = this.$parent && this.$parent.$store
+            //在App.vue上的mounted({console.log(this.$store)})钩子中测试，可以得到store ---> Store {}
+        }
+    },
+})
+导入到组件使用computed做到响应式
+```
 
 #### vue router使用
 - 嵌套路由<router-view></router-view>
@@ -562,6 +583,12 @@ function Parent({ a, b }) {
   - 采用sql语句预编译和绑定变量，是防御sql注入的最佳方法，使用PreparedStatement把用户输入当成普通字符串，或者使用相应的函数过滤特殊sql字符
   - 严格检查参数的数据类型，还有可以使用一些安全函数，来方式sql注入。ESAPI.encoder().encodeForSQL(codec, name)编码成普通字符串，而不是sql语句
   - 一般框架现在默认都是预编译的
+
+#### 借助未验证的URL跳转，将应用程序引导到不安全的第三方区域，从而导致的安全问题。
+- 如：http://gate.baidu.com/index?act=go&url=http://t.cn/RVTatrd
+- http://qt.qq.com/safecheck.html?flag=1&url=http://t.cn/RVTatrd
+- http://tieba.baidu.com/f/user/passport?jumpUrl=http://t.cn/RVTatrd
+- 防御方式是白名单可用域名限制
 
 
 #### 我们如果有一个奖励的系统，有一个用户通过第三方疯狂调用我们的接口我们该怎么做？ 秒杀系统
@@ -1674,65 +1701,135 @@ hr 面试
 有无疾病
 后续流程告知
 
+#### BOM 和 DOM 
+- DOM（document object model）：文档对象模型，提供操作页面元素的方法和属性
+- BOM（browser object model）；浏览器对象模型，提供一些属性和方法可以操作浏览器
+- Javascript 由三部分构成，ECMAScript，DOM和BOM。根据宿主（浏览器）的不同，具体的表现形式也不尽相同，ie和其他的浏览器风格迥异,IE 扩展了 BOM，加入了 ActiveXObject 类，可以通过 JavaScript 实例化 ActiveX 对象。 
+!['BOM DOM'](../img/BOM-DOM.png)
 
-5、一个论坛，有一个link，表面为点赞link，实际上点一下就发送新帖子，服务器并不知情，遇到这种现象如何规避？
-7、如果你是黑客，你如何在攻击浏览器？
+#### 18.栈内存和堆内存
+- 堆内存是系统调度，内存空间相对自由，可自由使用分配，但速度慢（因为系统来管理和销毁），存储对象类型
+- 栈用于程序执行，速度快，先进后出原则
 
+#### session怎么实现数据什么时候被销毁
+- 创建session时会有sessionid存储在cookie中
+- 有时效性，最后一次被使用到当前时间是否超过某个时效性
+- 手动强制释放
+- web服务终止服务
 
+#### vue 实例化过程
+!['vue init'](../img/vue_init.png)
+#### vue 模板编译
+- Vue的渲染机制指的是Vue怎么将单文件组件中的template转换为AST(语法树)，再将AST转换成render函数，最后生成虚拟dom节点(包含创建元素节点的一切信息的JavaScript对象)，并创建元素节点挂载到页面上，基本过程如下图: 
+!['vue template 渲染'](../img/vue_compile_template.png)
+#### 网页怎么渲染pdf（canvas）
 
-1.自我介绍
+#### vue中数组和对象响应式
+- this.$set(this.someObject,'b',2) 或者 Vue.set(vm.someObject, 'b', 2)
+- Vue.set(vm.items, indexOfItem, newValue) 或者 vm.items.splice(indexOfItem, 1, newValue)， vm.$set(vm.items, indexOfItem, newValue)
+- 异步更新获取新值使用$nextTick方法
+```javascript
+this.$nextTick(function () {
+  console.log(this.$el.textContent) // => '已更新'
+})
+```
 
-2.你是怎么学习前端的
+#### Babel配置怎么写
+```json
+/* .babelrc */
 
-3.问简历上的项目和比赛
+{
+  "presets": [
+    ["@babel/preset-env", {
+      "modules": false,
+      "targets": "ie >= 8"
+    }],
+    '@vue/cli-plugin-babel/preset'
+  ],
+  "plugins": [
+    ["@babel/plugin-transform-runtime", {
+      "corejs": 2
+    }]
+  ]  
+}
+```
+#### async,generator
+```javascript
+let range = {
+  from: 1,
+  to: 5,
 
-4.项目中遇见的最大的难题是什么
+  [Symbol.iterator]() { // called once, in the beginning of for..of
+    return {
+      current: this.from,
+      last: this.to,
 
-5.讲讲为什么浏览器加载时为什么会出现白屏现象（你是如何测试白屏时间的）
+      next() { // called every iteration, to get the next value
+        if (this.current <= this.last) {
+          return { done: false, value: this.current++ };
+        } else {
+          return { done: true };
+        }
+      }
+    };
+  }
+};
 
-7.你项目上说使用了vuex，讲讲你的了解
+for(let value of range) {
+  alert(value); // 1 then 2, then 3, then 4, then 5
+}
 
-10.BOM 和 DOM 
+// async await
+function spawn(genF) {
+  return new Promise(function(resolve, reject) {
+    const gen = genF();
+    function step(nextF) {
+      let next;
+      try {
+        next = nextF();
+      } catch(e) {
+        return reject(e);
+      }
+      if(next.done) {
+        return resolve(next.value);
+      }
+      Promise.resolve(next.value).then(function(v) {
+        step(function() { return gen.next(v); });
+      }, function(e) {
+        step(function() { return gen.throw(e); });
+      });
+    }
+    step(function() { return gen.next(undefined); });
+  });
+}
 
-18.栈内存和堆内存
+```
+#### 按需引入怎么实现
+- 使用webpack打包，路由配置，使用import这个函数即可按需加载component: () => import('@/views/users/companyEdit.vue')返回一个promise函数
 
-session怎么实现数据什么时候被销毁
+#### 对象obj，alert(obj)为3，如何实现（定义toString,valueOf方法)
+#### 如何实现input框显示，但是无法输入（readonly disabled οnfοcus=this.blur() keydown preventDefault(搜狗中文输入法依然有问题)
+- disabled不可编辑，不可复制，不可选择，不能接收焦点,后台也不会接收到传值。设置后文字的颜色会变成灰色。disabled 属性无法与 input type="hidden" 一起使用。
+- readonly 属性规定输入字段为只读可复制，但是，用户可以使用Tab键切换到该字段，可选择,可以接收焦点，还可以选中或拷贝其文本。后台会接收到传值. readonly 属性可以防止用户对值进行修改
+#### 用js创建的DOM白屏，如何定位问题，DOM
+- 有没有语法错误，有没有抛出异常，标签有没有闭合出错
+- 单一对照原则，慢慢注释代码
+#### 断点调试工具考察。两个一样的函数，如何判断执行了哪个 console.log即可
+#### 时间复杂度最优的排序算法。我说桶排序。追问桶排序的原理
+- 快速排序一般是nlogn,最坏n2，找到一个基点，小的放左边，大的放右边
+- 堆排序nlogn，最坏也是nlogn，本质就是有序二叉树
+- 桶排序是计数排序的升级版。它利用了函数的映射关系，高效与否的关键就在于这个映射函数的确定。为了使桶排序更加高效，我们需要做到这两点：
+  - 最好情况n+k, 最坏情况 $n^2$ 因为需要k个桶，所以空间复杂度k
+  - 在额外空间充足的情况下，尽量增大桶的数量
+  - 使用的映射函数能够将输入的 N 个数据均匀的分配到 K 个桶中
+- 元素分布在桶中：
+!['桶排序'](../img/Bucket_sort.png)
+- 然后，元素在每个桶中排序：
+!['桶排序'](../img/Bucket_sort_2.png)
 
-一面
-账户系统，怎么加密（密码+token，csp）
-二面
-vue 实例化过程
-vue 模板编译
-网页怎么渲染pdf（canvas）
-
-
-echarts做什么
-vue 数组和对象渲染
-手写new
-
-
-一面 （8.7电话面试 1h左右)
-- Babel配置怎么写
-- vue.$set什么意思
-- vue,当data中新增了一个元素，发生了什么
-- async,generator
-- 按需引入怎么实现
-
-二面（8.12 40min) 面试官评价基础不行
-- 对象obj，alert(obj)为3，如何实现（面试官想要的回答应该是定义toString,toValue方法
-- 如何实现input框显示，但是无法输入（preventDefault
-- 用js创建的DOM白屏，如何定位问题，DOM
-- 断点调试工具考察。两个一样的函数，如何判断执行了哪个
-- 时间复杂度最优的排序算法。我说桶排序。追问桶排序的原理
-
-三面 8.24 30min
-基本没问js和vue。人太菜了，一问三不知，直接没有反问环节，状态已灰
-- tcp拥塞控制的机制，详细
-- 堆
-- 链表倒数第k个结点
-- 操作系统学过吗？没有。那问个最简单的堆和栈的区别
-- js垃圾回收机制
-- git原理
+#### 链表倒数第k个结点
+思路使用双指针，首先使两个指针间隔为k，然后同时移动，后指针到结尾时，前指针即为倒数k个节点
+#### git原理
 - 弹幕功能实现，要考虑性能
 
 

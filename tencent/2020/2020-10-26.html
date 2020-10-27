@@ -8,6 +8,7 @@
 </head>
 
 <body>
+  <input id="test_input" />
   <script>
     // 数组中连续元素最大和，最大子序和
     // f(i)=max{f(i−1)+ai,ai}
@@ -20,6 +21,15 @@
       });
       return maxAns;
     };
+    const testInput = document.getElementById('test_input')
+    testInput.addEventListener('keydown', function(e){
+      e.preventDefault()
+      // e.stopPropagation()
+    }, false)
+    testInput.addEventListener('keypress', function(e){
+      e.preventDefault()
+      // e.stopPropagation()
+    }, false)
 
   </script>
 </body>

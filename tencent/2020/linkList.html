@@ -191,6 +191,19 @@
     let head3 = myLinkList1.reversePerK(myLinkList1.head, 2)
     myLinkList1.print(head3)
 
+    // 链表倒数k个节点，思路使用双指针，首先使两个指针间隔为k，然后同时移动，后指针到结尾时，前指针即为倒数k个节点
+    // https://leetcode-cn.com/problems/lian-biao-zhong-dao-shu-di-kge-jie-dian-lcof/solution/mian-shi-ti-22-lian-biao-zhong-dao-shu-di-kge-j-11/
+    function getKthFromEnd(head, k) {
+        let former = head, latter = head;
+        for(let i = 0; i < k; i++)
+            former = former.next;
+        while(former != null) {
+            former = former.next;
+            latter = latter.next;
+        }
+        return latter;
+    }
+
   </script>
 </body>
 

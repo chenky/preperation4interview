@@ -9,6 +9,8 @@
 <body>
     <script>
       // 快速排序 最简明的递归算法，深入react技术（陈屹著）
+      // nlogn,最坏n2，采用分治思想，以一个数为基点，小的放在左边，大的放在右边
+      // 但是不像归并排序那样分隔开又合并
       function quickSort(arr) {
         if (!arr.length) {
           return [];
@@ -104,7 +106,8 @@
         }
         // console.log(megerSort([9,8,5,6,4,3,1,2,7]));
 
-        // 堆排序
+        // 堆排序，本质就是一个有序二叉树
+        // nlogn
         class Heap{
           constructor(data){
             this.data = data;
