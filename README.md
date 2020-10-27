@@ -1167,7 +1167,7 @@ app.use((error, req, res, next) =&gt; {
 
 #### css中padding，margin百分比相对于父元素宽度进行比较
 
-#### javascript基本数据类型，undefined,null,boolean,number,string,object(array,function,object,regex), es6有Symbol,BigInt, 其中基本数据类型有 undefined,null, boolean,number,string,bigint,symbol
+#### javascript基本数据类型，undefined,null,boolean,number,string,object(array,function,object,regex), es6有Symbol,BigInt, set, map 其中基本数据类型有 undefined,null, boolean,number,string,bigint,symbol
 
 #### [浏览器垃圾回收机制，js内存回收，js垃圾回收](https://www.cnblogs.com/dolphinX/p/3348468.html)
 - 标记清除，有标记的删除，不在当前环境，垃圾回收器会在运行的时候给存储在内存中的所有变量加上标记，然后去掉环境中的变量以及被环境中变量所引用的变量（闭包），在这些完成之后仍存在标记的就是要删除的变量了，因为环境中的变量已经无法访问到这些变量了，然后垃圾回收器回收这些带有标记的变量机器所占空间

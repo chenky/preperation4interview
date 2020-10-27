@@ -1887,11 +1887,23 @@ document.addEventListener(visibilityChangeEvent, () => {
 #### 介绍oauth。
 !['oauth'](../img/oauth.png)
 
-11、weex和rn原理。
+#### weex和react native，flutter原理。
+- weex
+!['weex'](../img/weex.jpg)
+- react native
+!['react native'](../img/react_native.jpg)
+!['react native'](../img/react_native2.jpg)
+- flutter
+!['flutter'](../img/flutter.jpg)
+!['flutter'](../img/flutter2.jpg)
+- 对比
+!['对比'](../img/weex_reactnative_flutter.png)
 
-12、大屏用的技术。
-
-13、大屏数据来源与管理。
+#### 大屏用的技术。
+- javascript+echarts
+- 屏幕自适应
+- 布局，主要信息和次要信息
+- 数据实施更新
 
 #### websocket的使用场景。
 - 相对于HTTP这种非持久的协议来说，Websocket是一个持久化的协议。用websocket可以实现服务端主动发送信息给客户端，并且客户端能够接收进行处理。当我们创建某个会话的时候，我们彼此就建立了持久化的协议，然后各自都有约定好的监听，后台可以随时主动与你通信，你也可以主动给后台发送请求  具体的使用场景如下：
@@ -1900,28 +1912,62 @@ document.addEventListener(visibilityChangeEvent, () => {
 - 社交订阅、多玩家游戏、协同编辑/编程、点击流数据、股票基金报价、体育实况更新等。
 
 
-15、pwa的使用。
+#### 判定是否为数组的几种方法
+- Object.prototype.toString.call(something) === '[object Array]'
+- Array.isArray
+#### cookie防止串改
+- httponly只读cookie
+- 但是防止篡改可以使用数字签名
+#### 编程：生成n个不相同的取值【2-32】的随机数，使用Set，边界条件，代码块风格
+```javascript
+let set = new Set()
+while(set.size<n){
+  let random = Math.random() * (upper-lower) + lower
+  set.add(Math.ceil(random))
+}
+```
+#### React新特性有哪些，Fiber做了什么，为什么要提出来
+- 大量的同步计算任务阻塞了浏览器的 UI 渲染。默认情况下，JS 运算、页面布局和页面绘制都是运行在浏览器的主线程当中，他们之间是互斥的关系。如果 JS 运算持续占用主线程，页面就没法得到及时的更新。当我们调用setState更新页面的时候，React 会遍历应用的所有节点，计算出差异，然后再更新 UI。整个过程是一气呵成，不能被打断的。如果页面元素很多，整个过程占用的时机就可能超过 16 毫秒，就容易出现掉帧的现象。
+- 解决主线程长时间被 JS 运算占用这一问题的基本思路，是将运算切割为多个步骤，分批完成。也就是说在完成一部分任务之后，将控制权交回给浏览器，让浏览器有时间进行页面的渲染。等浏览器忙完之后，再继续之前未完成的任务。
+- 旧版 React 通过递归的方式进行渲染，使用的是 JS 引擎自身的函数调用栈，它会一直执行到栈空为止。而Fiber实现了自己的组件调用栈，它以链表的形式遍历组件树，可以灵活的暂停、继续和丢弃执行的任务。实现方式是使用了浏览器的requestIdleCallback这一 API。
+- react 框架内部运作分3层
+  - Virtual DOM 层，描述页面长什么样。
+  - Reconciler 层，负责调用组件生命周期方法，进行 Diff 运算等。（改动最大，fiber reconciler）
+  - Renderer 层，根据不同的平台，渲染出相应的页面，比较常见的是 ReactDOM 和 ReactNative。
+- 以前的 Reconciler 被命名为Stack Reconciler。Stack Reconciler 运作的过程是不能被打断的，必须一条道走到黑：
+!['stack reconciler'](../img/stack_reconciler.png)
+- 而 Fiber Reconciler 每执行一段时间，都会将控制权交回给浏览器
+!['fiber reconciler'](../img/fiber_reconciler.png)
+- 阶段一，生成 Fiber 树，得出需要更新的节点信息。这一步是一个渐进的过程，可以被打断。
+- 阶段二，将需要更新的节点一次过批量更新，这个过程不能被打断,
+!['fiber reconciler'](../img/fiber_reconciler_phase.png)
+- Fiber Reconciler 在阶段一进行 Diff 计算的时候，会生成一棵 Fiber 树。这棵树是在 Virtual DOM 树的基础上增加额外的信息来生成的，它本质来说是一个链表。
+!['fiber tree'](../img/fiber_tree.png)
+- Fiber 树在首次渲染的时候会一次过生成。在后续需要 Diff 的时候，会根据已有树和最新 Virtual DOM 的信息，生成一棵新的树。这颗新树每生成一个新的节点，都会将控制权交回给主线程，去检查有没有优先级更高的任务需要执行。如果没有，则继续构建树的过程：
+- 如果过程中有优先级更高的任务需要进行，则 Fiber Reconciler 会丢弃正在生成的树，在空闲的时候再重新执行一遍。
+- 在构造 Fiber 树的过程中，Fiber Reconciler 会将需要更新的节点信息保存在Effect List当中，在阶段二执行的时候，会批量更新相应的节点。
+!['fiber tree2'](../img/fiber_tree2.png)
 
-18、未来三年的职业规划。
 
+#### 动画有哪些， 缩放怎么做
+- javascript直接实现；SVG（可伸缩矢量图形），CSS3 transition；CSS3 animation；Canvas动画；requestAnimationFrame；
+- transform: scale(1)
 
-一面
-隐式转换if(!flag)
-判定是否为数组的几种方法
-ES6新数据结构，解释Set，Map
-cookie，如何禁止修改
-编程：生成n个不相同的取值【2-32】的随机数，使用Set，边界条件，代码块风格
-React新特性有哪些，Fiber做了什么，为什么要提出来
-webpack，打包优化做了些什么
-动画有哪些
-缩放怎么做
-二面
-面对不同的运营商，有什么想法提升用户的使用性能？？？
+#### [面对不同的运营商，有什么想法提升用户的使用性能？？？](https://zhuanlan.zhihu.com/p/33179166)
+- 离线缓存
+- 文件压缩，css头部无表达式，js放在尾部，域名收敛，图片懒加载
+- 网络不好的运营商部署更多cdn，尝试对接了很多国外的知名CDN服务商。通过智能DNS解析用户的IP来源，如果是境外访问则CNAME到国外CDN，国内访问时仍然走的是国内CDN。
+- httpDNS，防止劫持等等很多缺点，域名解析自己控制
+![](../img/cnd_optimization.png)
+- DNS Prefetch
+![](../img/dns_prefetch.jpg)
+- 长连接
+![](../img/long_link.png)
+- 专线直连
+- 前后端分离，图片优化，域名收敛、减少请求，离线化，自建机房，搭专线，cdn
 
-
-webpack原理 
-post()和get()的本质区别 
-前段路由原理 
+#### post()和get()的本质区别 
+- get是一次发送，而post数据多时会分多次发送，所以才有100 continue不是
 
 
 7、前端安全相关；(着重中间人劫持)
