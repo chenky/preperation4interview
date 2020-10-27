@@ -1829,51 +1829,63 @@ function spawn(genF) {
 
 #### 链表倒数第k个结点
 思路使用双指针，首先使两个指针间隔为k，然后同时移动，后指针到结尾时，前指针即为倒数k个节点
-#### git原理
-- 弹幕功能实现，要考虑性能
+#### [git原理](https://tonybai.com/2020/04/07/illustrated-tale-of-git-internal-key-concepts/)
+- 每个commit都是一个git仓库的快照
+- svn
+!['svn'](../img/svn-concepts.png)
+- git
+!['git'](../img/git-concepts.png)
+- github
+!['github'](../img/github-concepts.png)
+
+#### 弹幕功能实现，要考虑性能
+- 因为弹幕量可能会很大，所以引入队列做缓冲
+- 弹幕的滚动本质上是位移动画，DOM 和 canvas，dom动画好做，可以使用 CSS 的 transition 和 transform， animation来实现动画，充分利用gpu，canvas需要自己写大量效果阴影什么的，而且流畅度可能不如css原生动画 
+- 弹幕速度匀速，但是间隔时间可以根据量动态调整
+- 暂停和恢复（标签页切到后台，则弹幕暂停，切到前台再恢复）
+```javascript
+let hiddenProp, visibilityChangeEvent;
+if (typeof document.hidden !== 'undefined') {
+  hiddenProp = 'hidden';
+  visibilityChangeEvent = 'visibilitychange';
+} else if (typeof document.msHidden !== 'undefined') {
+  hiddenProp = 'msHidden';
+  visibilityChangeEvent = 'msvisibilitychange';
+} else if (typeof document.webkitHidden !== 'undefined') {
+  hiddenProp = 'webkitHidden';
+  visibilityChangeEvent = 'webkitvisibilitychange';
+}
+
+document.addEventListener(visibilityChangeEvent, () => {
+  if (document[hiddenProp]) {
+    this.pause();
+  } else {
+    // 必须异步执行，否则恢复后动画速度可能会加快，从而导致弹幕消失或重叠，原因不明
+    this._resumeTimer = setTimeout(() => { this.resume(); }, 200);
+  }
+}, false);
+
+```
+- 长时间排队的弹幕要丢弃
+
+#### javascript执行上下文，js执行上下文，javascript上下文，js上下文
+- 全局执行上下文 — 这是默认或者说基础的上下文，任何不在函数内部的代码都在全局上下文中。它会执行两件事：创建一个全局的 window 对象（浏览器的情况下），并且设置 this 的值等于这个全局对象。一个程序中只会有一个全局执行上下文。
+- 函数执行上下文 — 每当一个函数被调用时, 都会为该函数创建一个新的上下文。每个函数都有它自己的执行上下文，不过是在函数被调用时创建的。函数上下文可以有任意多个。每当一个新的执行上下文被创建，它会按定义的顺序（将在后文讨论）执行一系列步骤。
+- Eval 函数执行上下文 — 执行在 eval 函数内部的代码也会有它属于自己的执行上下文，但由于 JavaScript 开发者并不经常使用 eval，所以在这里我不会讨论它。
+- 执行栈，也就是在其它编程语言中所说的“调用栈”，是一种拥有 LIFO（后进先出）数据结构的栈，被用来存储代码运行时创建的所有执行上下文。
+- this 值的决定，即我们所熟知的 This 绑定。
+- 创建词法环境组件。
+- 创建变量环境组件。
+- 在全局执行上下文中，this 的值指向全局对象。(在浏览器中，this引用 Window 对象)。
+- 在函数执行上下文中，this 的值取决于该函数是如何被调用的。如果它被一个引用对象调用，那么 this 会被设置成那个对象，否则 this 的值被设置为全局对象或者 undefined
 
 
+#### 介绍状态机。
+- 一般通过状态、事件、转换和动作来描述有限状态机。
+- 某个组件有显示和隐藏两个状态，通常会设计两个方法 show() 和 hide() 来实现切换，而 React 只需要设置状态setState({ showed: true/false }) 即可实现。同时，React 还引入了组件的生命周期这个概念。通过它，就可以实现组件的状态机控制，从而达到“生命周期→状态→组件”的和谐画面。
 
-1、项目开发流程。
-
-2、对vuex的看法。
-
-（1）vuex 是一个专为 vue.js 应用程序开发的状态管理模式。它采用集中式存储管理应用的所有组件的状态，并以相应的规则保证状态以一种可预测的方式发生变化。
-
-（2）vuex 的适用场景：
-
-①涉及到非父子关系的组件，例如兄弟关系、祖孙关系，甚至更远的关系；
-
-②他们之间如果有数据交互，那么应该使用Vuex来实现；
-
-③如果页面复杂度比较低的话，也可以考虑使用 global-event-bus 来实现；
-
-④如果只是父子关系的组件数据交互，那么应该考虑使用props进行单向传递；
-
-⑤如果涉及到子组件向父组件的数据传递，那么应该考虑使用 $emit 和 $on；
-
-其实就是多层组件或者跨页面传值问题而诞生。比如，常见的登录状态，常用的就是后台管理系统。
-
-
-3、vue从data改变到页面渲染的过程。
-
-（1）new Vue，执行初始化。
-
-（2）挂载$mount方法，通过自定义Render方法、template、el等生成Render函数。
-
-（3）通过Watcher监听数据的变化。
-
-（4）当数据发生变化时，Render函数执行生成VNode对象。
-
-（5）通过patch方法，对比新旧VNode对象，通过DOM Diff算法，添加、修改、删除真正的DOM元素；
-
-
-4、介绍状态机。
-
-
-6、怎么看待组件层级嵌套很多层？
-
-8、介绍oauth。
+#### 介绍oauth。
+!['oauth'](../img/oauth.png)
 
 11、weex和rn原理。
 
@@ -1881,11 +1893,11 @@ function spawn(genF) {
 
 13、大屏数据来源与管理。
 
-14、websocket的使用场景。
-
-相对于HTTP这种非持久的协议来说，Websocket是一个持久化的协议。用websocket可以实现服务端主动发送信息给客户端，并且客户端能够接收进行处理。当我们创建某个会话的时候，我们彼此就建立了持久化的协议，然后各自都有约定好的监听，后台可以随时主动与你通信，你也可以主动给后台发送请求  具体的使用场景如下：
-
-社交订阅、多玩家游戏、协同编辑/编程、点击流数据、股票基金报价、体育实况更新等。
+#### websocket的使用场景。
+- 相对于HTTP这种非持久的协议来说，Websocket是一个持久化的协议。用websocket可以实现服务端主动发送信息给客户端，并且客户端能够接收进行处理。当我们创建某个会话的时候，我们彼此就建立了持久化的协议，然后各自都有约定好的监听，后台可以随时主动与你通信，你也可以主动给后台发送请求  具体的使用场景如下：
+- websocket是全双工通信
+- http是半双工通信，请求响应断开
+- 社交订阅、多玩家游戏、协同编辑/编程、点击流数据、股票基金报价、体育实况更新等。
 
 
 15、pwa的使用。
