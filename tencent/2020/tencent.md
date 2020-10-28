@@ -132,9 +132,9 @@ const router = new VueRouter({
 
 #### js有哪些特性？与node.js的区别
 - javascript是弱类型，单线程异步i/o语言
-- javascript依赖浏览器宿主环境，需要浏览器中javascript解析器，可以反问BOM，DOM等
+- javascript依赖浏览器宿主环境，需要浏览器中javascript解析器，可以访问BOM，DOM等
 - nodejs是基于v8引擎的javascript运行平台
-- nodejs应用于服务器端运行语言，可以反问本地资源
+- nodejs应用于服务器端运行语言，可以访问本地资源
 #### [为什么http是无连接的](http://xieli.leanote.com/post/6.HTTP%E6%98%AF%E5%9F%BA%E4%BA%8ETCP%E7%9A%84%EF%BC%8C%E4%B8%BA%E4%BB%80%E4%B9%88%E6%98%AF%E6%97%A0%E7%8A%B6%E6%80%81%EF%BC%9F)
 - 因为HTTP是短连接，即每次“请求-响应”都是一次TCP连接。比如用户一次请求就是一次TCP连接，服务器响应结束后断开连接。而每次TCP连接是没有关联的，因此HTTP是无状态的。如果想要使得每次TCP连接之间有关联，服务器和浏览器就得存储相关的信息，这个就是Cookie和Session的作用。
 - 虽然HTTP 1.1为了效率，支持了keep-alive，但是这个keep-alive是有时间限制的。这个时间可以通过设置HTTP进程的配置文件来修改，这个时间很短，是以秒来计算的，例如10秒。因此在这10秒内的HTTP请求是使用同一个TCP连接，但是10秒后又重新进行连接。这个时间可以被认为是无状态的。例如那个购物的例子，不可能10s内的HTTP请求无需密码来验证，首先这个时间很短，并且还得记录每次HTTP请求的时间是否在10秒内，这样记录的方式和Session又有什么区别。
@@ -202,7 +202,7 @@ function sumTopN(arr){
 #### 将从小到大的有序数组循环左移未知次，找到左移后数组最小值, 比如 1234=》 4312，找到1
 ```javascript
     // 将从小到大的有序数组循环左移未知次，找到左移后数组最小值, 比如 1234=》 4312，找到1
-    // 二分法查找
+    // 二分法查找，双指针
     function findMin(arr){
       let left = 0;
       let right = arr.length-1
@@ -532,7 +532,7 @@ function Parent({ a, b }) {
 ```
 #### 对web性能安全有什么了解吗？（主要说了xss和csrf）
 - 数字签名防止篡改
-- 防止重放攻击
+- 防止重放攻击（微信支付参数timeStamp，nonceStr，package，signType，paySign）
   - 首先使用数字签名防止数据被篡改
   - 其次通过timeStamp验证是否在有效期内，比如1分钟，支付请求的参数都是从支付供应商实时获取的，整个流程请求肯定不会超过1分钟吧，不在有效期内直接报错非法请求
   - 如果在1分钟内，则去验证nonce随机数，比如到radis内存中看看是不是存在，存在则表示是一个重复请求，报错，否则合法请求，然后radis配置策略nonce过期时间时1分钟，防止无限制浪费内存
