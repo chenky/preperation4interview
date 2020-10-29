@@ -678,6 +678,51 @@ Access-Control-Expose-Headers: FooBar
 
 ### http模块实现异步变同步请求
 * https://blog.csdn.net/WANGLEI20116527/article/details/62892070
+```javascript
+const http = require("http");
+const net  = require("net");
+
+//　保存请求的队列，每个元素都是一个socket
+let watingQueue = [];
+//　当前处理的请求
+let curtSocket  = null;
+let count = 0;
+
+//　建立一个http服务器
+let httpServer = http.createServer(function (req, res) {
+    // 延迟一秒中回复
+    setTimeout(function () {
+        res.end(`request: ${++count}`, "utf8");
+    }, 1000);
+
+    res.on("finish", function () {
+        curtSocket = null;
+        //　一个请求结束了，处理下一个请求
+        dealRequest();
+    });
+});
+
+// 建立一个tcp的服务器（http协议是建立在tcp协议上的）
+net.createServer(function (socket) {
+    //　将请求压入列队
+    enqueueSocket(socket);
+    //　处理请求（如果现在真在处理的请求，不做任何处理）
+    dealRequest();
+}).listen(4000);
+
+function enqueueSocket (socket) {
+    watingQueue.push(socket);
+}
+
+function dealRequest () {
+    if (curtSocket != null || watingQueue.length <= 0) {
+        return;
+    }
+
+    curtSocket = watingQueue.shift();
+    httpServer.emit("connection", curtSocket);  
+}
+```
 
 ### utf8和gbk区别
 * UTF-8：Unicode TransformationFormat-8bit，允许含BOM，但通常不含BOM。是用以解决国际上字符的一种多字节编码，它对英文使用8位（即一个字节），中文使用24为（三个字节）来编码。UTF-8包含全世界所有国家需要用到的字符，是国际编码，通用性强。UTF-8编码的文字可以在各国支持UTF8字符集的浏览器上显示。如，如果是UTF8编码，则在外国人的英文IE上也能显示中文，他们无需下载IE的中文语言支持包。
@@ -691,19 +736,19 @@ GBK是国家标准GB2312基础上扩容后兼容GB2312的标准。GBK的文字�
 ### 腾讯面试题
 #### jsonp有哪些安全问题，服务端可能存在csrf攻击
 * 从消费者的角度来看：
-* 必须相信提供商不会返回恶意JavaScript，而不是返回指定的JSONP回调中包含的预期JSON。
-* 任何第三方JavaScript嵌入式附件（例如Google Analytics）也是如此。
-* 这与XSS攻击类似，它允许第三方在应用程序中执行任意JavaScript，但是，必须首先通过首先提出请求来选择信任该第三方。
+  * 必须相信提供商不会返回恶意JavaScript，而不是返回指定的JSONP回调中包含的预期JSON。
+  * 任何第三方JavaScript嵌入式附件（例如Google Analytics）也是如此。
+  * 这与XSS攻击类似，它允许第三方在应用程序中执行任意JavaScript，但是，必须首先通过首先提出请求来选择信任该第三方。
 * 从提供者的角度来看：
-* 即使客户的Cookie存在于您的控制网页的请求中，也不能认为该消息是存在的。检查Referer标头与授权URL的白名单，并且/或不要依赖基于cookie的认证。
-* 类似于CSRF /混淆的副攻击。
-* https://erlend.oftedal.no/blog/static-130.html?blogid=130
-* https://cloud.tencent.com/developer/ask/77723
-* https://www.jianshu.com/p/14f569b13dcc
-* https://erlend.oftedal.no/blog/static-130.html?blogid=130
-* 未来浏览器允许设置合法域携带cookie，这样就无法实现csrf攻击了  
-* https://www.acunetix.com/blog/articles/chrome-tightens-csrf-protection/ 
-* https://www.jianshu.com/p/66f77b8f1759
+  * 即使客户的Cookie存在于您的控制网页的请求中，也不能认为该消息是存在的。检查Referer标头与授权URL的白名单，并且/或不要依赖基于cookie的认证。
+  * 类似于CSRF /混淆的副攻击。
+  * https://erlend.oftedal.no/blog/static-130.html?blogid=130
+  * https://cloud.tencent.com/developer/ask/77723
+  * https://www.jianshu.com/p/14f569b13dcc
+  * https://erlend.oftedal.no/blog/static-130.html?blogid=130
+  * 未来浏览器允许设置合法域携带cookie，这样就无法实现csrf攻击了  
+  * https://www.acunetix.com/blog/articles/chrome-tightens-csrf-protection/ 
+  * https://www.jianshu.com/p/66f77b8f1759
 
 #### jsonp缺点
 - 它只支持GET请求而不支持POST等其它类型的HTTP请求
