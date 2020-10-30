@@ -194,6 +194,9 @@ Vue.mixin({
 导入到组件使用computed做到响应式
 ```
 
+#### 项目结构及优化
+!['项目结构'](../img/project_struct.jpg)
+
 #### vue router使用
 - 嵌套路由<router-view></router-view>
 - 路由跳转，router-link
