@@ -6,6 +6,28 @@
 - 单线程会阻塞等待，I/O和cpu速度差异大
 - javascript单线程异步I/O, 避免锁和状态同步问题，同时不阻塞
 
+#### 进程和线程
+- 进程是系统进行资源分配和调度的一个独立单位
+- 线程自己基本上不拥有系统资源,只拥有一点在运行中必不可少的资源(如程序计数器,一组寄存器和栈),但是它可与同属一个进程的其他的线程共享进程所拥有的全部资源.
+- 线程是属于进程的，线程运行在进程空间内，同一进程所产生的线程共享同一内存空间，当进程退出时该进程所产生的线程都会被强制退出并清除。线程可与属于同一进程的其它线程共享进程所拥有的全部资源，但是其本身基本上不拥有系统资源，只拥有一点在运行中必不可少的信息(如程序计数器、一组寄存器和栈)。
+- 同一个进程中的多个线程之间可以并发执行.
+- 一个程序至少有一个进程,一个进程至少有一个线程.
+- 线程的划分尺度小于进程，使得多线程程序的并发性高。
+- 进程在执行过程中拥有独立的内存单元，而多个线程共享内存，从而极大地提高了程序的运行效率。
+
+#### js有哪些特性？与node.js的区别
+- javascript是弱类型，单线程异步i/o语言
+- javascript依赖浏览器宿主环境，需要浏览器中javascript解析器，可以访问BOM，DOM等
+- nodejs是基于v8引擎的javascript运行平台
+- nodejs应用于服务器端运行语言，可以访问本地资源
+
+#### JS为什么是单线程？这样做有什么好处是多线程语言无法实现的？
+- 浏览器对js资源分配是有限制的
+- 刚刚出现时只是处理前端的简单表单，没想到会有今天这么复杂的应用
+- 浏览器是多进程的，每个tab都是一个进程
+- 单线程异步IO，避免锁和状态同步问题（比如dom操作，如果多线程就很麻烦，单线程代码同步执行也符合人类逻辑思维方式），同时不阻塞
+- 使用webworker充分利用多线性（不能操作dom）
+
 #### 如何设计实现一个复杂的表单
 - 表单都有哪些类型，单选框，复选框，文本框，下拉框，级联框，日期选择等等
 - 表单需要哪些验证
@@ -143,10 +165,29 @@ var ComponentB = {
 - [vue3特性](https://naotu.baidu.com/file/9506ac745baf842d4bd035ccf367ab22)
 - [function component react](https://naotu.baidu.com/file/6fbeceb3ca8df372642f45ab1455b5d4)
 - vue3新特性
-  - 
 
-#### 单向数据流动优点
-- 可以把逻辑和展示UI分离开，更利于组件化管理，复用性更强，写出更健壮的，维护性，扩展性更强的代码
+#### 单向数据流和双向数据绑定有什么优缺点？
+- 单向数据流
+  - 优点：
+    - 所有状态的改变可记录、可跟踪，源头易追溯;
+    - 所有数据只有一份，组件数据只有唯一的入口和出口，使得程序更直观更容易理解，有利于应用的可维护性;
+    - 一旦数据变化，就去更新页面(data-页面)，但是没有(页面-data);
+    - 如果用户在页面上做了变动，那么就手动收集起来(双向是自动)，合并到原有的数据中。
+  - 缺点：
+    - HTML 代码渲染完成，无法改变，有新数据，就须把旧 HTML 代码去掉，整合新数据和模板重新渲染;
+    - 代码量上升，数据流转过程变长，出现很多类似的样板代码;
+    - 同时由于对应用状态独立管理的严格要求(单一的全局 store)，在处理局部状态较多的场景时(如用户输入交互较多的“富表单型”应用)，会显得啰嗦及繁琐。
+- 双向数据绑定的优缺点：
+  - 优点：
+    - 用户在视图上的修改会自动同步到数据模型中去，数据模型中值的变化也会立刻同步到视图中去；
+    - 无需进行和单向数据绑定的那些相关操作；
+    - 在表单交互较多的场景下，会简化大量业务无关的代码。
+  - 缺点：
+    - 无法追踪局部状态的变化；
+    - “暗箱操作”，增加了出错时 debug 的难度；
+    - 由于组件数据变化来源入口变得可能不止一个，数据流转方向易紊乱，若再缺乏“管制”手段，血崩。
+- 这样来看，单向绑定跟双向绑定在功能上基本上是互补的，所以我们可以在合适的场景下使用合适的手段。比如在 UI 控件 中(通常是类表单操作)，我会使用双向的方式绑定数据；而其他场景则统一采用 单向 + inline event ( <component :msg=“msg” @update=“updateMsg(msg)”> ) 的方式构建应用。
+
 
 #### react中跨级通信
 - props一级一级传递
@@ -266,11 +307,6 @@ const router = new VueRouter({
 #### 如果你入职之后一段时间发现不喜欢这个工作会怎么办。 
 #### 希望能顺利，还是去很想留在深圳的
 
-#### js有哪些特性？与node.js的区别
-- javascript是弱类型，单线程异步i/o语言
-- javascript依赖浏览器宿主环境，需要浏览器中javascript解析器，可以访问BOM，DOM等
-- nodejs是基于v8引擎的javascript运行平台
-- nodejs应用于服务器端运行语言，可以访问本地资源
 #### [为什么http是无连接的](http://xieli.leanote.com/post/6.HTTP%E6%98%AF%E5%9F%BA%E4%BA%8ETCP%E7%9A%84%EF%BC%8C%E4%B8%BA%E4%BB%80%E4%B9%88%E6%98%AF%E6%97%A0%E7%8A%B6%E6%80%81%EF%BC%9F)
 - 因为HTTP是短连接，即每次“请求-响应”都是一次TCP连接。比如用户一次请求就是一次TCP连接，服务器响应结束后断开连接。而每次TCP连接是没有关联的，因此HTTP是无状态的。如果想要使得每次TCP连接之间有关联，服务器和浏览器就得存储相关的信息，这个就是Cookie和Session的作用。
 - 虽然HTTP 1.1为了效率，支持了keep-alive，但是这个keep-alive是有时间限制的。这个时间可以通过设置HTTP进程的配置文件来修改，这个时间很短，是以秒来计算的，例如10秒。因此在这10秒内的HTTP请求是使用同一个TCP连接，但是10秒后又重新进行连接。这个时间可以被认为是无状态的。例如那个购物的例子，不可能10s内的HTTP请求无需密码来验证，首先这个时间很短，并且还得记录每次HTTP请求的时间是否在10秒内，这样记录的方式和Session又有什么区别。
@@ -724,6 +760,14 @@ function Parent({ a, b }) {
   - 采用sql语句预编译和绑定变量，是防御sql注入的最佳方法，使用PreparedStatement把用户输入当成普通字符串，或者使用相应的函数过滤特殊sql字符
   - 严格检查参数的数据类型，还有可以使用一些安全函数，来方式sql注入。ESAPI.encoder().encodeForSQL(codec, name)编码成普通字符串，而不是sql语句
   - 一般框架现在默认都是预编译的
+
+#### sql注入怎么防范
+- sql注入本质就是拼sql参数的时候把用户的数据当sql语句执行
+- 采用sql语句预编译和绑定变量，是防御sql注入的最佳方法。
+- 预先编译好，也就是SQL引擎会预先进行语法分析，产生语法树，生成执行计划，也就是说，后面你输入的参数，无论你输入的是什么，都不会影响该sql语句的 语法结构了，因为语法分析已经完成了，而语法分析主要是分析sql命令，比如 select ,from ,where ,and, or ,order by 等等。所以即使你后面输入了这些sql命令，也不会被当成sql命令来执行了，因为这些sql命令的执行， 必须先的通过语法分析，生成执行计划，既然语法分析已经完成，已经预编译过了，那么后面输入的参数，是绝对不可能作为sql命令来执行的，只会被当做字符串字面值参数。所以sql语句预编译可以防御sql注入。
+- 对参数严格白名单式过滤，在接收到用户输入的参数时，我们就严格检查 id，只能是int型。复杂情况可以使用正则表达式来判断。这样也是可以防止sql注入的。
+- 使用安全函数，ESAPI.encoder().encodeForSQL(codec, name)
+- 实际项目中，一般我们都是采用各种的框架，比如ibatis, hibernate,mybatis等等。他们一般也默认就是sql预编译的。对于ibatis/mybatis，如果使用的是 #{name}形式的，那么就是sql预编译，使用 ${name} 就不是sql预编译的。
 
 #### 借助未验证的URL跳转，将应用程序引导到不安全的第三方区域，从而导致的安全问题。
 - 如：http://gate.baidu.com/index?act=go&url=http://t.cn/RVTatrd
@@ -1721,13 +1765,6 @@ function decodeString(s) {
 }
 ```
 
-#### sql注入怎么防范
-- sql注入本质就是拼sql参数的时候把用户的数据当sql语句执行
-- 采用sql语句预编译和绑定变量，是防御sql注入的最佳方法。
-- 预先编译好，也就是SQL引擎会预先进行语法分析，产生语法树，生成执行计划，也就是说，后面你输入的参数，无论你输入的是什么，都不会影响该sql语句的 语法结构了，因为语法分析已经完成了，而语法分析主要是分析sql命令，比如 select ,from ,where ,and, or ,order by 等等。所以即使你后面输入了这些sql命令，也不会被当成sql命令来执行了，因为这些sql命令的执行， 必须先的通过语法分析，生成执行计划，既然语法分析已经完成，已经预编译过了，那么后面输入的参数，是绝对不可能作为sql命令来执行的，只会被当做字符串字面值参数。所以sql语句预编译可以防御sql注入。
-- 对参数严格白名单式过滤，在接收到用户输入的参数时，我们就严格检查 id，只能是int型。复杂情况可以使用正则表达式来判断。这样也是可以防止sql注入的。
-- 使用安全函数，ESAPI.encoder().encodeForSQL(codec, name)
-- 实际项目中，一般我们都是采用各种的框架，比如ibatis, hibernate,mybatis等等。他们一般也默认就是sql预编译的。对于ibatis/mybatis，如果使用的是 #{name}形式的，那么就是sql预编译，使用 ${name} 就不是sql预编译的。
 #### 设置http only有什么不好的
 本质就是不允许访问cookie了，那比如追踪用户，维护用户UI选项可能会受到影响
 
@@ -2130,46 +2167,103 @@ while(set.size<n){
 然后我问了一些部门的基本情况，比如部门在 XXG 以至公司的定位，相比于公司其他方向的部门，我们的特点是什么？相比于同方向其他公司的部门，我们的特点是什么？设计师、产品、研发之间的合作？以及部门对公司或对行业最大的贡献是？
 
 
-一面
-1、大致介绍一下你的前端项目经历；
-
-3、JS为什么是单线程？这样做有什么好处是多线程语言无法实现的？
-
-6、react中的单向数据流动有什么好处？
-
-11、怎样以对象为构造函数创建一个对象
-
 #### 使用过webpack吗？讲一下插件（plugin）和loader的区别
 - loader，它是一个转换器，将A文件进行编译成B文件，比如：将A.less转换为A.css，单纯的文件转换过程。
 - plugin是一个扩展器，它丰富了webpack本身，针对是loader结束后，webpack打包的整个过程，它并不直接操作文件，而是基于事件机制工作，会监听webpack打包过程中的某些节点，执行广泛的任务，比如：清理东西 打包优化、文件管理、环境注入
 
-13、关于js为什么是单线程？操作系统的线程和进程
+#### 利用apply手写一个bind函数， bind函数返回的是一个什么东西？
+```javascript
+// Does not work with `new (funcA.bind(thisArg, args))`
+if (!Function.prototype.bind) (function(){
+  var slice = Array.prototype.slice;
+  Function.prototype.bind = function() {
+    var thatFunc = this, thatArg = arguments[0];
+    var args = slice.call(arguments, 1);
+    if (typeof thatFunc !== 'function') {
+      // closest thing possible to the ECMAScript 5
+      // internal IsCallable function
+      throw new TypeError('Function.prototype.bind - ' +
+             'what is trying to be bound is not callable');
+    }
+    return function(){
+      var funcArgs = args.concat(slice.call(arguments))
+      return thatFunc.apply(thatArg, funcArgs);
+    };
+  };
+})();
+//  Yes, it does work with `new (funcA.bind(thisArg, args))`
+if (!Function.prototype.bind) (function(){
+  var ArrayPrototypeSlice = Array.prototype.slice;
+  Function.prototype.bind = function(otherThis) {
+    if (typeof this !== 'function') {
+      // closest thing possible to the ECMAScript 5
+      // internal IsCallable function
+      throw new TypeError('Function.prototype.bind - what is trying to be bound is not callable');
+    }
+
+    var baseArgs= ArrayPrototypeSlice.call(arguments, 1),
+        baseArgsLength = baseArgs.length,
+        fToBind = this,
+        fNOP    = function() {},
+        fBound  = function() {
+          baseArgs.length = baseArgsLength; // reset to default base arguments
+          baseArgs.push.apply(baseArgs, arguments);
+          return fToBind.apply(
+                 fNOP.prototype.isPrototypeOf(this) ? this : otherThis, baseArgs
+          );
+        };
+
+    if (this.prototype) {
+      // Function.prototype doesn't have a prototype property
+      fNOP.prototype = this.prototype; 
+    }
+    fBound.prototype = new fNOP();
+
+    return fBound;
+  };
+})();
+```
 
 
-二面
-4、你把cookie存在浏览器端，那么如果有人恶意获取到了你的cookie，他就可以登录你的账号，你怎么解决这个问题？
+#### cookie的属性有哪些，如果cookie不设置有效期，cookie什么时候删除
+- domain,path, secure, httponly, expire, samesite
+- 不设置有效期就是会话cookie，默认为当前浏览器会话有用，关闭浏览器就消失
+```javascript
+//设置 cookie
+function setCookie(objName, objValue, objHours){//添加cookie
+    var str = objName + "=" + encodeURIComponent(objValue);
+    if (objHours > 0) {//为0时不设定过期时间，浏览器关闭时cookie自动消失
+        var date = new Date();
+        var ms = objHours * 3600 * 1000;
+        date.setTime(date.getTime() + ms);
+        str += "; expires=" + date.toUTCString();
+    }
+    document.cookie = str;
 
-5、具体怎么实现，不谈加密的方法，你说说你要对哪些数据对象进行加密。那么如果他获取了你加密的cookie一样可以继续实现登录，问题依然存在，再给你5分钟思考一下。
+}
+//获取 cookie
+function getCookie(objName){//获取指定名称的cookie的值
+    //多个cookie 保存的时候是以 ;空格  分开的
+    var arrStr = document.cookie.split("; ");
+    for (var i = 0; i < arrStr.length; i++) {
+        var temp = arrStr[i].split("=");
+        if (temp[0] == objName){
+            return decodeURIComponent(temp[1]);
+        }else{
+            return "";
+        }
+            
+    }
+}
 
-6、那么下一个问题，你讲一下dns解析的具体过程，比如对 www.qq.com 进行解析。dns是基于哪个协议的？
+//为了删除指定名称的cookie，可以将其过期时间设定为一个过去的时间
+function delCookie(name){
+    var date = new Date();
+    date.setTime(date.getTime() - 10000);
+    document.cookie = name + "=a; expires=" + date.toUTCString();
+}
+```
 
-9、讲一下vue中的组件传值，父子组件和组件间的传值方法
-
-11、SQL注入你知道嘛，这个问题你要怎么解决？
-
-14、利用apply手写一个bind函数， bind函数返回的是一个什么东西？
-
-
-一面 90min 
-○手撕代码: 数组去重及优化，检查运行结果，说思路，再实现下对象数组去重。
-○手撕代码: 大数相加及优化，检查运行结果，说思路，还有其他实现方式吗？
-○html代码如何形成DOM树？
-○js会阻塞页面的渲染吗？为什么？
-○css会阻塞js的加载吗？为什么？
-○说一下EventLoop。
-○说一下Promise,简单实现一下Promise
-○async await又是怎么实现的？await怎么做到的阻塞？
-○cookie的属性有哪些，如果cookie不设置有效期，cookie什么时候删除
 ○如何加快页面首屏渲染？
 ○如何实现DNS预解析？DNS预解析在什么时候执行？
 ○详细说一下CDN？它是怎么找到离它地理位置最近的服务器的而不是其他的服务器？
