@@ -2431,12 +2431,184 @@ var foo = { n: 1 };
 console.log(foo.n);
 ```
 
-8. 问了一下如何上传文件
-9. drag, drop api怎么使用
+#### 问了一下如何上传文件
+- 普通表单上传
+```html
+<form action="/index.php" method="POST" enctype="multipart/form-data">
+  <input type="file" name="myfile">
+  <input type="submit">
+</form>
+```
+- 上面的适合小文件上传，如果文件大，则需要文件编码上传，转换成base64或者二进制上传
+```javascript
+var imgURL = URL.createObjectURL(file);
+ctx.drawImage(imgURL, 0, 0);
+// 获取图片的编码，然后将图片当做是一个很长的字符串进行传递, base64
+/*base64编码的缺点在于其体积比原图片更大（因为Base64将三个字节转化成四个字节，因此编码后的文本，会比原文本大出三分之一左右），对于体积很大的文件来说，上传和解析的时间会明显增加。*/
+var data = canvas.toDataURL("image/jpeg", 0.5); 
+```
+```javascript
+// 读取二进制文件, 二进制上传
+function readBinary(text){
+   var data = new ArrayBuffer(text.length);
+   var ui8a = new Uint8Array(data, 0);
+   for (var i = 0; i < text.length; i++){ 
+     ui8a[i] = (text.charCodeAt(i) & 0xff);
+   }
+   console.log(ui8a)
+}
+var reader = new FileReader();
+reader.onload = function(){
+	  readBinary(this.result) // 读取result或直接上传
+}
+// 把从input里读取的文件内容，放到fileReader的result字段里
+reader.readAsBinaryString(file);
+```
+- formData异步上传
+```javascript
+async uploadFile(url, file) { // 上传文件（企业正文上传和个人上传共用，url不同）
+  const formData = new FormData()
+  const { raw, size, name } = file
+  const { lastModifiedDate, type } = raw
+  formData.append('mypic', raw)
+  formData.append('size', size)
+  formData.append('lastModifiedDate', lastModifiedDate)
+  formData.append('type', type)
+  formData.append('name', name)
+  await axios({
+    url,
+    method: 'post',
+    data: formData,
+    onUploadProgress: (progressEvent) => { // 上传进度
+      this.percent = (progressEvent.loaded / progressEvent.total * 100) - 10 | 0
+    }
+  }).then(res => {
+  }).catch(err => {
+  })
+}
+```
+- iframe无刷新页面， 原理是把上传表单的target指向一个隐藏的iframe，然后监听iframe的onload事件获取返回结果
+- 大文件上传
+  - 文件切片，及合并
+  ```javascript
+  // 文件切分
+  function slice(file, piece = 1024 * 1024 * 5) {
+    let totalSize = file.size; // 文件总大小
+    let start = 0; // 每次上传的开始字节
+    let end = start + piece; // 每次上传的结尾字节
+    let chunks = []
+    while (start < totalSize) {
+      // 根据长度截取每次需要上传的数据
+      // File对象继承自Blob对象，因此包含slice方法
+      let blob = file.slice(start, end); 
+      chunks.push(blob)
+
+      start = end;
+      end = start + piece;
+    }
+    return chunks
+  }
+  // 分块上传
+  // 获取context，同一个文件会返回相同的值，可以在额外加uid或者用户信息
+  function createContext(file) {
+    return file.name + file.length
+  }
+
+  let file = document.querySelector("[name=file]").files[0];
+  const LENGTH = 1024 * 1024 * 0.1;
+  let chunks = slice(file, LENGTH);
+
+  // 获取对于同一个文件，获取其的context
+  let context = createContext(file);
+
+  let tasks = [];
+  chunks.forEach((chunk, index) => {
+    let fd = new FormData();
+    fd.append("file", chunk);
+    // 传递context，确保文件的唯一标识
+    fd.append("context", context);
+    // 传递切片索引值，保证后台可以按顺序合并
+    fd.append("chunk", index + 1);
+    
+    tasks.push(post("/mkblk.php", fd));
+  });
+  // 所有切片上传完毕后，调用mkfile接口
+  Promise.all(tasks).then(res => {
+    let fd = new FormData();
+    fd.append("context", context);
+    fd.append("chunks", chunks.length);
+    post("/mkfile.php", fd).then(res => {
+      console.log(res);
+    });
+  });
+  ```
+  - 断点续传
+    - 在切片上传成功后，保存已上传的切片信息
+    - 当下次传输相同文件时，遍历切片列表，只选择未上传的切片进行上传
+    - 所有切片上传完毕后，再调用mkfile接口通知服务端进行文件合并
+    - 可以通过locaStorage等方式保存在前端浏览器中，这种方式不依赖于服务端，实现起来也比较方便，缺点在于如果用户清除了本地文件，会导致上传记录丢失
+    - 服务端本身知道哪些切片已经上传，因此可以由服务端额外提供一个根据文件context查询已上传切片的接口，在上传文件前调用该文件的历史上传记录
+    - 此外断点续传还需要考虑切片过期的情况：如果调用了mkfile接口，则磁盘上的切片内容就可以清除掉了，如果客户端一直不调用mkfile的接口，放任这些切片一直保存在磁盘显然是不可靠的，一般情况下，切片上传都有一段时间的有效期，超过该有效期，就会被清除掉。基于上述原因，断点续传也必须同步切片过期的实现逻辑。
+  ```javascript
+  // 获取已上传切片记录
+  function getUploadSliceRecord(context){
+    let record = localStorage.getItem(context)
+    if(!record){
+      return []
+    }else {
+      try{
+        return JSON.parse(record)
+      }catch(e){}
+    }
+  }
+  // 保存已上传切片
+  function saveUploadSliceRecord(context, sliceIndex){
+    let list = getUploadSliceRecord(context)
+    list.push(sliceIndex)
+    localStorage.setItem(context, JSON.stringify(list))
+  }
+  let context = createContext(file);
+  // 获取上传记录
+  let record = getUploadSliceRecord(context);
+  let tasks = [];
+  chunks.forEach((chunk, index) => {
+    // 已上传的切片则不再重新上传
+    if(record.includes(index)){
+      return
+    }
+    
+    let fd = new FormData();
+    fd.append("file", chunk);
+    fd.append("context", context);
+    fd.append("chunk", index + 1);
+
+    let task = post("/mkblk.php", fd).then(res=>{
+      // 上传成功后保存已上传切片记录
+      saveUploadSliceRecord(context, index)
+      record.push(index)
+    })
+    tasks.push(task);
+  });
+  ```
+  - 上传进度和暂停
+    - 通过xhr.upload中的progress方法可以实现监控每一个切片上传进度。
+    - 上传暂停的实现也比较简单，通过xhr.abort可以取消当前未完成上传切片的上传，实现上传暂停的效果，恢复上传就跟断点续传类似，先获取已上传的切片列表，然后重新发送未上传的切片。
+- [大文件上传另一篇更详细的文章，javascript，nodejs](https://juejin.im/post/6844904046436843527)
 
 
-1、知道animation-fill-mode吗？不知道
-4、如何渲染一个十几万条的大数据显示到页面上。
-6、项目的构建工具，vue-cli、webpack。
+#### [知道animation-fill-mode吗](https://developer.mozilla.org/zh-CN/docs/Web/CSS/animation-fill-mode)
+- CSS 属性 animation-fill-mode 设置CSS动画在执行之前和之后如何将样式应用于其目标。
+- none: 当动画未执行时，动画将不会将任何样式应用于目标，而是已经赋予给该元素的 CSS 规则来显示该元素。这是默认值。
+- forwards: 目标将保留由执行期间遇到的最后一个关键帧计算值。 最后一个关键帧取决于animation-direction和animation-iteration-count的值：
+- backwards: 动画将在应用于目标时立即应用第一个关键帧中定义的值，并在animation-delay期间保留此值。 第一个关键帧取决于animation-direction的值：
+- both: 动画将遵循forwards和backwards的规则，从而在两个方向上扩展动画属性。
 
-3.HTML跟HTML5的区别（面试官为我解释了本质区别，框架上的区别😅）
+#### 如何渲染一个十几万条的大数据显示到页面上。
+
+
+#### HTML跟HTML5的区别（面试官为我解释了本质区别，框架上的区别😅）
+- html5是一系列用来制作现代Web 内容的 相关技术的总称， HTML5 核心规范（标签元素）、CSS3（层叠样式表第三代）、和JavaScript。
+- HTML5 核心：这部分主要由W3C 官方的规范组成，涉及新的语义元素、新的增强的Web 表单、音频和视频、图像、动画、通过JavaScript绘图的Canvas以及与设备的交互。这部分大多数主流浏览器均得到很好的支持；  
+- 改变了用户与文档的交互方式：多媒体：video audio canvas
+- 地理定位，数据存储，多线程webworker等
+- 向下兼容，用户至上容错强，化繁为简，无插件，范围通用性更强（利于残障人士，新元素）
