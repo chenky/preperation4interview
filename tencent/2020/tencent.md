@@ -1989,8 +1989,11 @@ function spawn(genF) {
 #### 如何实现input框显示，但是无法输入（readonly disabled οnfοcus=this.blur() keydown preventDefault(搜狗中文输入法依然有问题)
 - disabled不可编辑，不可复制，不可选择，不能接收焦点,后台也不会接收到传值。设置后文字的颜色会变成灰色。disabled 属性无法与 input type="hidden" 一起使用。
 - readonly 属性规定输入字段为只读可复制，但是，用户可以使用Tab键切换到该字段，可选择,可以接收焦点，还可以选中或拷贝其文本。后台会接收到传值. readonly 属性可以防止用户对值进行修改
-#### 用js创建的DOM白屏，如何定位问题，DOM
-- 有没有语法错误，有没有抛出异常，标签有没有闭合出错
+#### 用js创建的DOM白屏，如何定位问题，DOM，页面白屏如何逐一排除问题？
+- 先确保网络连接通畅，url有没有错
+- 页面上有没有元素，即有没有下载html页面，刷新试试
+- 控制台查看报错信息，有没有语法错误，有没有抛出异常，标签有没有闭合出错
+- 接口访问是否有请求，如果有，但是没有数据，需要和后台一起看看服务器日志
 - 单一对照原则，慢慢注释代码
 #### 断点调试工具考察。两个一样的函数，如何判断执行了哪个 console.log即可
 #### 时间复杂度最优的排序算法。我说桶排序。追问桶排序的原理
@@ -2264,34 +2267,107 @@ function delCookie(name){
 }
 ```
 
-○如何加快页面首屏渲染？
-○如何实现DNS预解析？DNS预解析在什么时候执行？
-○详细说一下CDN？它是怎么找到离它地理位置最近的服务器的而不是其他的服务器？
-○说一下vue的实现原理
-○vue的生命周期
-○vue指令了解多少？v-if和v-show的区别？两者的应用场景
-○项目用的是vue-cli3.0吧？vue.config.js用过吗？拿来做什么？还配置过什么？
-○说一下webpack。自己写过loader吗？
-○node.js用过吗？express拿来做什么？koa用过吗？
+#### dom树和cssom树形成过程
+!['dom tree'](../img/dom-tree.png)
+!['cssom tree'](../img/cssom-tree.png)
+!['render tree'](../img/render-tree.png)
 
-二面 24min
-○vue源码有没有看过？vue-router原理？
-○webpack打包流程知道吗？treeshaking是什么？它是怎么实现的？源码看过吗？自己手写过loader吗？
-○后端会写吗？koa？mysql？要是来这实习的话，后端一般是要自己写的
+#### 如何加快页面首屏渲染？
+- DNS预解析（<meta http-equiv="x-dns-prefetch-control" content="on"><link rel="dns-prefetch" href="//cdn.domain.com" >），在不需要对用户暴露域名的地方，可以直接使用ip，比如app，这样彻底不使用DNS，避免重定向
+- 页面静态化（服务器端渲染），使用CDN，使用缓存
+- 最小化文件，内联首屏css，js，压缩合并图片，甚至内置图片base64等，css，js等静态资源
+- 保证首屏内容最小化
+- 预先设定图片尺寸，避免大量重排重绘，减少 DOM 元素数量和深度
+- 如果是APP甚至可以预推送，避免峰值请求
+- PWA离线缓存
+- 使用gzip压缩
+- script加载放在页尾部，异步javascript加载，defer，async，合并压缩，域名收敛，减少http请求
 
+#### 前端优化描述，除了雅虎军规之外的优化，页面速度优化，页面优化，加载时间优化
+- 减少HTTP，减少http尺寸（比如优化合并图片，css，js，html，使用gzip，使用缓存，cnd，css，js外置）
+- 非空href，src，避免重定向，减少cookie大小，使用本地缓存
+- 异步javascript加载，defer，async
+- 避免使用 CSS import 引用加载 CSS
+- 预先设定图片尺寸，避免大量重排重绘，减少 DOM 元素数量和深度
+- webpack打包优化，动态路由按需加载，长时间缓存，增量更新
+- cdn，ssr,服务器端渲染
+* pwa，serviceworker
+* http2(多路复用，首部压缩，服务器推送，流量控制)，http3基于udp，ttr
+* 域名收敛，dns预解析（<meta http-equiv="x-dns-prefetch-control" content="on"><link rel="dns-prefetch" href="//cdn.domain.com" >），PC上DNS解析消耗相对较小，但移动端（假设信号不够强）的DNS消耗是比较可观的（相对而言），可以通过js初始化一个iframe异步加载一个页面，而这个页面里包含本站所有的需要手动dns prefetching的域名
+* 通常情况下，我们认为 TCP 网络传输的最大传输单元（Maximum Transmission Unit，MTU）为 1500B，即一个RTT（Round-Trip Time，网络请求往返时间）内可以传输的数据量最大为 1500 字节。因此，在前后端分离的开发模式中，尽量保证页面的 HTML 内容在 1KB 以内，这样整个 HTML 的内容请求就可以在一个 RTT 内请求完成，最大限度地提高 HTML 载入速度。
 
-三面 28min
-○页面白屏如何逐一排除问题？
-○如何知道用户的网络有问题？
-○说一下网络请求底层是怎么实现的？
-○页面如何进行调试？
-○vue源码看过吗？虚拟dom实现原理？diff算法如何实现的？
-○前端学习方法
-○前端性能优化，图片具体，什么格式应用什么场景，详细问了base64
-○react生命周期
-○一个班70%的人喜欢足球 80%喜欢篮球，90%喜欢排球，同时喜欢足球和篮球的有多少人
-○手上offer，现在还在面其他公司吗？
-○实习多久，什么时候能来实习？
+#### 如何实现DNS预解析？DNS预解析在什么时候执行？
+- （<meta http-equiv="x-dns-prefetch-control" content="on"><link rel="dns-prefetch" href="//cdn.domain.com" >）
+- Chrome会记住最近使用的10个domain，并且在开启浏览器时自动解析，因此在打开这些常用页面的时候，并不会有DNS Lookup的延迟情况。
+- chrome使用8个线程专门做DNS Prefetching，而且chrome本身不做dns记录的cache，是直接从操作系统读dns。所以直接修改系统的dns记录或者host是可以直接影响chrome。
+- 浏览器会对a标签的href自动启用DNS Prefetching，所以a标签里包含的域名不需要在head中手动设置link。但是在HTTPS下面不起作用，需要meta来强制开启功能。这个限制的原因是防止窃听者根据DNS Prefetching推断显示在HTTPS页面中超链接的主机名。
+- DNS解析的包很小，一个UDP的包小于100 bytes，却平均可节省200ms。
+- 本地缓存DNS数量有限，可暂存50-200个domain，Chrome会决定该删除哪些domain的缓存，常用的网站会被标记为“最近使用”，不会那么快被删除。而如google.com、yahoo.com等大型网站过期时间大概在5分钟左右，可以更好的适应服务变化。
+- 浏览器缓存 - 系统缓存 - 路由器缓存 - ISP DNS缓存 - 递归搜索
+
+#### 详细说一下CDN？它是怎么找到离它地理位置最近的服务器的而不是其他的服务器？
+1. 用户当前所在位置
+2. 还需要知道用户现在访问的这个域名对应哪些IP地址，以及这个IP地址分别在哪?
+- 对于第一个问题好解决，直接从用户请求里提取出用户的ip地址，比如这个ip地址被解析为北京电信、上海移动等等。
+- cdn供应商，从cname域名ip列表中选择一个离用户最近的ip返回给用户
+!['cdn cname dns原理'](../img/cdn-principle.png)
+
+#### 项目用的是vue-cli3.0吧？vue.config.js用过吗？拿来做什么？还配置过什么？
+```javascript
+module.exports = {
+  assetsDir: 'static',
+  publicPath: '/', // 对应js等静态资源的相对路径
+  productionSourceMap: false,
+  pages: {
+    home: {
+      entry: 'h5/src/main', // h5分享相关
+      template: 'public/home.html',
+      filename: 'home.html'
+    }
+  },
+  devServer: {
+    hot: true,
+    proxy: {
+      '/api.php': {
+        target: proxyTarget[env], // 自动根据环境变量匹配
+        // target: 'local.oasit.wangqian.cn:8080', // 怀修本地
+        changeOrigin: true
+      }
+    }
+  },
+  chainWebpack: config => {
+    /*是一个函数，会接收一个基于 webpack-chain 的 ChainableConfig 实例。允许对内部的 webpack 配置进行更细粒度的修改。*/
+    config.resolve.alias
+      .set('$assets', resolve('src/assets'))
+  },
+  configureWebpack: {
+    /*如果这个值是一个对象，则会通过 webpack-merge 合并到最终的配置中。
+如果这个值是一个函数，则会接收被解析的配置作为参数。该函数既可以修改配置并不返回任何东西，也可以返回一个被克隆或合并过的配置版本。*/
+    devtool: isDebug ? 'source-map' : false,
+    plugins: [
+      new CopyWebpackPlugin([
+        {
+          from: 'src/foxit-lib/',
+          to: 'foxit-lib',
+          ignore: [
+            '{PDFViewCtrl,UIExtension}*.{js,css}',
+            'preload-jr-worker.js'
+          ]
+        }
+      ])
+    ]
+  }
+}
+```
+
+#### 一个班70%的人喜欢足球 80%喜欢篮球，90%喜欢排球，同时喜欢足球和篮球的有多少人
+（1）首先确定最多的一种情况，就是 60% 喜欢足球的人同时也喜欢篮球和排球，此时为三种球都喜欢的人的最大比例。
+（2）然后确定最小的一种情况，根据题目可以知道有 40%的人不喜欢足球，30%的人不喜欢篮球，20%的人不喜欢排球，因此有最多 90% 的人三种球中有一种球不喜欢，因此三种球都喜欢的人的最小比例为 10%
+算法：
+首先考虑60 和 70， 都喜欢的比例最少是 （70 + 60 - 100） = 30
+然后30 和 80 结合，为 （30 + 80 - 100） = 10
+总的来说就是（70 + 60 - 100） + 80 - 100 = 10
+因此三种球都喜欢的人占比为 10%-60%
 
 hr面 30min
 ○自我介绍

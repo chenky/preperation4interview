@@ -634,17 +634,6 @@ Access-Control-Expose-Headers: FooBar
 * https://www.quirksmode.org/mobile/viewports2.html
 * https://www.runoob.com/w3cnote/viewport-deep-understanding.html
 
-### 前端性能优化
-* https://juejin.im/post/59ff2dbe5188254dd935c8ab
-
-#### 前端优化描述，除了雅虎军规之外的优化
-- webpack打包优化，动态路由按需加载，长时间缓存，增量更新
-- cdn，ssr,服务器端渲染
-* pwa，serviceworker
-* http2(多路复用，首部压缩，服务器推送，流量控制)，http3基于udp，ttr
-* 域名收敛，dns预解析（<meta http-equiv="x-dns-prefetch-control" content="on" ><link rel="dns-prefetch" href="//cdn.domain.com" >）
-* 通常情况下，我们认为 TCP 网络传输的最大传输单元（Maximum Transmission Unit，MTU）为 1500B，即一个RTT（Round-Trip Time，网络请求往返时间）内可以传输的数据量最大为 1500 字节。因此，在前后端分离的开发模式中，尽量保证页面的 HTML 内容在 1KB 以内，这样整个 HTML 的内容请求就可以在一个 RTT 内请求完成，最大限度地提高 HTML 载入速度。
-
 ### 兼容IE事件工具函数
 * https://blog.csdn.net/wangcuiling_123/article/details/73085958
 
@@ -731,7 +720,6 @@ GBK是国家标准GB2312基础上扩容后兼容GB2312的标准。GBK的文字�
 ### 前端数据采集
 - onError事件，try catch，自定义错误及日志
 - html5的performance帮助采集性能数据
-* https://cdc.tencent.com/2018/09/13/frontend-exception-monitor-research/
 
 ### 腾讯面试题
 #### jsonp有哪些安全问题，服务端可能存在csrf攻击
@@ -1203,6 +1191,12 @@ app.use((error, req, res, next) =&gt; {
 });
 - 全局错误监控，任何全局未处理的异常都可以通过监听进程上的“uncaughtException”事件来拦截，如果任何事件发射器引发`error`事件，并且没有为此事件预订事件发射器的监听器，则在进程上也会引发`uncaughtError`事件。
 - exit事件在进程即将退出时发出
+
+#### 如何监听用户网络问题
+- 通过input type=file或者fetch得到文件大小
+- 通过监听img的onload来知道下载图片的时间，从而知道用户的网络情况
+- 通过performance API监听用户的网络情况
+!['performance api'](./tencent/img/performance-api.png)
 
 #### [heap vs stack 堆和栈的优缺点,栈适合递归，历史记录撤销操作，堆完全搜索二叉树，求第k大小的值](https://www.guru99.com/stack-vs-heap.html)
 <table class="table1 table-striped"><thead><tr><th><strong>Parameter</strong> </th><th><strong>Stack</strong> </th><th><strong>Heap</strong> </th></tr></thead><tbody><tr><td>Type of data structures </td><td>A stack is a linear data structure. </td><td>Heap is a hierarchical data structure. </td></tr><tr><td>Access speed </td><td>High-speed access </td><td>Slower compared to stack </td></tr><tr><td>Space management </td><td>Space managed efficiently by OS so memory will never become fragmented. </td><td>Heap Space not used as efficiently. Memory can become fragmented as blocks of memory first allocated and then freed. </td></tr><tr><td>Access </td><td>Local variables only </td><td>It allows you to access variables globally. </td></tr><tr><td>Limit of space size </td><td>Limit on stack size dependent on OS. </td><td>Does not have a specific limit on memory size. </td></tr><tr><td>Resize </td><td>Variables cannot be resized </td><td>Variables can be resized. </td></tr><tr><td>Memory Allocation </td><td>Memory is allocated in a contiguous block. </td><td>Memory is allocated in any random order. </td></tr><tr><td>Allocation and Deallocation </td><td>Automatically done by compiler instructions. </td><td>It is manually done by the programmer. </td></tr><tr><td>Deallocation </td><td>Does not require to de-allocate variables. </td><td>Explicit de-allocation is needed. </td></tr><tr><td>Cost </td><td>Less </td><td>More </td></tr><tr><td>Implementation </td><td>A stack can be implemented in 3 ways simple array based, using dynamic memory, and Linked list based. </td><td>Heap can be implemented using array and trees. </td></tr><tr><td>Main Issue </td><td>Shortage of memory </td><td>Memory fragmentation </td></tr><tr><td>Locality of reference </td><td>Automatic compile time instructions. </td><td>Adequate </td></tr><tr><td>Flexibility </td><td>Fixed size </td><td>Resizing is possible </td></tr><tr><td>Access time </td><td>Faster </td><td>Slower </td></tr></tbody></table>
