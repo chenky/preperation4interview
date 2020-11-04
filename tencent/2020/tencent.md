@@ -793,6 +793,18 @@ function Parent({ a, b }) {
 - referer校验，ua，origin
 #### 设计模式用过吗？最熟悉的模式是什么？
 - 单例模式
+  - 优点： 
+    1. 在单例模式中，活动的单例只有一个实例，对单例类的所有实例化得到的都是相同的一个实例。这样就 防止其它对象对自己的实例化，确保所有的对象都访问一个实例 
+    2. 单例模式具有一定的伸缩性，类自己来控制实例化进程，类就在改变实例化进程上有相应的伸缩性。 
+    3. 提供了对唯一实例的受控访问。 
+    4. 由于在系统内存中只存在一个对象，因此可以 节约系统资源，当 需要频繁创建和销毁的对象时单例模式无疑可以提高系统的性能。 
+    5. 允许可变数目的实例。 
+    6. 避免对共享资源的多重占用。 
+  - 缺点： 
+    1. 不适用于变化的对象，如果同一类型的对象总是要在不同的用例场景发生变化，单例就会引起数据的错误，不能保存彼此的状态。 
+    2. 由于单利模式中没有抽象层，因此单例类的扩展有很大的困难。 
+    3. 单例类的职责过重，在一定程度上违背了“单一职责原则”。 
+    4. 滥用单例将带来一些负面问题，如为了节省资源将数据库连接池对象设计为的单例类，可能会导致共享连接池对象的程序过多而出现连接池溢出；如果实例化的对象长时间不被利用，系统会认为是垃圾而被回收，这将导致对象状态的丢失。
 ```javascript
 // 单例模式
 // https://juejin.im/post/6844903874210299912
@@ -1845,45 +1857,112 @@ RightShift(int *arr, int N, int K)
   - 冻结区域
   - 对齐与单元格溢出
   - 版本回退/重做
+#### 301和302的区别以及分别的应用场景
+- 301是永久跳转，302是临时跳转
+- 搜索引擎抓取新页面内容的同时也使用新的网址，而302只抓取新内容，但网址还是旧网址
 
-前端文档内容实时更新怎么实现？
-服务端使用websocket与客服端通信
-websocket和http的区别
-富文本怎么做
-input里面放script的危险性
-前端的攻击有哪些、怎么解决(cookie)
-前端怎么实现离线缓存、离线加载
-301和302的区别以及分别的应用场景
-除了cookie和localstorage之外还有什么存储方式
-indexDB、memory cache、disk cache
-页面渲染中遇到复杂计算造成的卡顿怎么解决？
-在引入js文件的script标签中加defer或者async实现异步加载
-开启一个web worker子线程来计算
-前端还有哪些worker
-service worker、web worker、shared worker
-分别介绍一下、说一下怎么用区别啥的
-如何监控页面的卡顿、崩溃
-service worker
-前端的表格怎么布局
-渲染10万个div会造成什么？为什么？怎么解决？
-刷算法题对于前端有哪些好处
-webpack对于一个文件中未使用的函数也会进行打包吗？需要怎么操作？
-开启tree shaking
+#### 除了cookie和localstorage之外还有什么存储方式
+- session storage, indexDB、web sql, cache storage, application cache
+#### 前端还有哪些worker
+service worker、web worker、shared worker（safari不支持，android，opera都不支持）
+#### [如何监控页面的卡顿、崩溃](https://blog.csdn.net/qq_20901397/article/details/81299802)
+- 第一种方案service worker
+  - 随着PWA概念的流行，大家对Service Worker也逐渐熟悉起来。基于以下原因，我们可以使用Service Worker来实现网页崩溃的监控： 
+    - Service Worker有自己独立的工作线程，与网页区分开，网页崩溃了，Service Worker一般情况下不会崩溃； 
+    - Service Worker生命周期一般比网页还要长，可以用来监控网页的状态； 
+    - 网页可以通过**navigator.serviceWorker.controller.postMessage**API向掌管自己的SW发送消息。 
+  - 基于以上几点，我们可以实现一种基于心跳检测 的监控方案： 
+    - 网页加载后，通过**postMessage**API每5s给sw发送一个心跳，表示自己在线，sw将在线的网页登记下来，更新登记时间； 
+    - 网页在beforeunload时，通过**postMessage**API告知sw自己已经正常关闭，sw将登记的网页清除； 
+    - 如果网页在运行的过程中crash了，sw中的running状态将不会被清除，更新时间停留在崩溃前的最后一次心跳； 
+    - Service Worker每10s查看一遍登记中的网页，发现登记时间已经超出了一定时间（比如15s），即可判定该网页crash了。 
+- 第二种方案是
+  - 相比于利用window对象的load与beforeunload事件实现网页崩溃的监控，利用service Worker更加可靠。 
+  在页面加载时（load事件）在sessionStorage记录good_exit状态为pending，如果用户正常退出（beforeunload事件），good_exit状态改为true，如果页面crash了，good_exit状态依然为pending，在用户第二次访问网页的时候（第2个load事件），查看good_exit的状态，如果仍然是pending，就可以断定上次访问网页崩溃了。 
+  - 采用sessionStorage存储状态，但通常网页崩溃/卡死后，用户会强制关闭网页或者索性重新打开浏览器，sessionStorage存储的状态将不复存在。 
+  - 如果将存储状态在localStorage甚至Cookie中，如果用户先后打开多个网页，但不关闭，good_exit存储的一直都是pending,那么，每有一次网页打开，就会有一个crash上报。 
+```javascript
+// 计算fps判断是否卡顿，最优的帧率是60，即16.5ms左右渲染一次，连续出现3个低于20的FPS 即可认为网页存在卡顿。
+var lastTime = performance.now();
+var frame = 0;
+var lastFrameTime = performance.now();
+var loop = function(time) {
+    var now = performance.now();
+    var fs = (now - lastFrameTime);
+    lastFrameTime = now;
+    var fps = Math.round( 1000/fs );
+    frame++;
+    if(now > 1000 + lastTime){
+        var fps = Math.round((frame*1000) / (now-lastTime)); //计算时间达到一秒后的帧数
+        frame = 0; //清零
+        lastTime = now; //重新计算下一秒的帧数
+    };
+    window.requestAnimationFrame(loop);
+}
+```
+#### webpack对于一个文件中未使用的函数也会进行打包吗？需要怎么操作？
+- 使用 ES2015 模块语法（即 import 和 export）。
+- 确保没有编译器将您的 ES2015 模块语法转换为 CommonJS 的（顺带一提，这是现在常用的 @babel/preset-env 的默认行为，详细信息请参阅文档）。
+- 在项目的 package.json 文件中，添加 "sideEffects" 属性。
+- 使用 mode 为 "production" 的配置项以启用更多优化项，包括压缩代码与 tree shaking。
+```javascript
+// Base Webpack Config for Tree Shaking, config.js
+const config = {
+ mode: 'production',
+ optimization: {
+  usedExports: true,
+  minimizer: [
+   new TerserPlugin({...})
+  ]
+ }
+};
+// 全局 CSS 副作用规则相关的 Webpack 配置
+const config = {
+ module: {
+  rules: [
+   {
+    test: /regex/,
+    use: [loaders],
+    sideEffects: true
+   }
+  ]
+ } 
+};
+// es2015 模块的基本 Babel 配置,babel.config.js
+const config = {
+ presets: [
+  [
+   '[@babel/preset-env](http://twitter.com/babel/preset-env)',
+   {
+    modules: false
+   }
+  ]
+ ]
+};
 
+// package.json
+// 所有文件都有副作用，全都不可 tree-shaking
+{
+ "sideEffects": true
+}
+// 没有文件有副作用，全都可以 tree-shaking
+{
+ "sideEffects": false
+}
+// 只有这些文件有副作用，所有其他文件都可以 tree-shaking，但会保留这些文件
+{
+ "sideEffects": [
+  "./src/file1.js",
+  "./src/file2.js"
+ ]
+}
+```
 
-对腾讯文档了解吗？
-让你实现的话觉得有哪些难点？
-除了websocket还可以怎么实现内容实时更新（emmmm，其实websocket是二面面试官告诉我的，客户端每隔一秒钟发一次请求、轮询之类的开始胡扯了）
-两个同时更新一块内容造成冲突咋办（加锁，，，瞎胡扯的）
-H5和小程序的区别？为啥小程序更受欢迎
-设计模式以及在前端的应用
-观察者和订阅/发布的区别
-数据结构有哪些、图的深度优先遍历、图的广度优先遍历
-时间复杂度、空间复杂度、排序算法、快排思想、桶排序思想
-工厂模式及其优缺点
-单例模式及其优缺点
-观察者模式及其优缺点
-js中的上下文对象
+#### H5和小程序的区别？为啥小程序更受欢迎
+- H5 的运行环境是浏览器，包括 WebView，而微信小程序是h5的严格子集无法使用window 对象和 document 对象
+- 小程序的运行环境是微信开发团队基于浏览器内核完全重构的一个内置解析器，针对性做了优化，配合自己定义的开发语言标准，提升了小程序的性能。
+- 小程序可以访问到更多的原生功能，更流畅，因为视图层和逻辑层在两个webview中，互不干扰
+- 开发成本低，兼容性问题少，有流量，不用下载app
 
 hr 面试
 自我介绍
@@ -2108,7 +2187,7 @@ document.addEventListener(visibilityChangeEvent, () => {
 - 布局，主要信息和次要信息
 - 数据实施更新
 
-#### websocket的使用场景。
+#### websocket的使用场景。, http与websocket区别
 - 相对于HTTP这种非持久的协议来说，Websocket是一个持久化的协议。用websocket可以实现服务端主动发送信息给客户端，并且客户端能够接收进行处理。当我们创建某个会话的时候，我们彼此就建立了持久化的协议，然后各自都有约定好的监听，后台可以随时主动与你通信，你也可以主动给后台发送请求  具体的使用场景如下：
 - websocket是全双工通信
 - http是半双工通信，请求响应断开
@@ -2625,7 +2704,8 @@ async uploadFile(url, file) { // 上传文件（企业正文上传和个人上�
 - backwards: 动画将在应用于目标时立即应用第一个关键帧中定义的值，并在animation-delay期间保留此值。 第一个关键帧取决于animation-direction的值：
 - both: 动画将遵循forwards和backwards的规则，从而在两个方向上扩展动画属性。
 
-#### 如何渲染一个十几万条的大数据显示到页面上。
+#### 如何渲染一个十几万条的大数据显示到页面上, 渲染10个div
+- 延迟渲染，只渲染可视区域的div
 - requestAnimationFrame（分片渲染），fragment（createDocumentFragment）
 - Canvas， webGL，svg
 

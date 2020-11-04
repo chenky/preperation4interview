@@ -208,11 +208,95 @@ custom element, shodaw dom, template模板（x-tag，polymer），小程序貌�
 * 3.出于安全考量，Service workers只能由HTTPS承载，毕竟修改网络请求的能力暴露给中间人攻击会非常危险。在Firefox浏览器的用户隐私模式，Service Worker不可用。
 * 4.Service workers大量使用Promise，因为通常它们会等待响应后继续，并根据响应返回一个成功或者失败的操作。Promise非常适合这种场景。
 注册-》下载-》安装-》激活
-* https://developer.mozilla.org/zh-CN/docs/Web/API/Service_Worker_API
-* http://www.alloyteam.com/2016/01/9274/
-* http://taobaofed.org/blog/2018/08/08/workbox3/
+```javascript
+//在页面代码里面监听onload事件，使用sw的配置文件注册一个service worker
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function () {
+    navigator.serviceWorker.register('serviceWorker.js')
+    .then(function (registration) {
+        // 注册成功
+        console.log('ServiceWorker registration successful with scope: ', registration.scope);
+    })
+    .catch(function (err) {
+        // 注册失败
+        console.log('ServiceWorker registration failed: ', err);
+    });
+  });
+}
+//serviceWorker.js
+var CACHE_NAME = 'my-first-sw';
+var urlsToCache = [
+    '/',
+    '/styles/main.css',
+    '/script/main.js'
+];
+
+self.addEventListener('install', function(event) {
+    // 在install阶段里可以预缓存一些资源
+    event.waitUntil(
+        caches.open(CACHE_NAME)
+            .then(function(cache) {
+                console.log('Opened cache');
+                return cache.addAll(urlsToCache);
+            })
+    );
+});
+//在fetch事件里能拦截网络请求，进行一些处理
+self.addEventListener('fetch', function (event) {
+  event.respondWith(
+    caches.match(event.request).then(function (response) {
+      // 如果匹配到缓存里的资源，则直接返回
+      if (response) {
+          return response;
+      }    
+      // 匹配失败则继续请求
+      var request = event.request.clone(); // 把原始请求拷过来
+      //默认情况下，从不支持 CORS 的第三方网址中获取资源将会失败。
+      // 您可以向请求中添加 no-CORS 选项来克服此问题，不过这可能会导致“不透明”的响应，这意味着您无法辨别响应是否成功。
+      if (request.mode !== 'navigate' && request.url.indexOf(request.referrer) === -1) 						{
+          request = new Request(request, { mode: 'no-cors' })
+      }
+      return fetch(request).then(function (httpRes) {
+        //拿到了http请求返回的数据，进行一些操作      
+        //请求失败了则直接返回、对于post请求也直接返回，sw不能缓存post请求
+        if (!httpRes  || ( httpRes.status !== 200 && httpRes.status !== 304 && httpRes.type !== 'opaque') || request.method === 'POST') {
+            return httpRes;
+        }
+        // 请求成功的话，将请求缓存起来。
+        var responseClone = httpRes.clone();
+        caches.open('my-first-sw').then(function (cache) {
+          cache.put(event.request, responseClone);
+        });
+        return httpRes;
+      });
+    })
+  );
+});
+// 监听activate事件，激活后通过cache的key来判断是否更新cache中的静态资源
+self.addEventListener('activate', function (e) {
+    console.log('Service Worker 状态： activate');
+    var cachePromise = caches.keys().then(function (keys) {
+        return Promise.all(keys.map(function (key) {
+            if (key !== cacheName) {
+                return caches.delete(key);
+            }
+        }));
+    })
+    e.waitUntil(cachePromise);
+    return self.clients.claim();
+});
+```
 
 ### PWA
+- 渐进增强 ： 能够让每一位用户使用，无论用户使用什么浏览器，因为它是始终以渐进增强为原则
+- 可安装 ： 可以像原生APP在主屏幕上留有图标。
+- 离线缓存 ：通过Service Worker使得 Web App 也可以做到像 Native App 那样可以离线使用、消息推送的功能。
+- 安全性 ： 通过 HTTPS 来提供服务来防止网络窥探，保证内容不被篡改。
+- PWA是应用一系列技术组成的集合, 其核心技术包括 App Manifest、Service Worker、Web Push等等。
+- 页面必须基于https
+- 独立于当前网页进程，不会对主线程造成影响
+- 不能操作DOM,但可以通过postMessage与页面通信
+- 可以拦截作用域范围内的所有请求
 - 基于service worker
 - 配置manifest，可配置到主屏到标题，logo，主题等等
 - 就是一层代理，拦截所有请求，从而控制整个站点
