@@ -183,12 +183,6 @@
 //     return prev.then(next);
 //   }, Promise.resolve());
 // }
-// same as
-async function runPromiseByQueue(promises, arg) {
-  for (const promise of promises) {
-    await promise(arg);
-  }
-}
 
 // const createPromise = (time, id) => () =>
 //   new Promise((solve) =>
@@ -210,19 +204,30 @@ async function runPromiseByQueue(promises, arg) {
 //     return prev.then(next);
 //   }, Promise.resolve(arg));
 // }
+// same as
+async function runPromiseByQueue (promises, arg) {
+  let res = arg
+  for (const promise of promises) {
+    res = await promise(res)
+  }
+  console.log('runPromiseByQueue res', res)
+  return res
+}
 
 const createPromise = (time, id) => {
   return (res) => {
     return new Promise((solve) =>
       setTimeout(() => {
-        console.log("promise", id, res);
-        const newRes = ++res;
-        solve(newRes);
+        console.log("promise", id, res)
+        const newRes = ++res
+        solve(newRes)
       }, time)
-    );
-  };
-};
-runPromiseByQueue(
+    )
+  }
+}
+const rRes = runPromiseByQueue(
   [createPromise(100, 1), createPromise(100, 2), createPromise(100, 3)],
   10
-);
+)
+// console.log('rRes', rRes);
+rRes.then(val => { console.log('rRes is', val) })
