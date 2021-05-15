@@ -34,6 +34,7 @@ pancakeSorts([3, 2, 4, 1]);
 /**
  * n个烧饼翻转后变的有序，最少翻转次数，并记录其序列
  * 把最小的放在最下面即可
+ * 翻转烧饼算法，翻转煎饼，排序，最少翻转次数，最少翻转
  */
 function minPancakeSort(cakes) {
   const res = [];
