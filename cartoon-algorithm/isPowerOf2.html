@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>判断一个数是否2的整数次幂，2整数次幂</title>
+</head>
+<body>
+  <script>
+    /**
+    对于一个整数n，只需要计
+算n&(n-1)的结果是不是0。这个方法的时间复杂度只有O（1）。
+    */
+    function isPowerOf2(n){
+      return n&(n-1) === 0
+    }
+  </script>
+</body>
+</html>

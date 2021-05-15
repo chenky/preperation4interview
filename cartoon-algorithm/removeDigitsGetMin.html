@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>删除整数的k个数字，获得删除后的最小值</title>
+</head>
+<body>
+  <script>
+    // 给出一个整数，从该整数中删除k个数字，要求剩下的数字形成的新整数尽可能小。
+    /* 给出一个整数541 270 936 ，要求删去1个数字，让剩下的整数尽可能小。
+    此时，无论删除哪一个数字，最后的结果都是从9位整数变成8位整数。
+    既然同样是8位整数，显然应该优先把高位的数字降低，这样对新整数
+    的值影响最大。
+
+    如何把高位的数字降低呢？很简单，把原整数的所有数字从左到右进
+行比较，如果发现某一位数字大于它右面的数字，那么在删除该数字
+后，必然会使该数位的值降低 ，因为右面比它小的数字顶替了它的位置。
+
+从左往右遍历，只要左边大于右边，就删除左边的数字
+
+边界情况： 
+1. num.length<=k, 则直接返回0
+2. 最左边的0要全部删除
+    */
+    function removeDigitsGetMin(num, k){
+      let numStr = num.toString()
+      let numLength = numStr.length;
+      if(numLength<=k) return 0
+      let tempArr = [], deleteCount = k;
+      for (let index = 0; index < numLength-1; index++) {
+        const currentElement = numStr[index]
+        const nextElement = numStr[index+1]
+        if(deleteCount<=0){
+          // 已经删除了k个元素
+          tempArr.push(currentElement)         
+        } else {
+          if(currentElement>nextElement){
+            // 此元素不需要, 会被删除
+            deleteCount--
+          } else {
+            tempArr.push(currentElement)
+          }
+        }
+        if(tempArr.length === numLength-k){
+          break;
+        }
+      }
+      // 判断最后一个元素是否需要添加到tempArr
+      if(tempArr.length<numLength-k){
+        tempArr.push(numStr[numLength-1])
+      } 
+      // 删除左边的0
+      return tempArr.join("").replace(/^0+/,"")
+    }
+    console.log(123456789,removeDigitsGetMin(123456789, 3))
+    console.log(543256789,removeDigitsGetMin(543256789, 3))
+    console.log(302000,removeDigitsGetMin(302000, 3))
+    console.log(541270936,removeDigitsGetMin(541270936, 3))
+  </script>
+</body>
+</html>
