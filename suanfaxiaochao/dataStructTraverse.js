@@ -35,9 +35,14 @@ function listNodeTraverseRecursion(head) {
  * 二叉树遍历
  */
 function binaryTreeTraverse(root) {
+  // 前序遍历
   if (root) console.log(root.val);
   binaryTreeTraverse(root.left);
+  // 中序遍历
+  if (root) console.log(root.val);
   binaryTreeTraverse(root.right);
+  // 后序遍历
+  if (root) console.log(root.val);
 }
 
 /**
