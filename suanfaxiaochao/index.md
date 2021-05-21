@@ -187,7 +187,7 @@ void traverse(TreeNode root) {
 - 回想我们刚才说的，「路径」和「选择」是每个节点的属性，函数在树上游走要正确维护节点的属性，那么就要在这两个特殊时间点搞点动作：
   ![](assets/backtrack3.jpeg)
 
-### N 皇后问题
+### N 皇后问题 n 个皇后问题
 
 ![](assets/n-queen.jpeg)
 
