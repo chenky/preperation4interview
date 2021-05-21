@@ -127,6 +127,10 @@ int coinChange(vector<int>& coins, int amount) {
 }
 ```
 
+## 回溯算法解题套路框架
+
+- 回溯算法其实就是我们常说的 DFS(深度优先搜索) 算法，本质上就是一种暴力穷举算法。
+
 ## leetcode 题目
 
 - 求二叉树中最大路径和
