@@ -1503,6 +1503,52 @@ G 是不同类型的组件，就不会比较二者的结构，而是直接删除
 - element diff
   - !['no key element diff'](../img/element-diff-nokey.png) 
   - !['has key element diff'](../img/element-diff-haskey.png)
+#### snabbdom中diff算法
+- vnode结构
+```typescript
+export interface VNode {
+  sel: string | undefined;
+  data: VNodeData | undefined;
+  children: Array<VNode | string> | undefined;
+  elm: Node | undefined;
+  text: string | undefined;
+  key: Key | undefined;
+}
+
+export interface VNodeData {
+  props?: Props;
+  attrs?: Attrs;
+  class?: Classes;
+  style?: VNodeStyle;
+  dataset?: Dataset;
+  on?: On;
+  attachData?: AttachData;
+  hook?: Hooks;
+  key?: Key;
+  ns?: string; // for SVGs
+  fn?: () => VNode; // for thunks
+  args?: any[]; // for thunks
+  is?: string; // for custom elements v1
+  [key: string]: any; // for any other 3rd party module
+}
+```
+- 判断是否是统一节点
+```typescript
+function sameVnode(vnode1: VNode, vnode2: VNode): boolean {
+  const isSameKey = vnode1.key === vnode2.key;
+  const isSameIs = vnode1.data?.is === vnode2.data?.is; // for custom elements
+  const isSameSel = vnode1.sel === vnode2.sel;
+
+  return isSameSel && isSameKey && isSameIs;
+}
+```
+- element diff
+  - 新旧前后四个指针进行遍历
+  - 新旧前后四个节点
+  - 新旧前后是否为空，新前和旧前，新后和旧后，新后和旧前，新前和旧后
+  - 需要一个map判断是否有需要全新创建的和移动的元素
+  - 遍历结束后，要么新增要么删除
+
 #### 设计搜索框
 #### 抖音打点设计
 
