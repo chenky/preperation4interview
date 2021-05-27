@@ -1481,7 +1481,42 @@ arr.concat(value1[, value2[, ...[, valueN]]])
 !['OSI七层模型及原理'](../img/OSI.png)
 #### margin的百分比是基于谁的
 - 相对于父元素的宽度来计算
-#### react 中 key的作用， react diff算法
+
+### vue源码分析整个流程涉及到的内容
+- dom字符串模板 -> AST -> VNode（diff 算法） -> 真正的DOM
+  - dom字符串模板 -> AST最消耗性能，需要对字符串解析
+    - vue源码中会把所有html标签存在
+  - dom模板
+    - compiler函数，处理插值，处理表达式，处理指令（事件绑定，列表，条件）等，需要用javascript对象表示dom对象，参考snabbdom
+      - 使用递归遍历dom，把nodeName, attributes等都遍历出来，生成虚拟dom
+    - Object.definedProperty(Proxy), 定义一个函数defineReactive(target, key, value, enumerable)
+      - 对于嵌套对象和数组使用递归，使其响应式
+      - 改变数组时需要发出通知，所以需要重载push,pop,shift,unshift,reverse,sort, splice, 但是设置length或arr[index]无响应，需要使用vm.$set
+        ```javascript
+        let ARR_METHOD = ['push', 'pop', ...]
+        let arr_method = Object.create(Array.prototype)
+        ARR_METHOD.forEach(method=>{
+          arr_method[method] = (...args) => {
+            const res = Array.prototype[ method ].apply(this, args)
+            // 扩展功能
+            return res;
+          }
+        })
+        ```
+    - 
+      ```javascript
+      Object.defineProperty(obj, prop, {
+        writeable,
+        configable,
+        enumerable,
+        set(){},
+        get(){}
+      })
+      ```
+    - 在虚拟dom中diff，然后返回正式的dom
+        - 使用递归把vnode转化成dom
+    - 然后render到html中去
+#### react 中 key的作用， react diff算法， vue中diff算法
 - React diff 算法的 3 个策略
   - 策略一：Web UI 中 DOM 节点跨层级的移动操作特别少，可以忽略不计。tree diff
   - 策略二：拥有相同类的两个组件将会生成相似的树形结构，拥有不同类的两个组件将会生成不同的树形结构。 component diff
