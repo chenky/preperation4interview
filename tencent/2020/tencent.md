@@ -1503,7 +1503,10 @@ arr.concat(value1[, value2[, ...[, valueN]]])
           }
         })
         ```
-    - 
+    - 发布订阅模式
+      ```javascript
+      
+      ```
       ```javascript
       Object.defineProperty(obj, prop, {
         writeable,
