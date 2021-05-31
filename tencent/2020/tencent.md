@@ -1505,7 +1505,7 @@ arr.concat(value1[, value2[, ...[, valueN]]])
         ```
     - 发布订阅模式
       ```javascript
-      
+
       ```
       ```javascript
       Object.defineProperty(obj, prop, {
@@ -1519,6 +1519,16 @@ arr.concat(value1[, value2[, ...[, valueN]]])
     - 在虚拟dom中diff，然后返回正式的dom
         - 使用递归把vnode转化成dom
     - 然后render到html中去
+#### vue源码文件夹
+1. compiler文件夹
+   1. vue使用字符串作为模板
+   2. 在编译文件夹中存放模板字符串的解析算法，抽象语法树，优化等
+2. core文件夹，vue构造函数，以及生命周期等部分
+3. platforms文件
+   1. 针对不同环境（设备），有不同的实现
+4. server文件夹，主要针对vue在服务器端使用的代码
+5. sfc文件夹，单文件组件
+6. shared文件夹，公共工具，方法
 #### react 中 key的作用， react diff算法， vue中diff算法
 - React diff 算法的 3 个策略
   - 策略一：Web UI 中 DOM 节点跨层级的移动操作特别少，可以忽略不计。tree diff
