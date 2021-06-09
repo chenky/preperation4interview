@@ -6,15 +6,17 @@
   - 队列，栈，图，散列表，树，堆（完全二叉树）
 
 ## 算法技巧
+
 - 数组遍历，链表遍历，二叉树遍历，多叉树遍历（图的变量）
 - 快慢指针（如判断链表环，环的起点等），双向指针（滑动窗口，操作字符串等）
-- 通过空间换时间（如memo，dptable，图遍历中有visited等等）
-- DFS（深度优先搜索，算回溯算法）和 BFS（广度优先搜索，求最短路径，空间复杂度比DFS大的多，通过队列数据结构，将每一个点周围的所有节点加入队列，就是向周围扩散）
+- 通过空间换时间（如 memo，dptable，图遍历中有 visited 等等）
+- DFS（深度优先搜索，算回溯算法）和 BFS（广度优先搜索，求最短路径，空间复杂度比 DFS 大的多，通过队列数据结构，将每一个点周围的所有节点加入队列，就是向周围扩散）
 - 二分查找
 - 动态规划（结束条件，子问题，状态转移方程，明确 base case -> 明确「状态」-> 明确「选择」 -> 定义 dp 数组/函数的含义）求最值
 - 贪心算法，求解一个可能值
-- 回溯算法，本质就是多叉树遍历（做选择相当于前序，撤销选择相当于后序），就是穷举，适合如N皇后，全排列问题
-- 
+- 回溯算法，本质就是多叉树遍历（做选择相当于前序，撤销选择相当于后序），就是穷举，适合如 N 皇后，全排列问题
+
+### 算法技巧总结，二分查找，左右双向指针，快慢指针，滑动窗口，前缀和数组，差分数组
 
 ## 基本数据结构的遍历
 
@@ -149,9 +151,11 @@ int coinChange(vector<int>& coins, int amount) {
 - 如上图所示，从起点出发，先把一个方向的点都遍历完才会改变方向...... 所以说，DFS 的搜索过程和 “不撞南墙不回头” 很相似，此即 “深度优先搜索算法” 中“深度”的由来。
 
 ## BFS（广度优先搜索）
+
 - BFS 的核心思想应该不难理解的，就是把一些问题抽象成图，从一个点开始，向四周开始扩散。一般来说，我们写 BFS 算法都是用「队列」这种数据结构，每次将一个节点周围的所有节点加入队列。
 - BFS 相对 DFS 的最主要的区别是：BFS 找到的路径一定是最短的，但代价就是空间复杂度比 DFS 大很多
 - 问题的本质就是让你在一幅「图」中找到从起点 start 到终点 target 的最近距离，这个例子听起来很枯燥，但是 BFS 算法问题其实都是在干这个事儿
+
 ```java
 // 计算从起点 start 到终点 target 的最近距离
 int BFS(Node start, Node target) {
@@ -183,7 +187,8 @@ int BFS(Node start, Node target) {
 }
 ```
 
-### 二叉树最小高度BFS（广度优先搜索）
+### 二叉树最小高度 BFS（广度优先搜索）
+
 ```java
 int minDepth(TreeNode root) {
     if (root == null) return 0;
@@ -198,12 +203,12 @@ int minDepth(TreeNode root) {
         for (int i = 0; i < sz; i++) {
             TreeNode cur = q.poll();
             /* 判断是否到达终点，左右子树都为空 */
-            if (cur.left == null && cur.right == null) 
+            if (cur.left == null && cur.right == null)
                 return depth;
             /* 将 cur 的相邻节点加入队列 */
             if (cur.left != null)
                 q.offer(cur.left);
-            if (cur.right != null) 
+            if (cur.right != null)
                 q.offer(cur.right);
         }
         /* 这里增加步数 */
@@ -214,12 +219,14 @@ int minDepth(TreeNode root) {
 ```
 
 ### 解开密码锁的最少次数(leetCode 752)
+
 - 如果你只转一下锁，有几种可能？总共有 4 个位置，每个位置可以向上转，也可以向下转，也就是有 8 种可能对吧。
 - 比如说从 "0000" 开始，转一次，可以穷举出 "1000", "9000", "0100", "0900"... 共 8 种密码。然后，再以这 8 种密码作为基础，对每个密码再转一下，穷举出所有可能...
 - 仔细想想，这就可以抽象成一幅图，每个节点有 8 个相邻的节点，又让你求最短距离，这不就是典型的 BFS 嘛
 - 1、会走回头路。比如说我们从 "0000" 拨到 "1000"，但是等从队列拿出 "1000" 时，还会拨出一个 "0000"，这样的话会产生死循环。
 - 2、没有终止条件，按照题目要求，我们找到 target 就应该结束并返回拨动的次数。
 - 3、没有对 deadends 的处理，按道理这些「死亡密码」是不能出现的，也就是说你遇到这些密码的时候需要跳过。
+
 ```java
 int openLock(String[] deadends, String target) {
     // 记录需要跳过的死亡密码
@@ -267,21 +274,18 @@ int openLock(String[] deadends, String target) {
 }
 ```
 
-
-
-
-
-
 ### 双向 BFS 优化
+
 - 传统的 BFS 框架就是从起点开始向四周扩散，遇到终点时停止；而双向 BFS 则是从起点和终点同时开始扩散，当两边有交集的时候停止。
 - 为什么这样能够能够提升效率呢？其实从 Big O 表示法分析算法复杂度的话，它俩的最坏复杂度都是 O(N)，但是实际上双向 BFS 确实会快一些，我给你画两张图看一眼就明白了：
   - 图示中的树形结构，如果终点在最底部，按照传统 BFS 算法的策略，会把整棵树的节点都搜索一遍，最后找到 target；而双向 BFS 其实只遍历了半棵树就出现了交集，也就是找到了最短距离。从这个例子可以直观地感受到，双向 BFS 是要比传统 BFS 高效的。
-![](assets/BFS_oneWay.jpeg)
-![](assets/BFS_twoWay.jpeg)
+    ![](assets/BFS_oneWay.jpeg)
+    ![](assets/BFS_twoWay.jpeg)
 - 不过，双向 BFS 也有局限，因为你必须知道终点在哪里。比如我们刚才讨论的二叉树最小高度的问题，你一开始根本就不知道终点在哪里，也就无法使用双向 BFS；但是第二个密码锁的问题，是可以使用双向 BFS 算法来提高效率的，代码稍加修改即可：
 - 双向 BFS 还是遵循 BFS 算法框架的，只是不再使用队列，而是使用 HashSet 方便快速判断两个集合是否有交集。
 - 另外的一个技巧点就是 while 循环的最后交换 q1 和 q2 的内容，所以只要默认扩散 q1 就相当于轮流扩散 q1 和 q2。
 - 无论传统 BFS 还是双向 BFS，无论做不做优化，从 Big O 衡量标准来看，时间复杂度都是一样的，只能说双向 BFS 是一种 trick，算法运行的速度会相对快一点
+
 ```java
 int openLock(String[] deadends, String target) {
     Set<String> deads = new HashSet<>();
@@ -328,6 +332,7 @@ int openLock(String[] deadends, String target) {
     return -1;
 }
 ```
+
 ## 回溯算法解题套路框架
 
 - 回溯算法其实就是我们常说的 DFS(深度优先搜索) 算法，本质上就是一种暴力穷举算法。
@@ -447,8 +452,8 @@ bool isValid(vector<string>& board, int row, int col) {
 }
 ```
 
-
 ## 二分查找框架
+
 ```java
 /*
 因为我们初始化 right = nums.length - 1
@@ -460,13 +465,13 @@ bool isValid(vector<string>& board, int row, int col) {
 所以当 nums[mid] == target 时可以立即返回
 */
 int binary_search(int[] nums, int target) {
-    int left = 0, right = nums.length - 1; 
+    int left = 0, right = nums.length - 1;
     while(left <= right) {
         int mid = left + (right - left) / 2;
         if (nums[mid] < target) {
             left = mid + 1;
         } else if (nums[mid] > target) {
-            right = mid - 1; 
+            right = mid - 1;
         } else if(nums[mid] == target) {
             // 直接返回
             return mid;
@@ -538,9 +543,6 @@ int right_bound(int[] nums, int target) {
 }
 ```
 
-
-
-
 ## leetcode 题目
 
 - 求二叉树中最大路径和
@@ -592,9 +594,8 @@ function buildTree(preorder, preStart, preEnd, inorder, inStart, inEnd, inMap) {
 
 -
 
-
-
 ## 滑动窗口算法
+
 ```C++
 /* 滑动窗口算法框架 */
 void slidingWindow(string s, string t) {
@@ -602,7 +603,7 @@ void slidingWindow(string s, string t) {
     for (char c : t) need[c]++;
 
     int left = 0, right = 0;
-    int valid = 0; 
+    int valid = 0;
     while (right < s.size()) {
         // c 是将移入窗口的字符
         char c = s[right];
@@ -627,15 +628,18 @@ void slidingWindow(string s, string t) {
     }
 }
 ```
+
 ### 最小覆盖子串(leetCode76)
+
 - 初始状态：
-![](assets/slidingWindow1.png)
+  ![](assets/slidingWindow1.png)
 - 增加 right，直到窗口 [left, right] 包含了 T 中所有字符：
-![](assets/slidingWindow2.png)
+  ![](assets/slidingWindow2.png)
 - 现在开始增加 left，缩小窗口 [left, right]。
-![](assets/slidingWindow3.png)
+  ![](assets/slidingWindow3.png)
 - 直到窗口中的字符串不再符合要求，left 不再继续移动。
-![](assets/slidingWindow4.png)
+  ![](assets/slidingWindow4.png)
+
 ```C++
 string minWindow(string s, string t) {
     unordered_map<char, int> need, window;
@@ -673,7 +677,7 @@ string minWindow(string s, string t) {
                 if (window[d] == need[d])
                     valid--;
                 window[d]--;
-            }                    
+            }
         }
     }
     // 返回最小覆盖子串
@@ -683,6 +687,7 @@ string minWindow(string s, string t) {
 ```
 
 ### 字符串排列(leetcode 567)
+
 ```C++
 // 判断 s 中是否存在 t 的排列
 bool checkInclusion(string t, string s) {
@@ -722,6 +727,7 @@ bool checkInclusion(string t, string s) {
 ```
 
 ### 找所有字母异位词(leetcode 438)
+
 ```C++
 vector<int> findAnagrams(string s, string t) {
     unordered_map<char, int> need, window;
@@ -736,7 +742,7 @@ vector<int> findAnagrams(string s, string t) {
         // 进行窗口内数据的一系列更新
         if (need.count(c)) {
             window[c]++;
-            if (window[c] == need[c]) 
+            if (window[c] == need[c])
                 valid++;
         }
         // 判断左侧窗口是否要收缩
@@ -759,6 +765,7 @@ vector<int> findAnagrams(string s, string t) {
 ```
 
 ### 最长无重复子串(leetcode 3)
+
 ```C++
 int lengthOfLongestSubstring(string s) {
     unordered_map<char, int> window;
