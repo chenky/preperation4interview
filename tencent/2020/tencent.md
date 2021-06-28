@@ -911,6 +911,8 @@ function Parent({ a, b }) {
 - http://tieba.baidu.com/f/user/passport?jumpUrl=http://t.cn/RVTatrd
 - 防御方式是白名单可用域名限制
 
+#### JWT json web token 
+-第一部分我们称它为头部（header),第二部分我们称其为载荷（payload, 类似于飞机上承载的物品)，第三部分是签证（signature).
 #### 我们如果有一个奖励的系统，有一个用户通过第三方疯狂调用我们的接口我们该怎么做？ 秒杀系统
 
 - 需要考虑高并发，超卖，刷单
