@@ -306,7 +306,7 @@ const router = new VueRouter({
 
 ```
 
-#### [http 报文结构图解](https://blog.csdn.net/Joven0/article/details/48093899)
+#### [http报文http请求头http header结构图解](https://blog.csdn.net/Joven0/article/details/48093899)
 
 ![](../img/http-request-get.png)
 ![](../img/http-request-post.png)
