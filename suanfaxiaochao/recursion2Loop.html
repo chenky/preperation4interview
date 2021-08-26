@@ -73,15 +73,83 @@
       }
 
       // 迭代实现后序遍历, 双栈法
+      // https://zhuanlan.zhihu.com/p/80578741
       function loopTraverseTree3(root) {
+        let currentNode = root;
+        const stack = [];
+        const resStack = [];
+        while (stack.length > 0 || currentNode) {
+          while (currentNode) {
+            // 根节点
+            resStack.push(currentNode);
+            stack.push(currentNode);
+            // 右节点
+            currentNode = currentNode.right;
+          }
+          currentNode = stack.pop();
+          // 左节点
+          currentNode = currentNode.left;
+        }
+        // resStack存储的是根右左，正好是后序遍历反过来
+        while (resStack.length > 0) {
+          // 后序遍历
+          console.log(resStack.pop().name);
+        }
+      }
+
+      // 迭代实现后序遍历, 通过一个遍历判断右子树是否访问过了
+      // https://zhuanlan.zhihu.com/p/80578741
+      function loopTraverseTree4(root) {
+        let currentNode = root;
+        const stack = [];
+        let lastVisitedRoot;
+        while (stack.length > 0 || currentNode) {
+          while (currentNode) {
+            stack.push(currentNode);
+            currentNode = currentNode.left;
+          }
+          currentNode = stack.pop();
+          // 右子树被遍历访问过了
+          if (
+            currentNode.right === undefined ||
+            lastVisitedRoot === currentNode.right
+          ) {
+            console.log(currentNode.name);
+            lastVisitedRoot = currentNode;
+            currentNode = undefined;
+          } else {
+            stack.push(currentNode);
+            currentNode = currentNode.right;
+          }
+        }
+      }
+
+      // 迭代实现后序遍历, 没有任何多余的变量
+      // https://leetcode-cn.com/problems/binary-tree-postorder-traversal/solution/er-cha-shu-de-hou-xu-bian-li-die-dai-fa-by-da-da-m/
+      function loopTraverseTree5(root) {
         let currentNode = root;
         const stack = [];
         while (stack.length > 0 || currentNode) {
           while (currentNode) {
+            // 第一次入栈的是根节点
             stack.push(currentNode);
-            currentNode = currentNode.right           
+            // 判断当前节点的左子树是否存在，若存在则持续左下行，若不存在就转向右子树
+            if (currentNode.left) {
+              currentNode = currentNode.left;
+            } else {
+              currentNode = currentNode.right;
+            }
           }
-          currentNode = stack.pop();
+          // 循环结束说明走到了叶子节点，没有左右子树了，该叶子节点即为当前栈顶元素，应该访问了
+          currentNode = stack.pop(); // 取出栈顶元素进行访问
+          // 后序遍历了
+          console.log(currentNode.name);
+          // 执行完上面那句取出栈顶元素后的栈顶元素）
+          if (stack.length > 0 && stack[stack.length - 1].left === currentNode) { // 若栈不为空且当前节点是栈顶元素的左节点
+            currentNode = stack[stack.length-1].right // 转向右子树
+          } else {
+            currentNode = undefined // 没有左子树或右子树，强迫退栈
+          }
         }
       }
 
@@ -115,7 +183,9 @@
       };
       // loopTraverseTree(testNode)
       // loopTraverseTree2(testNode);
-      loopTraverseTree3(testNode);
+      // loopTraverseTree3(testNode);
+      // loopTraverseTree4(testNode);
+      loopTraverseTree5(testNode);
     </script>
   </body>
 </html>
