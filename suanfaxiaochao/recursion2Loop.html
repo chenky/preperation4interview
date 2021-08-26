@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>迭代二叉树遍历，递归转迭代，迭代树</title>
+</head>
+
+<body>
+  <img src="./assets/loopTraverse4Tree.gif" />
+  <script>
+    function loopTraverseTree(root) {
+      const stack = []
+      function _traverse(node) {
+        let lastVistitedRoot = undefined
+        _pushLeft(node)
+        while (stack.length > 0) {
+          const currentNode = stack[stack.length - 1]
+          // console.log(currentNode.id, lastVistitedRoot?.id ?? -1)
+          // 左子树遍历完了，且右子树没有遍历过
+          if ((currentNode.left === undefined || currentNode.left === lastVistitedRoot)
+            && (currentNode.right === undefined || currentNode.right !== lastVistitedRoot)) {
+            // 中序遍历
+            // console.log(currentNode.name)
+            currentNode.right && _pushLeft(currentNode.right)
+          }
+          // 右子树被遍历完了
+          if (currentNode.right === undefined || currentNode.right === lastVistitedRoot) {
+            // 后序遍历
+            // console.log(currentNode.name)
+            lastVistitedRoot = stack.pop()
+          }
+        }
+      }
+      function _pushLeft(node) {
+        let tempNode = node
+        while (tempNode != null) {
+          // 先序遍历
+          // console.log(tempNode.name)
+          stack.push(tempNode)
+          tempNode = tempNode.left
+        }
+      }
+      _traverse(root)
+    }
+    const testNode = {
+      id: 0,
+      name: 0,
+      left: {
+        id: 1,
+        name: 1,
+        left: {
+          id: 11,
+          name: 11
+        },
+        right: {
+          id: 12,
+          name: 12
+        }
+      },
+      right: {
+        id: 2,
+        name: 2,
+        left: {
+          id: 21,
+          name: 21
+        },
+        right: {
+          id: 22,
+          name: 22
+        }
+      }
+    }
+    loopTraverseTree(testNode)
+  </script>
+</body>
+
+</html>
