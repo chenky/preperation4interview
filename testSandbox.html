@@ -25,8 +25,8 @@
       }
     }
     // const testCode = 'function a(){ const txt = document.querySelector("testSandbox").innerText; console.log(txt, window.txt) }; a()'
-    const testCode = 'function a(){ alert(this); }; a()'
-    const _sandbox = {alert: window.alert}
+    const testCode = 'function a(){ eval("alert(txt)") }; a()'
+    const _sandbox = window
     compileCode(testCode)(_sandbox)
   </script>
 </body>
