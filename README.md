@@ -550,6 +550,12 @@ net.ipv4.tcp_fin_timeout 修改系默认的 TIMEOUT 时间
 ![](asset/img/http-message-format-demo.jpg)
 ![](asset/img/websocket-message.png)
 
+
+### 对称加密和非对称加密
+- [Public and Private Keys - Signatures & Key Exchanges - Cryptography - Practical TLS， 对称加密，非对称加密，秘钥交换，数字签名，https](https://www.youtube.com/watch?v=_zyKvPvh808)
+- 公钥加密私钥解密，主要用于对称加密秘钥交互，私钥加密公钥解密主要用于数字签名
+- 使用非对称加密，其实每一方都要自己的私钥，自己的公钥，还有对方的公钥，这样逻辑就通了
+
 #### https建立的整个过程
 - client发送request（包含支持的加密协议及版本）请求到server
 - server下发证书（包含公钥），证书为ca颁发的
