@@ -5,7 +5,7 @@
 - 其他数据结构都是基于上面两种结构实现的
   - 队列，栈，图，散列表，树，堆（完全二叉树）
 
-## 算法技巧
+## 算法技巧，算法本质
 
 - 数组遍历，链表遍历，二叉树遍历，多叉树遍历（图的变量）
 - 快慢指针（如判断链表环，环的起点等），双向指针（滑动窗口，操作字符串等）
@@ -792,3 +792,11 @@ int lengthOfLongestSubstring(string s) {
 ```
 
 ### 一个方法团灭 LeetCode 股票买卖问题
+
+
+## 算法应用
+- 图的应用
+  - 最小生成树有 Prim 算法（普里姆算法）和 Kruskal 算法（克鲁斯卡尔算法）两种，用于带权重的最小联通成本，比如城市间航班最低成本，公交路线最低成本等等[https://mp.weixin.qq.com/s/dJ9gqR3RVoeGnATlpMG39w]
+  - 二分图适用于电影和演员关系的数据结构[https://mp.weixin.qq.com/s/5tMzyADbfIJAAvRfSy41Ng]
+  - Dijkstra 算法计算最短路径[https://mp.weixin.qq.com/s/RXR18dNUyIVoCQXrO46gWA]
+  - 拓扑排序的对象是有向无环图，适合用于图中节点之间是否有循环依赖的算法[https://mp.weixin.qq.com/s/7nP92FhCTpTKIAplj_xWpA]

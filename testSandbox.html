@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>sandbox in browser</title>
+</head>
+
+<body>
+  <div id="testSandbox">testSandbox</div>
+  <script>
+    const txt = 'window.text'
+    function compileCode(code) {
+      code = 'with (sandbox) {' + code + '}';
+      const fn = new Function('sandbox', code);
+      return (sandbox) => {
+        const proxy = new Proxy(sandbox, {
+          has(target, key) {
+            return true; // 欺骗，告知属性存在
+          }
+        });
+        return fn(proxy);
+      }
+    }
+    // const testCode = 'function a(){ const txt = document.querySelector("testSandbox").innerText; console.log(txt, window.txt) }; a()'
+    const testCode = 'function a(){ eval("alert(txt)") }; a()'
+    const _sandbox = window
+    compileCode(testCode)(_sandbox)
+  </script>
+</body>
+
+</html>

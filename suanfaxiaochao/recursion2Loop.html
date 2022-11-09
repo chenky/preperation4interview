@@ -145,12 +145,32 @@
           // 后序遍历了
           console.log(currentNode.name);
           // 执行完上面那句取出栈顶元素后的栈顶元素）
-          if (stack.length > 0 && stack[stack.length - 1].left === currentNode) { // 若栈不为空且当前节点是栈顶元素的左节点
-            currentNode = stack[stack.length-1].right // 转向右子树
+          if (
+            stack.length > 0 &&
+            stack[stack.length - 1].left === currentNode
+          ) {
+            // 若栈不为空且当前节点是栈顶元素的左节点
+            currentNode = stack[stack.length - 1].right; // 转向右子树
           } else {
-            currentNode = undefined // 没有左子树或右子树，强迫退栈
+            currentNode = undefined; // 没有左子树或右子树，强迫退栈
           }
         }
+      }
+
+      // 递归
+      function traverseTreeLeafs(root) {
+        const res = [];
+        function _(root) {          
+          if (!root) return;
+          if (!root.left && !root.right) {
+            res.push(root);
+          } else {
+            _(root.left);
+            _(root.right);
+          }
+          return res;
+        }
+        return _(root)
       }
 
       const testNode = {
@@ -185,7 +205,8 @@
       // loopTraverseTree2(testNode);
       // loopTraverseTree3(testNode);
       // loopTraverseTree4(testNode);
-      loopTraverseTree5(testNode);
+      // loopTraverseTree5(testNode);
+      console.log(traverseTree(testNode));
     </script>
   </body>
 </html>
