@@ -18,7 +18,7 @@
           while (stack.length > 0) {
             const currentNode = stack[stack.length - 1];
             // console.log(currentNode.id, lastVistitedRoot?.id ?? -1)
-            // 左子树遍历完了，且右子树没有遍历过
+            // 左子树遍历完了，且右子树没有遍历过  
             if (
               (currentNode.left === undefined ||
                 currentNode.left === lastVistitedRoot) &&
