@@ -811,87 +811,6 @@ GBK是国家标准GB2312基础上扩容后兼容GB2312的标准。GBK的文字�
 ### 前端数据采集
 - onError事件，try catch，自定义错误及日志
 - html5的performance帮助采集性能数据
-
-### 前端安全
-
-- 机密性，不可明文传输，秘文
-- 完整性不被篡改（数字签名）
-- 可用性，防止 dos，ddos 攻击
-- 可审计，不可抵赖
-- 系统设计，服务器配置的时候，只允许做什么，而不是不允许做什么
-- 最小权限原则，开通的权限越小越好
-- 多维度防御，网络防御，防火墙，数据库，后台语言，前端都要做防御
-- 数据和代码分离，xss，sql 注入等等
-- 不可预测原则，csrf 攻击，加一个 token 串
-
-### 前端安全防御措施
-
-- 前端不操作任何敏感 cookie，后台设置 cookie 为 httponly
-- 敏感信息不存储在前端，包括 cookie，localstorage，本地数据库
-- [单击劫持设置 X-Frame-Options deny sameorigin allow-from uri](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/X-Frame-Options)
-- [csrf 防御，黑客只是会传递 cookie，但我们自己可以取到 cookie 放在 header 或请求体中](https://cloud.tencent.com/developer/article/1494289)
-  - 判断请求来源，referer，origin
-  - 表单携带 token（黑客虽然携带 cookie，但是我们可以控制请求参数，此 token 可以约定算法或者服务器存储【安全系数高】）
-  - cookie 的 SameSite 属性， lax（link，form get），strict（其他域都不允许）属性
-- xss 攻击，存储型和反射型，对输入和输出都要进行编码，分为 html 编码，url 编码，javascritp 编码，css 编码，html 标签属性编码，json 编码，目前框架基本都已经做了编码处理，结合 csp（script-src，style-src，img-src）
-- CSP 的实质就是白名单制度，开发者明确告诉客户端，哪些外部资源可以加载和执行，等同于提供白名单。它的实现和执行全部由浏览器完成，开发者只需提供配置。
-- 两种方法可以启用 CSP。一种是通过 HTTP 头信息的 Content-Security-Policy 的字段。
-- 另一种是通过 meta 标签<meta http-equiv="Content-Security-Policy" content="script-src 'self'; object-src 'none'; style-src cdn.example.org third-party.org; child-src https:">
-  - xss 攻击分为存储型和反射性
-  - httponly,设置 csp 浏览器只执行指定域名对 script
-  - <,>"'&/等字符进行转译
-  - url 中参数要进行编码转义，decodeURIComponent
-  - https://tech.meituan.com/2018/09/27/fe-security.html
-  - https://zhuanlan.zhihu.com/p/32237154
-  * [防御类库](https://github.com/leizongmin/js-xss)
-  * [owasp 类库，org.owasp.encoder](https://owasp.org/www-project-java-encoder/#tab=Use_the_Java_Encoder_Project)
-  * 后端将数据存入数据库之前，先进行转义。
-  * 后端输出给前端的数据，需要进行统一转义处理。
-  * 前端获取后端的数据后，对数据进行转义处理。
-  * 转义的内容包括，html 标签，html 标签属性（onerror,href）,css 内联样式，script 标签 js，内联 json，跳转链接
-  * DOM 中的内联事件监听器，如 location、onclick、onerror、onload、onmouseover 等，a 标签的 href 属性，JavaScript 的 eval()、setTimeout()、setInterval() 等，都能把字符串作为代码运行。如果不可信的数据拼接到字符串中传递给这些 API，很容易产生安全隐患，请务必避免
-  * 输入页面转义的字符有 & < > " ' /
-  * url 中取参数需要过滤 javascript，http, https, script 等等
-  * json 需要转义 U+2028 U+2029 <
-  * 在 style 属性和标签中，包含类似 background-image:url("javascript:...") expression(...) 的代码（新版本浏览器已经可以防范）
-  * html 标签中危险属性直接过滤调
-  * 富文本编辑器
-    - 事件应该被严格禁止，标签选择应该用白名单，只允许 a,img,div
-    - 禁止用户自定义 css，style 等
-- [iframe 嵌入三方应用时，sandbox 的安全属性限制其行为，默认是最小权限原则，有允许提交表单，弹窗，执行脚步等等](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/iframe)
-- 上传一段 js（本来要求用户上传图片的），浏览器强大等容错能力识别是 js 并执行，防御方式设置 X-Content-Type-Options 这个 HTTP Header 明确禁止浏览器去推断响应类型。
-- [sql 注入与防御，把用户的输入数据当作 sql 语句执行](https://www.cnblogs.com/digdeep/p/4715245.html)
-  - 防范使用存储过程，
-  - 采用 sql 语句预编译和绑定变量，是防御 sql 注入的最佳方法，使用 PreparedStatement 把用户输入当成普通字符串，或者使用相应的函数过滤特殊 sql 字符
-  - 严格检查参数的数据类型，还有可以使用一些安全函数，来方式 sql 注入。ESAPI.encoder().encodeForSQL(codec, name)编码成普通字符串，而不是 sql 语句
-  - 一般框架现在默认都是预编译的
-
-#### 前端安全 sql 注入怎么防范
-
-- sql 注入本质就是拼 sql 参数的时候把用户的数据当 sql 语句执行
-- 采用 sql 语句预编译和绑定变量，是防御 sql 注入的最佳方法。
-- 预先编译好，也就是 SQL 引擎会预先进行语法分析，产生语法树，生成执行计划，也就是说，后面你输入的参数，无论你输入的是什么，都不会影响该 sql 语句的 语法结构了，因为语法分析已经完成了，而语法分析主要是分析 sql 命令，比如 select ,from ,where ,and, or ,order by 等等。所以即使你后面输入了这些 sql 命令，也不会被当成 sql 命令来执行了，因为这些 sql 命令的执行， 必须先的通过语法分析，生成执行计划，既然语法分析已经完成，已经预编译过了，那么后面输入的参数，是绝对不可能作为 sql 命令来执行的，只会被当做字符串字面值参数。所以 sql 语句预编译可以防御 sql 注入。
-- 对参数严格白名单式过滤，在接收到用户输入的参数时，我们就严格检查 id，只能是 int 型。复杂情况可以使用正则表达式来判断。这样也是可以防止 sql 注入的。
-- 使用安全函数，ESAPI.encoder().encodeForSQL(codec, name)
-- 实际项目中，一般我们都是采用各种的框架，比如 ibatis, hibernate,mybatis 等等。他们一般也默认就是 sql 预编译的。对于 ibatis/mybatis，如果使用的是 #{name}形式的，那么就是 sql 预编译，使用 ${name} 就不是 sql 预编译的。
-
-#### 对 前端安全有什么了解吗？（主要说了 xss 和 csrf）
-
-- 数字签名防止篡改
-- 防止重放攻击（微信支付参数 timeStamp，nonceStr，package，signType，paySign）
-  - 首先使用数字签名防止数据被篡改
-  - 其次通过 timeStamp 验证是否在有效期内，比如 1 分钟，支付请求的参数都是从支付供应商实时获取的，整个流程请求肯定不会超过 1 分钟吧，不在有效期内直接报错非法请求
-  - 如果在 1 分钟内，则去验证 nonce 随机数，比如到 radis 内存中看看是不是存在，存在则表示是一个重复请求，报错，否则合法请求，然后 radis 配置策略 nonce 过期时间时 1 分钟，防止无限制浪费内存
-
-#### 借助未验证的 URL 跳转，将应用程序引导到不安全的第三方区域，从而导致的安全问题。
-
-- 如：http://gate.baidu.com/index?act=go&url=http://t.cn/RVTatrd
-- http://qt.qq.com/safecheck.html?flag=1&url=http://t.cn/RVTatrd
-- http://tieba.baidu.com/f/user/passport?jumpUrl=http://t.cn/RVTatrd
-- 防御方式是白名单可用域名限制
-
-#### JWT json web token 
--第一部分我们称它为头部（header, 声明类型加密算法),第二部分我们称其为载荷（payload, 签发者，签发时间，过期时间，唯一标识符等等)，第三部分是签证（signature，防止串改).
 #### 我们如果有一个奖励的系统，有一个用户通过第三方疯狂调用我们的接口我们该怎么做？ 秒杀系统
 
 - 需要考虑高并发，超卖，刷单
@@ -1013,13 +932,88 @@ class EventEmitter {
   - 学习成本，以及现在项目中框架使用情况
   - 框架周边的生态及框架是否有牛人维护，社区的组件库丰富成熟
 
-#### 那么要如何去检测线上的用户性能呢？你觉得其中有哪些数据是比较重要的呢？怎么去实现对他们的监测和分析呢？
 
-- tcp 连接，dns 域名解析，dom ready
-- 白屏时间
-- 首屏加载时间
-- 首页加载时间
-- 整页加载时间
+### 前端安全
+
+- 机密性，不可明文传输，秘文
+- 完整性不被篡改（数字签名）
+- 可用性，防止 dos，ddos 攻击
+- 可审计，不可抵赖
+- 系统设计，服务器配置的时候，只允许做什么，而不是不允许做什么
+- 最小权限原则，开通的权限越小越好
+- 多维度防御，网络防御，防火墙，数据库，后台语言，前端都要做防御
+- 数据和代码分离，xss，sql 注入等等
+- 不可预测原则，csrf 攻击，加一个 token 串
+
+### 前端安全防御措施
+
+- 前端不操作任何敏感 cookie，后台设置 cookie 为 httponly
+- 敏感信息不存储在前端，包括 cookie，localstorage，本地数据库
+- [单击劫持设置 X-Frame-Options deny sameorigin allow-from uri](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/X-Frame-Options)
+- [csrf 防御，黑客只是会传递 cookie，但我们自己可以取到 cookie 放在 header 或请求体中](https://cloud.tencent.com/developer/article/1494289)
+  - 判断请求来源，referer，origin
+  - 表单携带 token（黑客虽然携带 cookie，但是我们可以控制请求参数，此 token 可以约定算法或者服务器存储【安全系数高】）
+  - cookie 的 SameSite 属性， lax（link，form get），strict（其他域都不允许）属性
+- xss 攻击，存储型和反射型，对输入和输出都要进行编码，分为 html 编码，url 编码，javascritp 编码，css 编码，html 标签属性编码，json 编码，目前框架基本都已经做了编码处理，结合 csp（script-src，style-src，img-src）
+- CSP 的实质就是白名单制度，开发者明确告诉客户端，哪些外部资源可以加载和执行，等同于提供白名单。它的实现和执行全部由浏览器完成，开发者只需提供配置。
+- 两种方法可以启用 CSP。一种是通过 HTTP 头信息的 Content-Security-Policy 的字段。
+- 另一种是通过 meta 标签<meta http-equiv="Content-Security-Policy" content="script-src 'self'; object-src 'none'; style-src cdn.example.org third-party.org; child-src https:">
+  - xss 攻击分为存储型和反射性
+  - httponly,设置 csp 浏览器只执行指定域名对 script
+  - <,>"'&/等字符进行转译
+  - url 中参数要进行编码转义，decodeURIComponent
+  - https://tech.meituan.com/2018/09/27/fe-security.html
+  - https://zhuanlan.zhihu.com/p/32237154
+  * [防御类库](https://github.com/leizongmin/js-xss)
+  * [owasp 类库，org.owasp.encoder](https://owasp.org/www-project-java-encoder/#tab=Use_the_Java_Encoder_Project)
+  * 后端将数据存入数据库之前，先进行转义。
+  * 后端输出给前端的数据，需要进行统一转义处理。
+  * 前端获取后端的数据后，对数据进行转义处理。
+  * 转义的内容包括，html 标签，html 标签属性（onerror,href）,css 内联样式，script 标签 js，内联 json，跳转链接
+  * DOM 中的内联事件监听器，如 location、onclick、onerror、onload、onmouseover 等，a 标签的 href 属性，JavaScript 的 eval()、setTimeout()、setInterval() 等，都能把字符串作为代码运行。如果不可信的数据拼接到字符串中传递给这些 API，很容易产生安全隐患，请务必避免
+  * 输入页面转义的字符有 & < > " ' /
+  * url 中取参数需要过滤 javascript，http, https, script 等等
+  * json 需要转义 U+2028 U+2029 <
+  * 在 style 属性和标签中，包含类似 background-image:url("javascript:...") expression(...) 的代码（新版本浏览器已经可以防范）
+  * html 标签中危险属性直接过滤调
+  * 富文本编辑器
+    - 事件应该被严格禁止，标签选择应该用白名单，只允许 a,img,div
+    - 禁止用户自定义 css，style 等
+- [iframe 嵌入三方应用时，sandbox 的安全属性限制其行为，默认是最小权限原则，有允许提交表单，弹窗，执行脚步等等](https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/iframe)
+- 上传一段 js（本来要求用户上传图片的），浏览器强大等容错能力识别是 js 并执行，防御方式设置 X-Content-Type-Options 这个 HTTP Header 明确禁止浏览器去推断响应类型。
+- [sql 注入与防御，把用户的输入数据当作 sql 语句执行](https://www.cnblogs.com/digdeep/p/4715245.html)
+  - 防范使用存储过程，
+  - 采用 sql 语句预编译和绑定变量，是防御 sql 注入的最佳方法，使用 PreparedStatement 把用户输入当成普通字符串，或者使用相应的函数过滤特殊 sql 字符
+  - 严格检查参数的数据类型，还有可以使用一些安全函数，来方式 sql 注入。ESAPI.encoder().encodeForSQL(codec, name)编码成普通字符串，而不是 sql 语句
+  - 一般框架现在默认都是预编译的
+
+#### 前端安全 sql 注入怎么防范
+
+- sql 注入本质就是拼 sql 参数的时候把用户的数据当 sql 语句执行
+- 采用 sql 语句预编译和绑定变量，是防御 sql 注入的最佳方法。
+- 预先编译好，也就是 SQL 引擎会预先进行语法分析，产生语法树，生成执行计划，也就是说，后面你输入的参数，无论你输入的是什么，都不会影响该 sql 语句的 语法结构了，因为语法分析已经完成了，而语法分析主要是分析 sql 命令，比如 select ,from ,where ,and, or ,order by 等等。所以即使你后面输入了这些 sql 命令，也不会被当成 sql 命令来执行了，因为这些 sql 命令的执行， 必须先的通过语法分析，生成执行计划，既然语法分析已经完成，已经预编译过了，那么后面输入的参数，是绝对不可能作为 sql 命令来执行的，只会被当做字符串字面值参数。所以 sql 语句预编译可以防御 sql 注入。
+- 对参数严格白名单式过滤，在接收到用户输入的参数时，我们就严格检查 id，只能是 int 型。复杂情况可以使用正则表达式来判断。这样也是可以防止 sql 注入的。
+- 使用安全函数，ESAPI.encoder().encodeForSQL(codec, name)
+- 实际项目中，一般我们都是采用各种的框架，比如 ibatis, hibernate,mybatis 等等。他们一般也默认就是 sql 预编译的。对于 ibatis/mybatis，如果使用的是 #{name}形式的，那么就是 sql 预编译，使用 ${name} 就不是 sql 预编译的。
+
+#### 数字签名防止重放攻击
+
+- 数字签名防止篡改
+- 防止重放攻击（微信支付参数 timeStamp，nonceStr，package，signType，paySign）
+  - 首先使用数字签名防止数据被篡改
+  - 其次通过 timeStamp 验证是否在有效期内，比如 1 分钟，支付请求的参数都是从支付供应商实时获取的，整个流程请求肯定不会超过 1 分钟吧，不在有效期内直接报错非法请求
+  - 如果在 1 分钟内，则去验证 nonce 随机数，比如到 radis 内存中看看是不是存在，存在则表示是一个重复请求，报错，否则合法请求，然后 radis 配置策略 nonce 过期时间时 1 分钟，防止无限制浪费内存
+
+#### 借助未验证的 URL 跳转，将应用程序引导到不安全的第三方区域，从而导致的安全问题。
+
+- 如：http://gate.baidu.com/index?act=go&url=http://t.cn/RVTatrd
+- http://qt.qq.com/safecheck.html?flag=1&url=http://t.cn/RVTatrd
+- http://tieba.baidu.com/f/user/passport?jumpUrl=http://t.cn/RVTatrd
+- 防御方式是白名单可用域名限制
+
+#### JWT json web token 
+-第一部分我们称它为头部（header, 声明类型加密算法),第二部分我们称其为载荷（payload, 签发者，签发时间，过期时间，唯一标识符等等)，第三部分是签证（signature，防止串改).
+
 
 #### jsonp有哪些安全问题，服务端可能存在csrf攻击
 * 从消费者的角度来看：
@@ -1074,7 +1068,7 @@ class EventEmitter {
 
 - session 是服务器存储信息的会话，而 sessionid 一般存储在 cookie 中（也可以存储在 url 中），sessionid 标识一个客户端
 
-#### 那么其中 token 这种方\*\*\*有什么问题呢？
+#### 那么其中 token 这种方案有什么问题呢？
 
 - HTTP 协议是无状态的，这种无状态意味着程序需要验证每一次请求，从而辨别客户端的身份。
 - cookie 存储在客户端，session 存储在服务器端，但 sessionid（标识客户端）是存储在 cookie 中的
@@ -1126,7 +1120,7 @@ class EventEmitter {
 
 #### ssl 握手过程,ssl 原理，ca 证书校验过程，校验 ca 证书是否会发请求，https 加密方式,https 原理
 
-!['https原理'](../img/https.png)
+!['https原理'](./tencent/img/https.png)
 
 - 数字证书认证机构(CA)通过非常严格的审核之后颁发的电子证书 (当然了是要钱的，安全级别越高价格越贵)。颁发证书的同时会产生一个私钥和公钥。私钥由服务端自己保存，不可泄漏。公钥则是附带在证书的信息中，可以公开的。证书本身也附带一个证书电子签名，这个签名用来验证证书的完整性和真实性，可以防止证书被篡改。
 - 客户端解析证书并对其进行验证。如果证书不是可信机构颁布，或者证书中的域名与实际域名不一致，或者证书已经过期，就会向访问者显示一个警告，由其选择是否还要继续通信
@@ -1157,16 +1151,119 @@ Subresource Integrity(通过vite-plugin-sri) js,css都签名。静态html文件�
   integrity="sha384-oqVuAfXRKap7fdgcCY5uykM6+R9GqQ8K/uxy9rx7HNQlGYl1kPzQho1wx4JwY8wC"
   crossorigin="anonymous"></script>
 
-#### OSI 七层模型及原理
+#### javascript代码注入
+```javascript
 
-- ssl 在会话层，在表示层和传输层之间
-  !['OSI七层模型及原理'](../img/OSI.png)
+const myParse = JSON.parse;
+JSON.parse = function (text, reviver) {
+  console.log('data: ', text)
+  debugger;
+  return myParse(text, reviver)
+};
 
-#### react两个组件中的请求有依赖如何处理
-* 使用高阶组件，假如a依赖b，两种方式，一是通过props.callback，b中componentWillReceiveProps拿到a中异步请求依赖数据，二是通过hoc，b作为传人组件，高阶组件中实现a对逻辑，请求返回数据后，通过props传入b组件，形成增强组件
+```
 
-#### react中虚拟dom diff算法
-陈屹《深入react技术栈》
+#### 怎么检测代码被注入了呢？
+```javascript
+
+// 大部份情况有效，但是如果黑客重写函数的同时也重写了toString方法，那么就无法检测了
+function isNative(fn){
+  return fn.toString().indexOf('[native code]') !== -1
+}
+
+// 调用iframe中的方法，但是如果iframe中的也被重写了也会被黑客攻击
+const ifr = document.createElement('iframe');
+ifr.style.display = 'none'
+document.body.appendChild(ifr);
+let { JSON: cleanJSON } = ifr.contentWindow;
+
+// shadowRealm api, 完美安全，但浏览器兼容性不好
+const shadowRealm = new ShadowRealm();
+shadowRealm.evaluate(`JSON.stringfy('aaaa')`)
+
+// 在所有js代码执行前，通过Object.freeze冻结Object的扩展属性，防止被重写,缺点就是会影响到合法的重写，比如一些类库或者自己写的工具库等等
+Object.freeze(JSON);
+
+// 备份检测，就是在所有js之前先备份自己需要的原型链方法。
+/**
+ * 检测原型链污染情况
+ */
+
+!(global => { 
+  const MSG = '可能被篡改了，要小心哦'
+  const inBrowser = typeof window !== 'undefined'
+
+  const {JSON:{parse,stringify},setTimeout,setInterval} = global
+  let _snapshots = {
+    JSON:{
+      parse,
+      stringify
+    },
+    setTimeout,
+    setInterval
+  }
+  if(inBrowser){
+    let {localStorage:{getItem,setItem},fetch} = global
+    _snapshots.localStorage = {getItem,setItem}
+    _snapshots.fetch = fetch
+  }
+  let _protytypes = {}
+
+  const names = 'Promise,Array,Date,Object,Number,String'.split(",")
+
+  names.forEach(name=>{
+    let fns = Object.getOwnPropertyNames(global[name].prototype)
+    fns.forEach(fn=>{
+      _protytypes[`${name}.${fn}`] = global[name].prototype[fn]
+    })
+  })
+
+  global.checkNative = function (reset=false){
+    for (const prop in _snapshots) {
+      if (_snapshots.hasOwnProperty(prop) && prop!=='length') {
+        let obj = _snapshots[prop]
+        if(typeof obj==='function'){
+          const isEqual = _snapshots[prop]===global[prop]
+          if(!isEqual){
+            console.log(`${prop}${MSG}`)
+            if(reset){
+              global[prop] = _snapshots[prop]
+            }
+          }
+        }else{
+          for(const key in obj){
+            const isEqual = _snapshots[prop][key]===global[prop][key]
+            if(!isEqual){
+              console.log(`${prop}.${key}${MSG}`)
+              if(reset){
+                global[prop][key] = _snapshots[prop][key]
+              }
+            }
+          }
+        }
+
+      }
+    }
+    
+    names.forEach(name=>{
+      let fns = Object.getOwnPropertyNames(global[name].prototype)
+      fns.forEach(fn=>{
+        const isEqual = global[name].prototype[fn]===_protytypes[`${name}.${fn}`]
+        if(!isEqual){
+          console.log(`${name}.prototype.${fn}${MSG}`)
+          if(reset){
+            global[name].prototype[fn]=_protytypes[`${name}.${fn}`]
+          }
+        }
+      })
+    })
+  }
+})((0, eval)('this'))
+
+
+```
+
+
 
 #### 跨域cors的http头要设置哪些，以及浏览器如何发送预检请求，整个原理说一说
 * Access-Control-Allow-Origin: http://foo.example
@@ -1183,6 +1280,13 @@ Subresource Integrity(通过vite-plugin-sri) js,css都签名。静态html文件�
 ### 测量白屏时间和首屏时间
 
 - https://lz5z.com/Web%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96-%E9%A6%96%E5%B1%8F%E5%92%8C%E7%99%BD%E5%B1%8F%E6%97%B6%E9%97%B4/
+那么要如何去检测线上的用户性能呢？你觉得其中有哪些数据是比较重要的呢？怎么去实现对他们的监测和分析呢？
+
+- tcp 连接，dns 域名解析，dom ready
+- 白屏时间
+- 首屏加载时间
+- 首页加载时间
+- 整页加载时间
 
 * 白屏时间 = firstPaint - performance.timing.navigationStart || pageStartTime
   ```html
@@ -1275,169 +1379,6 @@ Subresource Integrity(通过vite-plugin-sri) js,css都签名。静态html文件�
     </body>
   </html>
   ```
-
-
-#### react生命周期，及再didmount和willunmout一般做什么
-componentDidMount： dom已经加装到页面，可以操作页面dom，比如集成第三方框架
-componentWillUnmount：清理垃圾，比如删除绑定的事件等等内存回收的地方
-
-#### 前端clone，深拷贝
-* JSON.parse(JSON.stringify(XXXX)) （不能复制function、正则、Symbol，循环引用）
-* 手写递归自己实现，简单类型，直接复制。对于引用类型，递归复制它的每一个属性，注意循环引用，使用缓存对象做判断（参考alibaba/alibaba.html）
-* 使用lodash的deepclone
-* 使用html5的方式拷贝，但是最大的问题是异步
-
-#### 前端继承的方式有哪些
-- 借用父级构造函数，二是通过原型，三是通过两种的组合方式（other/oop.html）
-- __proto__指向构造函数的prototype对象，而非构造函数
-- ![javascript 原型链 继承 prototype](/asset/img/javascript-prototype.jpg 'javascript prototype')
-
-#### 缓存机制及如何定制缓存时间？为什么使用这种策略？
-* https://imweb.io/topic/5795dcb6fb312541492eda8c
-
-#### setTimeout和setImmediate区别
-* node中执行顺序不确定，因为setTimeout不能做到0毫秒执行，分别在timer阶段和check阶段，process.tick优先级最高，每个阶段执行完就执行tick
-* http://www.ruanyifeng.com/blog/2018/02/node-event-loop.html
-* setTimeout无法保证指定时间后执行，那该如何保证指定时间后一定执行
-![](asset/img/node-eventloop.png)
-![](asset/img/node-eventloop2.jpg)
-
-#### react数据流说说看
-* 推崇简单的自顶向下的单向数据流，双向绑定可以用回调
-
-#### 如何提高用户的转化率（更快下单）
-* 首先页面加载速度要快，让用户快速看到支付按钮
-* 交互响应要及时，提示友好
-* 页面设计要简洁清爽，支付按钮要突出，用户容易找到（不要一堆广告），支付页面的核心是让用户快速完成支付
-* 不能有中断性的广告啊，提示呀
-* 异常处理要友好，比如支付失败，有重新支付按钮，不能让用户有多余的操作
-* 所有的广告可以移到支付成功页去
-
-#### javascript将扁平的数据转为树形结构
-* https://blog.csdn.net/qq_37746973/article/details/78662177
-
-#### nodejs如何利用多核cpu
-- cluster模块(child_process,net组合)
-- 使用child_process模块，提供了child_process.fork()函数实现进程复制，onmessage,send来监听和发送消息
-
-#### [响应式布局](https://juejin.im/post/6844903814332432397)
-- <meta name="viewport" content="width=device-width, initial-scale=1" />
-- 媒体查询（media queries)
-- 百分比布局
-- rem布局
-- 视口单位
-- rem,vw,淘宝的felxiable库
-- 图片响应式
-  - 使用max-width（图片自适应）
-  - 使用srcset
-  - 使用picture标签
-- srcset解决图片高清问题
-- 尽量用svg或者css3构建一些背景图，替代png
-- 1px问题
-  - viewport+rem+js（对整个网页进行缩放）
-  - 直接1/dpr设置像素
-  - 伪元素+transform:scale(1,0.5)
-  - 图片，每次更新颜色要换背景图片
-  - boxshodow
-- 响应式布局的成型方案
-  - 利用上面的方法自己来实现，比如CSS3 Media Query,rem，vw等
-  - Flex弹性布局，兼容性较差
-  - Grid网格布局，兼容性较差
-  - Columns栅格系统，往往需要依赖某个UI库，如Bootstrap
-- 响应式布局的要点
-  - 设置viewport
-  - 媒体查询
-  - 字体的适配（字体单位）
-  - 百分比布局
-  - 图片的适配（图片的响应式）
-  - 结合flex，grid，BFC，栅格系统等已经成型的方案
-
-#### for in和Reflect.ownKeys
-- for in 遍历所有可枚举属性
-- Reflect.ownKeys遍历所有属性（包括不可枚举）
-
-#### for in和for of
-- for in遍历的时候是key值
-- for of遍历的是[key, value]可遍历所有实现了iterbale的列表
-
-#### [new发生了什么](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/new)
-- 创建一个空的简单JavaScript对象（即{}）；
-- 链接该对象（即设置该对象的构造函数）到另一个对象 ；
-- 将步骤1新创建的对象作为this的上下文 ；
-- 如果该函数没有返回对象，则返回this，如果返回非对象则忽略（即还是返回this）
-
-#### React与三方库协同
-- 集成带有 DOM 操作的插件
-  - 做组件隔离，你可以渲染一个无需更新到react元素，然后组件放在这个div里面隔离
-  - 留一个ref值给jquery插件即可
-  - 要注意自己去销毁注册的事件防止内存泄漏
-
-#### ES6
-- const,let,默认参数，箭头函数，尾调用优化，解构对象、数组，for of 展开运算符，set，map，Array.from
-- const 定义一个常量，且必须初始化，不可修改，但如果定义的是对象，对象的属性可以修改，因为对象属性的修改不影响对象（或者说并没有修改对象）
-- [es6 set](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Set)
-  - Set 对象允许你存储任何类型的唯一值，无论是原始值或者是对象引用。
-  - new Set([1, 2, 3, 4, 5]);
-- [es6 map](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Map)
-  - Map 对象保存键值对，并且能够记住键的原始插入顺序。任何值(对象或者原始值) 都可以作为一个键或一个值。
-  - 一个Map对象在迭代时会根据对象中元素的插入顺序来进行, for...of,循环在每次迭代后会返回一个形式为[key，value]的数组
-  - new Map([ [3, 'three'], [2, 'two'], [1, 'eins'] ])
-
-#### 箭头函数和普通函数区别
-- 箭头函数不能new，没有prototype
-- this指向定义时父函数（如果父也是箭头函数则往上再找）所指的this，而不是运行时所指向的this对象
-- 没有arguments绑定，使用rest替代
-- call和apply不会改变this指向
-
-#### css布局方式
-- position
-- display: table,子元素 table-cell
-- flex,一维布局
-- grid，二维布局
-
-#### [float和display：inline-block；的区别](https://developer.mozilla.org/zh-CN/docs/CSS/float)
-- 由于float意味着使用块布局，它在某些情况下修改display 值的计算值：
-- float会脱离正常文档流，但仍然保持部分流动性，所以可以文字环绕它
-- 使用float需要清理float否则影响父元素尺寸
-- display：inline-block只是单纯的把元素设置为行内块
-
-#### es6中的class
-- 类中的prototype不可以被重写
-- 所有成员不可枚举
-- 必须使用new调用构造函数
-- 只可以在派生类中使用super函数且只能第一个使用，new.target指向构造函数
-  
-#### 浏览器存储数据有cookie，localstorage，sessionstorage，indexDB
-- cookie大概4kb左右，http请求会携带给服务器
-- 本地存储5m
-
-#### cookie格式以分号隔开，name=value;Expires=time; Max-Age=22;Domain=aa.com;path=/;Secure;HttpOnly;SameSite
-
-#### 5.15多少度 67.5度
-
-#### 数字和字母8位  /^[0-9a-zA-Z]{8,}$/意思是数字或字母长度至少为8位，/^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]*$/ 数字和字母组合
-- https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Guide/Regular_Expressions
-- 对 "123abc" 使用 /\d+/ 将会匹配 "123"，而使用 /\d+?/ 则只会匹配到 "1"。
-- /(?:foo){1,2}/。如果表达式是 /foo{1,2}/，{1,2} 将只应用于 'foo' 的最后一个字符 'o'。如果使用非捕获括号，则 {1,2} 会应用于整个 'foo' 单词。
-- /Jack(?=Sprat)/会匹配到'Jack'仅当它后面跟着'Sprat'。/Jack(?=Sprat|Frost)/匹配‘Jack’仅当它后面跟着'Sprat'或者是‘Frost’。但是‘Sprat’和‘Frost’都不是匹配结果的一部分。
-- /(?<=Jack)Sprat/会匹配到' Sprat '仅仅当它前面是' Jack '。/(?<=Jack|Tom)Sprat/匹配‘ Sprat ’仅仅当它前面是'Jack'或者是‘Tom’。但是‘Jack’和‘Tom’都不是匹配结果的一部分。
-- 
-
-#### 负载均衡
-- 轮循算法，就是将来自网络的请求依次分配给集群中的节点进行处理。
-- 最小连接数算法，就是为集群中的每台服务器设置一个记数器，记录每个服务器当前的连接数，负载均衡系统总是选择当前连接数最少的服务器分配任务。
-- 快速响应优先算法，是根据群集中的节点的状态（CPU、内存等主要处理部分）来分配任务。 这一点很难做到，事实上到目前为止，采用这个算法的负载均衡系统还很少。尤其对于硬件负载均衡设备来说，只能在TCP/IP协议方面做工作，几乎不可能深入到服务器的处理系统中进行监测。但是它是未来发展的方向。
-
-#### href是当前元素与链接资源的关联，非阻塞；而src引入的资源是页面不可少部分，嵌入页面当前位置，要占位置
-
-#### title是站点级别标题，h是文章标题，而em和strong是部分强调
-
-#### 事件注册到同一元素与冒泡捕获无关，触发的顺序只与注册先后有关
-
-#### let，var
-- var声明要么全局要么函数作用域
-- let局部作用域，不会声明提升，不能重复声明
-
 
 ### 浏览器缓存
 - 首先通过expires（1.0），cache-control判断缓存是否过期，如果没有过期使用浏览器缓存不发请求
@@ -1604,10 +1545,8 @@ FP（first paint）FCP(first contentful paint) FMP(first meaningful paint), LCP(
 - 浏览器缓存 - 系统缓存 - 路由器缓存 - ISP DNS 缓存 - 递归搜索
 
 #### 详细说一下 CDN？它是怎么找到离它地理位置最近的服务器的而不是其他的服务器？
-
 1. 用户当前所在位置
 2. 还需要知道用户现在访问的这个域名对应哪些 IP 地址，以及这个 IP 地址分别在哪?
-
 - 对于第一个问题好解决，直接从用户请求里提取出用户的 ip 地址，比如这个 ip 地址被解析为北京电信、上海移动等等。
 - cdn 供应商，从 cname 域名 ip 列表中选择一个离用户最近的 ip 返回给用户
   !['cdn cname dns原理'](../img/cdn-principle.png)
@@ -1615,6 +1554,176 @@ FP（first paint）FCP(first contentful paint) FMP(first meaningful paint), LCP(
 ### 防止爬虫
 - 关键信息需要登录才能看到，比如京东，淘宝价格都是需要登录后才能看到，知乎也需要登录才能看到更核心的信息。
 
+#### OSI 七层模型及原理
+- ssl 在会话层，在表示层和传输层之间
+  !['OSI七层模型及原理'](../img/OSI.png)
+
+#### react生命周期，及再didmount和willunmout一般做什么
+componentDidMount： dom已经加装到页面，可以操作页面dom，比如集成第三方框架
+componentWillUnmount：清理垃圾，比如删除绑定的事件等等内存回收的地方
+
+#### 前端clone，深拷贝
+* JSON.parse(JSON.stringify(XXXX)) （不能复制function、正则、Symbol，循环引用）
+* 手写递归自己实现，简单类型，直接复制。对于引用类型，递归复制它的每一个属性，注意循环引用，使用缓存对象做判断（参考alibaba/alibaba.html）
+* 使用lodash的deepclone
+* 使用html5的方式拷贝，但是最大的问题是异步
+
+#### 前端继承的方式有哪些
+- 借用父级构造函数，二是通过原型，三是通过两种的组合方式（other/oop.html）
+- __proto__指向构造函数的prototype对象，而非构造函数
+- ![javascript 原型链 继承 prototype](/asset/img/javascript-prototype.jpg 'javascript prototype')
+
+#### 缓存机制及如何定制缓存时间？为什么使用这种策略？
+* https://imweb.io/topic/5795dcb6fb312541492eda8c
+
+#### setTimeout和setImmediate区别
+* node中执行顺序不确定，因为setTimeout不能做到0毫秒执行，分别在timer阶段和check阶段，process.tick优先级最高，每个阶段执行完就执行tick
+* http://www.ruanyifeng.com/blog/2018/02/node-event-loop.html
+* setTimeout无法保证指定时间后执行，那该如何保证指定时间后一定执行
+![](asset/img/node-eventloop.png)
+![](asset/img/node-eventloop2.jpg)
+
+#### react数据流说说看
+* 推崇简单的自顶向下的单向数据流，双向绑定可以用回调
+
+#### 如何提高用户的转化率（更快下单）
+* 首先页面加载速度要快，让用户快速看到支付按钮
+* 交互响应要及时，提示友好
+* 页面设计要简洁清爽，支付按钮要突出，用户容易找到（不要一堆广告），支付页面的核心是让用户快速完成支付
+* 不能有中断性的广告啊，提示呀
+* 异常处理要友好，比如支付失败，有重新支付按钮，不能让用户有多余的操作
+* 所有的广告可以移到支付成功页去
+
+#### javascript将扁平的数据转为树形结构
+* https://blog.csdn.net/qq_37746973/article/details/78662177
+
+#### nodejs如何利用多核cpu
+- cluster模块(child_process,net组合)
+- 使用child_process模块，提供了child_process.fork()函数实现进程复制，onmessage,send来监听和发送消息
+
+#### [响应式布局](https://juejin.im/post/6844903814332432397)
+- <meta name="viewport" content="width=device-width, initial-scale=1" />
+- 媒体查询（media queries)
+- 百分比布局
+- rem布局
+- 视口单位
+- rem,vw,淘宝的felxiable库
+- 图片响应式
+  - 使用max-width（图片自适应）
+  - 使用srcset
+  - 使用picture标签
+- srcset解决图片高清问题
+- 尽量用svg或者css3构建一些背景图，替代png
+- 1px问题
+  - viewport+rem+js（对整个网页进行缩放）
+  - 直接1/dpr设置像素
+  - 伪元素+transform:scale(1,0.5)
+  - 图片，每次更新颜色要换背景图片
+  - boxshodow
+- 响应式布局的成型方案
+  - 利用上面的方法自己来实现，比如CSS3 Media Query,rem，vw等
+  - Flex弹性布局，兼容性较差
+  - Grid网格布局，兼容性较差
+  - Columns栅格系统，往往需要依赖某个UI库，如Bootstrap
+- 响应式布局的要点
+  - 设置viewport
+  - 媒体查询
+  - 字体的适配（字体单位）
+  - 百分比布局
+  - 图片的适配（图片的响应式）
+  - 结合flex，grid，BFC，栅格系统等已经成型的方案
+
+#### for in和Reflect.ownKeys
+- for in 遍历所有可枚举属性
+- Reflect.ownKeys遍历所有属性（包括不可枚举）
+
+#### for in和for of
+- for in遍历的时候是key值
+- for of遍历的是[key, value]可遍历所有实现了iterbale的列表
+
+#### [new发生了什么](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/new)
+- 创建一个空的简单JavaScript对象（即{}）；
+- 链接该对象（即设置该对象的构造函数）到另一个对象 ；
+- 将步骤1新创建的对象作为this的上下文 ；
+- 如果该函数没有返回对象，则返回this，如果返回非对象则忽略（即还是返回this）
+
+#### React与三方库协同
+- 集成带有 DOM 操作的插件
+  - 做组件隔离，你可以渲染一个无需更新到react元素，然后组件放在这个div里面隔离
+  - 留一个ref值给jquery插件即可
+  - 要注意自己去销毁注册的事件防止内存泄漏
+
+#### ES6
+- const,let,默认参数，箭头函数，尾调用优化，解构对象、数组，for of 展开运算符，set，map，Array.from
+- const 定义一个常量，且必须初始化，不可修改，但如果定义的是对象，对象的属性可以修改，因为对象属性的修改不影响对象（或者说并没有修改对象）
+- [es6 set](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Set)
+  - Set 对象允许你存储任何类型的唯一值，无论是原始值或者是对象引用。
+  - new Set([1, 2, 3, 4, 5]);
+- [es6 map](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Map)
+  - Map 对象保存键值对，并且能够记住键的原始插入顺序。任何值(对象或者原始值) 都可以作为一个键或一个值。
+  - 一个Map对象在迭代时会根据对象中元素的插入顺序来进行, for...of,循环在每次迭代后会返回一个形式为[key，value]的数组
+  - new Map([ [3, 'three'], [2, 'two'], [1, 'eins'] ])
+
+#### 箭头函数和普通函数区别
+- 箭头函数不能new，没有prototype
+- this指向定义时父函数（如果父也是箭头函数则往上再找）所指的this，而不是运行时所指向的this对象
+- 没有arguments绑定，使用rest替代
+- call和apply不会改变this指向
+
+#### css布局方式
+- position
+- display: table,子元素 table-cell
+- flex,一维布局
+- grid，二维布局
+
+#### [float和display：inline-block；的区别](https://developer.mozilla.org/zh-CN/docs/CSS/float)
+- 由于float意味着使用块布局，它在某些情况下修改display 值的计算值：
+- float会脱离正常文档流，但仍然保持部分流动性，所以可以文字环绕它
+- 使用float需要清理float否则影响父元素尺寸
+- display：inline-block只是单纯的把元素设置为行内块
+
+#### es6中的class
+- 类中的prototype不可以被重写
+- 所有成员不可枚举
+- 必须使用new调用构造函数
+- 只可以在派生类中使用super函数且只能第一个使用，new.target指向构造函数
+  
+#### 浏览器存储数据有cookie，localstorage，sessionstorage，indexDB
+- cookie大概4kb左右，http请求会携带给服务器
+- 本地存储5m
+
+#### cookie格式以分号隔开，name=value;Expires=time; Max-Age=22;Domain=aa.com;path=/;Secure;HttpOnly;SameSite
+
+#### 5.15多少度 67.5度
+
+#### 数字和字母8位  /^[0-9a-zA-Z]{8,}$/意思是数字或字母长度至少为8位，/^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]*$/ 数字和字母组合
+- https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Guide/Regular_Expressions
+- 对 "123abc" 使用 /\d+/ 将会匹配 "123"，而使用 /\d+?/ 则只会匹配到 "1"。
+- /(?:foo){1,2}/。如果表达式是 /foo{1,2}/，{1,2} 将只应用于 'foo' 的最后一个字符 'o'。如果使用非捕获括号，则 {1,2} 会应用于整个 'foo' 单词。
+- /Jack(?=Sprat)/会匹配到'Jack'仅当它后面跟着'Sprat'。/Jack(?=Sprat|Frost)/匹配‘Jack’仅当它后面跟着'Sprat'或者是‘Frost’。但是‘Sprat’和‘Frost’都不是匹配结果的一部分。
+- /(?<=Jack)Sprat/会匹配到' Sprat '仅仅当它前面是' Jack '。/(?<=Jack|Tom)Sprat/匹配‘ Sprat ’仅仅当它前面是'Jack'或者是‘Tom’。但是‘Jack’和‘Tom’都不是匹配结果的一部分。
+- 
+
+#### 负载均衡
+- 轮循算法，就是将来自网络的请求依次分配给集群中的节点进行处理。
+- 最小连接数算法，就是为集群中的每台服务器设置一个记数器，记录每个服务器当前的连接数，负载均衡系统总是选择当前连接数最少的服务器分配任务。
+- 快速响应优先算法，是根据群集中的节点的状态（CPU、内存等主要处理部分）来分配任务。 这一点很难做到，事实上到目前为止，采用这个算法的负载均衡系统还很少。尤其对于硬件负载均衡设备来说，只能在TCP/IP协议方面做工作，几乎不可能深入到服务器的处理系统中进行监测。但是它是未来发展的方向。
+
+#### href是当前元素与链接资源的关联，非阻塞；而src引入的资源是页面不可少部分，嵌入页面当前位置，要占位置
+
+#### title是站点级别标题，h是文章标题，而em和strong是部分强调
+
+#### 事件注册到同一元素与冒泡捕获无关，触发的顺序只与注册先后有关
+
+#### let，var
+- var声明要么全局要么函数作用域
+- let局部作用域，不会声明提升，不能重复声明
+
+#### react两个组件中的请求有依赖如何处理
+* 使用高阶组件，假如a依赖b，两种方式，一是通过props.callback，b中componentWillReceiveProps拿到a中异步请求依赖数据，二是通过hoc，b作为传人组件，高阶组件中实现a对逻辑，请求返回数据后，通过props传入b组件，形成增强组件
+
+#### react中虚拟dom diff算法
+陈屹《深入react技术栈》
 
 #### react hook优化
 - 使用useMemo,useCallback(防止子组件重复渲染)
