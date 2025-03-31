@@ -808,27 +808,6 @@ function dealRequest () {
 * UTF-8：Unicode TransformationFormat-8bit，允许含BOM，但通常不含BOM。是用以解决国际上字符的一种多字节编码，它对英文使用8位（即一个字节），中文使用24为（三个字节）来编码。UTF-8包含全世界所有国家需要用到的字符，是国际编码，通用性强。UTF-8编码的文字可以在各国支持UTF8字符集的浏览器上显示。如，如果是UTF8编码，则在外国人的英文IE上也能显示中文，他们无需下载IE的中文语言支持包。
 GBK是国家标准GB2312基础上扩容后兼容GB2312的标准。GBK的文字编码是用双字节来表示的，即不论中、英文字符均使用双字节来表示，为了区分中文，将其最高位都设定成1。GBK包含全部中文字符，是国家编码，通用性比UTF8差，不过UTF8占用的数据库比GBD大。
 
-### 前端数据采集
-- onError事件，try catch，自定义错误及日志
-- html5的performance帮助采集性能数据
-#### 我们如果有一个奖励的系统，有一个用户通过第三方疯狂调用我们的接口我们该怎么做？ 秒杀系统
-
-- 需要考虑高并发，超卖，刷单
-- 针对高并发，前端常用的三板斧是【扩容】【静态化】【限流】
-
-  - 扩容：加机器，这是最简单的方法，通过增加前端池的整体承载量来抗峰值。
-  - 静态化：将活动页面上的所有可以静态的元素全部静态化，并尽量减少动态元素。通过 CDN 来抗峰值。超大型活动可提前推送静态资源
-  - 限流：一般都会采用 IP 级别的限流，即针对某一个 IP，限制单位时间内发起请求数量。或者活动入口的时候增加游戏或者问题环节进行消峰操作。当然 web 前端可以使用本地存储限制用户单位时间内的请求数量
-  - 无损服务：排队，答题，分层过滤
-  - 有损服务：最后一招，在接近前端池承载能力的水位上限的时候，随机拒绝部分请求来保护活动整体的可用性。
-  - 使用先进先出队列，比如 1000 件商品，100 台服务器，每台服务器接收前 1000 个请求，同时请求发给缓存，此时看看缓存中库存大于 0 的话，使用下面如下两种方案的一种，返回结果给 web 前端服务器，没有就秒杀完了
-  - 使用 Memcached 缓存方案 1：将写操作前移到 MC 中，同时利用 MC 的轻量级的锁机制 CAS 来实现减库存操作。优点：读写在内存中，操作性能快，引入轻量级锁之后可以保证同一时刻只有一个写入成功，解决减库存问题。缺点：没有实测，基于 CAS 的特性不知道高并发下是否会出现大量更新失败？不过加锁之后肯定对并发性能会有影响。
-  - 使用 radis 缓存方案 2：将提交操作变成两段式，先申请后确认。然后利用 Redis 的原子自增操作，同时利用 Redis 的事务特性来发号，保证拿到小于等于库存阀值的号的人都可以功提交订单。然后数据异步更新到 DB 中。优点：解决超卖问题，库存读写都在内存中，故同时解决性能问题。缺点：由于异步写入 DB，可能存在数据不一致。另可能存在少买，也就是如果拿到号的人不真正下订单，可能库存减为 0，但是订单数并没有达到库存阀值。
-
-- 防止疯狂刷单，用户 ID 黑白名单，限制 IP，单位时间内调用接口次数（令牌桶，漏桶令牌），验证码（图灵测试，字符验证码，计算验证码，智力题验证码，滑块验证码）
-- 通过采集终端设备的各项参数，在 APP 启动的时候，生成一个唯一的设备指纹，请求时返回服务器，然后风控分析它的可疑度，有效识别模拟器、改串码、群控等设备异常行为，设备信息通过约定的方法生成加密指纹信息，服务器解密得到信息可判断是否同一用户
-- referer 校验，ua，origin
-
 #### 设计模式用过吗？最熟悉的模式是什么？
 
 - 单例模式
@@ -1289,11 +1268,85 @@ Object.freeze(JSON);
 * https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Access_control_CORS
 * http://www.ruanyifeng.com/blog/2016/04/cors.html
 
+### 如何加快页面首屏渲染（前端性能优化）
+
+- DNS 预解析（<meta http-equiv="x-dns-prefetch-control" content="on"><link rel="dns-prefetch" href="//cdn.domain.com" >），在不需要对用户暴露域名的地方，可以直接使用 ip，比如 app，这样彻底不使用 DNS，避免重定向
+- 预加载js，css <link rel="preload" href="xxx.js" as="scrpit"><link rel="preload" href="flower.avif" as="image" type="image/avif" />
+- 页面静态化（服务器端渲染），使用 CDN，使用缓存
+- 最小化文件，内联首屏 css，js，压缩合并图片，优化图片推荐webp格式，甚至内置图片 base64 等，css，js 等静态资源
+- 保证首屏内容最小化
+- 预先设定图片尺寸，避免大量重排重绘，减少 DOM 元素数量和深度
+- 如果是 APP 甚至可以预推送，避免峰值请求
+- PWA 离线缓存，service work
+- 使用 gzip 压缩
+- script 加载放在页尾部，异步 javascript 加载，defer，async，合并压缩，域名收敛，减少 http 请求
+
+#### 前端优化描述，除了雅虎军规之外的优化，页面速度优化，页面优化，加载时间优化
+
+DNS，http协议选择，cdn，文件压缩，合并，缓存，懒加载，技术层面的，app离线技术等等。
+
+FP（first paint）FCP(first contentful paint) FMP(first meaningful paint), LCP(largest contentfull paint) 首字节加载，白屏时间，首次交互时间，页面加载时间等等。 performance api, mutation Observer(监听 dom) 等。 lighthouse查看网站优化效果，及建议
+前端要埋点监控，99.999, 可视化，然后分析原因，针对性处理。
+
+- 减少 HTTP，减少 http 尺寸（比如优化合并图片，css，js，html，使用 gzip，使用缓存，cnd，css，js 外置）
+- 非空 href，src，避免重定向，减少 cookie 大小，使用本地缓存
+- 异步 javascript 加载，defer，async
+- 避免使用 CSS import 引用加载 CSS
+- 预先设定图片尺寸，避免大量重排重绘，减少 DOM 元素数量和深度
+- 多使用gpu，比如css opacity, transform, transition, will-change, 3d 加速等
+- 减少重绘重排，使用 css3 硬件加速，使用 requestAnimationFrame 优化动画，使用 setTimeout 优化定时器，使用事件委托，使用事件节流，使用事件防抖，使用事件代理，使用事件缓存，使用事件委托，使用事件节流，使用事件
+- webpack 打包优化，动态路由按需加载，长时间缓存，增量更新
+- cdn，ssr,服务器端渲染，完全生成静态网页。
+
+* pwa，serviceworker
+* http2(多路复用，首部压缩，服务器推送，流量控制)，http3 基于 udp，ttr
+* 域名收敛，dns 预解析（<meta http-equiv="x-dns-prefetch-control" content="on"><link rel="dns-prefetch" href="//cdn.domain.com" >），PC 上 DNS 解析消耗相对较小，但移动端（假设信号不够强）的 DNS 消耗是比较可观的（相对而言），可以通过 js 初始化一个 iframe 异步加载一个页面，而这个页面里包含本站所有的需要手动 dns prefetching 的域名
+* 通常情况下，我们认为 TCP 网络传输的最大传输单元（Maximum Transmission Unit，MTU）为 1500B，即一个 RTT（Round-Trip Time，网络请求往返时间）内可以传输的数据量最大为 1500 字节。因此，在前后端分离的开发模式中，尽量保证页面的 HTML 内容在 1KB 以内，这样整个 HTML 的内容请求就可以在一个 RTT 内请求完成，最大限度地提高 HTML 载入速度。
+
+#### 如何实现 DNS 预解析？DNS 预解析在什么时候执行？
+
+- （<meta http-equiv="x-dns-prefetch-control" content="on"><link rel="dns-prefetch" href="//cdn.domain.com" >）
+- Chrome 会记住最近使用的 10 个 domain，并且在开启浏览器时自动解析，因此在打开这些常用页面的时候，并不会有 DNS Lookup 的延迟情况。
+- chrome 使用 8 个线程专门做 DNS Prefetching，而且 chrome 本身不做 dns 记录的 cache，是直接从操作系统读 dns。所以直接修改系统的 dns 记录或者 host 是可以直接影响 chrome。
+- 浏览器会对 a 标签的 href 自动启用 DNS Prefetching，所以 a 标签里包含的域名不需要在 head 中手动设置 link。但是在 HTTPS 下面不起作用，需要 meta 来强制开启功能。这个限制的原因是防止窃听者根据 DNS Prefetching 推断显示在 HTTPS 页面中超链接的主机名。
+- DNS 解析的包很小，一个 UDP 的包小于 100 bytes，却平均可节省 200ms。
+- 本地缓存 DNS 数量有限，可暂存 50-200 个 domain，Chrome 会决定该删除哪些 domain 的缓存，常用的网站会被标记为“最近使用”，不会那么快被删除。而如 google.com、yahoo.com 等大型网站过期时间大概在 5 分钟左右，可以更好的适应服务变化。
+- 浏览器缓存 - 系统缓存 - 路由器缓存 - ISP DNS 缓存 - 递归搜索
+
+#### 详细说一下 CDN？它是怎么找到离它地理位置最近的服务器的而不是其他的服务器？
+1. 用户当前所在位置
+2. 还需要知道用户现在访问的这个域名对应哪些 IP 地址，以及这个 IP 地址分别在哪?
+- 对于第一个问题好解决，直接从用户请求里提取出用户的 ip 地址，比如这个 ip 地址被解析为北京电信、上海移动等等。
+- cdn 供应商，从 cname 域名 ip 列表中选择一个离用户最近的 ip 返回给用户
+  !['cdn cname dns原理'](../img/cdn-principle.png)
+
+
 #### 前端埋点监控怎么做（白屏，首屏，onload时间，html5的performance）
 * head开发的地方定义起始时间，body开始处定义白屏结束时间，首屏html片段处定义首屏结束时间
 * 使用html5 performance.timing的api，有各个阶段详细的时间点
 
-### 测量白屏时间和首屏时间
+### 前端数据采集
+- onError事件，try catch，自定义错误及日志
+- html5的performance帮助采集性能数据
+#### 我们如果有一个奖励的系统，有一个用户通过第三方疯狂调用我们的接口我们该怎么做？ 秒杀系统
+
+- 需要考虑高并发，超卖，刷单
+- 针对高并发，前端常用的三板斧是【扩容】【静态化】【限流】
+
+  - 扩容：加机器，这是最简单的方法，通过增加前端池的整体承载量来抗峰值。
+  - 静态化：将活动页面上的所有可以静态的元素全部静态化，并尽量减少动态元素。通过 CDN 来抗峰值。超大型活动可提前推送静态资源
+  - 限流：一般都会采用 IP 级别的限流，即针对某一个 IP，限制单位时间内发起请求数量。或者活动入口的时候增加游戏或者问题环节进行消峰操作。当然 web 前端可以使用本地存储限制用户单位时间内的请求数量
+  - 无损服务：排队，答题，分层过滤
+  - 有损服务：最后一招，在接近前端池承载能力的水位上限的时候，随机拒绝部分请求来保护活动整体的可用性。
+  - 使用先进先出队列，比如 1000 件商品，100 台服务器，每台服务器接收前 1000 个请求，同时请求发给缓存，此时看看缓存中库存大于 0 的话，使用下面如下两种方案的一种，返回结果给 web 前端服务器，没有就秒杀完了
+  - 使用 Memcached 缓存方案 1：将写操作前移到 MC 中，同时利用 MC 的轻量级的锁机制 CAS 来实现减库存操作。优点：读写在内存中，操作性能快，引入轻量级锁之后可以保证同一时刻只有一个写入成功，解决减库存问题。缺点：没有实测，基于 CAS 的特性不知道高并发下是否会出现大量更新失败？不过加锁之后肯定对并发性能会有影响。
+  - 使用 radis 缓存方案 2：将提交操作变成两段式，先申请后确认。然后利用 Redis 的原子自增操作，同时利用 Redis 的事务特性来发号，保证拿到小于等于库存阀值的号的人都可以功提交订单。然后数据异步更新到 DB 中。优点：解决超卖问题，库存读写都在内存中，故同时解决性能问题。缺点：由于异步写入 DB，可能存在数据不一致。另可能存在少买，也就是如果拿到号的人不真正下订单，可能库存减为 0，但是订单数并没有达到库存阀值。
+
+- 防止疯狂刷单，用户 ID 黑白名单，限制 IP，单位时间内调用接口次数（令牌桶，漏桶令牌），验证码（图灵测试，字符验证码，计算验证码，智力题验证码，滑块验证码）
+- 通过采集终端设备的各项参数，在 APP 启动的时候，生成一个唯一的设备指纹，请求时返回服务器，然后风控分析它的可疑度，有效识别模拟器、改串码、群控等设备异常行为，设备信息通过约定的方法生成加密指纹信息，服务器解密得到信息可判断是否同一用户
+- referer 校验，ua，origin
+
+#### 测量白屏时间和首屏时间
 
 - https://lz5z.com/Web%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96-%E9%A6%96%E5%B1%8F%E5%92%8C%E7%99%BD%E5%B1%8F%E6%97%B6%E9%97%B4/
 那么要如何去检测线上的用户性能呢？你觉得其中有哪些数据是比较重要的呢？怎么去实现对他们的监测和分析呢？
@@ -1396,7 +1449,7 @@ Object.freeze(JSON);
   </html>
   ```
 
-### 浏览器缓存
+#### 浏览器缓存
 - 首先通过expires（1.0），cache-control判断缓存是否过期，如果没有过期使用浏览器缓存不发请求
 - 过期则发请求，会带上etag或者last-modify与服务器上的相应值对比，如果没有变化返回304，否则返回新文件和新的etag和modify时间戳
 - 如果需要强制更新，加版本号或者文件hash
@@ -1517,55 +1570,6 @@ $$ 2^{n-1} $$
     componentWillUnmount
   ![](asset/img/react-fiber-phase.png)
 
-### 如何加快页面首屏渲染（前端性能优化）
-
-- DNS 预解析（<meta http-equiv="x-dns-prefetch-control" content="on"><link rel="dns-prefetch" href="//cdn.domain.com" >），在不需要对用户暴露域名的地方，可以直接使用 ip，比如 app，这样彻底不使用 DNS，避免重定向
-- 预加载js，css <link rel="preload" href="xxx.js" as="scrpit"><link rel="preload" href="flower.avif" as="image" type="image/avif" />
-- 页面静态化（服务器端渲染），使用 CDN，使用缓存
-- 最小化文件，内联首屏 css，js，压缩合并图片，优化图片推荐webp格式，甚至内置图片 base64 等，css，js 等静态资源
-- 保证首屏内容最小化
-- 预先设定图片尺寸，避免大量重排重绘，减少 DOM 元素数量和深度
-- 如果是 APP 甚至可以预推送，避免峰值请求
-- PWA 离线缓存，service work
-- 使用 gzip 压缩
-- script 加载放在页尾部，异步 javascript 加载，defer，async，合并压缩，域名收敛，减少 http 请求
-
-#### 前端优化描述，除了雅虎军规之外的优化，页面速度优化，页面优化，加载时间优化
-
-FP（first paint）FCP(first contentful paint) FMP(first meaningful paint), LCP(largest contentfull paint) 首字节加载，白屏时间，首次交互时间，页面加载时间等等。 performance api, mutation Observer(监听 dom) 等。 lighthouse查看网站优化效果，及建议
-前端要埋点监控，99.999, 可视化，然后分析原因，针对性处理。
-
-- 减少 HTTP，减少 http 尺寸（比如优化合并图片，css，js，html，使用 gzip，使用缓存，cnd，css，js 外置）
-- 非空 href，src，避免重定向，减少 cookie 大小，使用本地缓存
-- 异步 javascript 加载，defer，async
-- 避免使用 CSS import 引用加载 CSS
-- 预先设定图片尺寸，避免大量重排重绘，减少 DOM 元素数量和深度
-- 多使用gpu，比如css opacity, transform, transition, will-change, 3d 加速等
-- 减少重绘重排，使用 css3 硬件加速，使用 requestAnimationFrame 优化动画，使用 setTimeout 优化定时器，使用事件委托，使用事件节流，使用事件防抖，使用事件代理，使用事件缓存，使用事件委托，使用事件节流，使用事件
-- webpack 打包优化，动态路由按需加载，长时间缓存，增量更新
-- cdn，ssr,服务器端渲染，完全生成静态网页。
-
-* pwa，serviceworker
-* http2(多路复用，首部压缩，服务器推送，流量控制)，http3 基于 udp，ttr
-* 域名收敛，dns 预解析（<meta http-equiv="x-dns-prefetch-control" content="on"><link rel="dns-prefetch" href="//cdn.domain.com" >），PC 上 DNS 解析消耗相对较小，但移动端（假设信号不够强）的 DNS 消耗是比较可观的（相对而言），可以通过 js 初始化一个 iframe 异步加载一个页面，而这个页面里包含本站所有的需要手动 dns prefetching 的域名
-* 通常情况下，我们认为 TCP 网络传输的最大传输单元（Maximum Transmission Unit，MTU）为 1500B，即一个 RTT（Round-Trip Time，网络请求往返时间）内可以传输的数据量最大为 1500 字节。因此，在前后端分离的开发模式中，尽量保证页面的 HTML 内容在 1KB 以内，这样整个 HTML 的内容请求就可以在一个 RTT 内请求完成，最大限度地提高 HTML 载入速度。
-
-#### 如何实现 DNS 预解析？DNS 预解析在什么时候执行？
-
-- （<meta http-equiv="x-dns-prefetch-control" content="on"><link rel="dns-prefetch" href="//cdn.domain.com" >）
-- Chrome 会记住最近使用的 10 个 domain，并且在开启浏览器时自动解析，因此在打开这些常用页面的时候，并不会有 DNS Lookup 的延迟情况。
-- chrome 使用 8 个线程专门做 DNS Prefetching，而且 chrome 本身不做 dns 记录的 cache，是直接从操作系统读 dns。所以直接修改系统的 dns 记录或者 host 是可以直接影响 chrome。
-- 浏览器会对 a 标签的 href 自动启用 DNS Prefetching，所以 a 标签里包含的域名不需要在 head 中手动设置 link。但是在 HTTPS 下面不起作用，需要 meta 来强制开启功能。这个限制的原因是防止窃听者根据 DNS Prefetching 推断显示在 HTTPS 页面中超链接的主机名。
-- DNS 解析的包很小，一个 UDP 的包小于 100 bytes，却平均可节省 200ms。
-- 本地缓存 DNS 数量有限，可暂存 50-200 个 domain，Chrome 会决定该删除哪些 domain 的缓存，常用的网站会被标记为“最近使用”，不会那么快被删除。而如 google.com、yahoo.com 等大型网站过期时间大概在 5 分钟左右，可以更好的适应服务变化。
-- 浏览器缓存 - 系统缓存 - 路由器缓存 - ISP DNS 缓存 - 递归搜索
-
-#### 详细说一下 CDN？它是怎么找到离它地理位置最近的服务器的而不是其他的服务器？
-1. 用户当前所在位置
-2. 还需要知道用户现在访问的这个域名对应哪些 IP 地址，以及这个 IP 地址分别在哪?
-- 对于第一个问题好解决，直接从用户请求里提取出用户的 ip 地址，比如这个 ip 地址被解析为北京电信、上海移动等等。
-- cdn 供应商，从 cname 域名 ip 列表中选择一个离用户最近的 ip 返回给用户
-  !['cdn cname dns原理'](../img/cdn-principle.png)
 
 ### 防止爬虫
 - 关键信息需要登录才能看到，比如京东，淘宝价格都是需要登录后才能看到，知乎也需要登录才能看到更核心的信息。
