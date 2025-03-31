@@ -1270,6 +1270,8 @@ Object.freeze(JSON);
 
 ### 如何加快页面首屏渲染（前端性能优化）
 
+DNS，http协议选择，cdn，文件压缩，合并，缓存，懒加载，代码层面的，app离线技术等等。
+
 - DNS 预解析（<meta http-equiv="x-dns-prefetch-control" content="on"><link rel="dns-prefetch" href="//cdn.domain.com" >），在不需要对用户暴露域名的地方，可以直接使用 ip，比如 app，这样彻底不使用 DNS，避免重定向
 - 预加载js，css <link rel="preload" href="xxx.js" as="scrpit"><link rel="preload" href="flower.avif" as="image" type="image/avif" />
 - 页面静态化（服务器端渲染），使用 CDN，使用缓存
@@ -1282,8 +1284,6 @@ Object.freeze(JSON);
 - script 加载放在页尾部，异步 javascript 加载，defer，async，合并压缩，域名收敛，减少 http 请求
 
 #### 前端优化描述，除了雅虎军规之外的优化，页面速度优化，页面优化，加载时间优化
-
-DNS，http协议选择，cdn，文件压缩，合并，缓存，懒加载，技术层面的，app离线技术等等。
 
 FP（first paint）FCP(first contentful paint) FMP(first meaningful paint), LCP(largest contentfull paint) 首字节加载，白屏时间，首次交互时间，页面加载时间等等。 performance api, mutation Observer(监听 dom) 等。 lighthouse查看网站优化效果，及建议
 前端要埋点监控，99.999, 可视化，然后分析原因，针对性处理。
